@@ -10,32 +10,42 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
+import { Route as Public__rootTarifsRouteImport } from './routes/_public__root/tarifs'
 
 const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   id: '/_public__root/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Public__rootTarifsRoute = Public__rootTarifsRouteImport.update({
+  id: '/_public__root/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
 }
 export interface FileRoutesByTo {
+  '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_public__root/tarifs': typeof Public__rootTarifsRoute
   '/_public__root/': typeof Public__rootIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/tarifs' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_public__root/'
+  to: '/tarifs' | '/'
+  id: '__root__' | '/_public__root/tarifs' | '/_public__root/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  Public__rootTarifsRoute: typeof Public__rootTarifsRoute
   Public__rootIndexRoute: typeof Public__rootIndexRoute
 }
 
@@ -48,10 +58,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_public__root/tarifs': {
+      id: '/_public__root/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof Public__rootTarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  Public__rootTarifsRoute: Public__rootTarifsRoute,
   Public__rootIndexRoute: Public__rootIndexRoute,
 }
 export const routeTree = rootRouteImport

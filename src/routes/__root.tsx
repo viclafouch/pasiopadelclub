@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import React from 'react'
 import Footer from '@/components/footer'
-import { Navbar } from '@/components/navbar'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -25,7 +24,6 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
         <HeadContent />
       </head>
       <body>
-        <Navbar />
         {children}
         <Footer />
         <TanStackDevtools
