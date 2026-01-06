@@ -1,0 +1,31 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Coding Practices - The Way of Code
+
+## Before Coding
+- Take a moment to understand the true nature of the problem
+- Consider the simplest possible approach
+- Set intention for elegant, flowing solutions
+- Ask: "What is the essence of what I'm trying to achieve?"
+
+## While Coding
+- Notice when you're forcing vs. flowing
+- Pause when complexity feels overwhelming
+- Trust your intuition about code quality
+- Refactor continuously toward simplicity
+- Write code that reads like natural language
+
+## Problem Solving
+- When stuck, step back and let solutions emerge
+- Embrace "I don't know" as the starting point for learning
+- Question assumptions about how things "should" work
+- Sometimes the best refactoring is the one you don't do
+
+## Architecture Decisions
+- "The power of your code lies not just in what it does, but in what it doesn't do"
+- Create clean interfaces and clear separation
+- Build systems that can adapt to changing requirements
+- Avoid rigid architectures that break under pressure

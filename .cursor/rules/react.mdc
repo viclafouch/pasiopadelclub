@@ -1,0 +1,14 @@
+---
+name: react
+description: React development rules for JSX formatting, prop typing, and consistent library usage.
+alwaysApply: false
+---
+
+# Overview
+
+- Do not insert empty lines in JSX.
+- JSX elements must be written without blank lines between them.
+- Never add visual spacing inside JSX using empty lines.
+- Always add "import React from 'react'" in top of jsx files.
+- When creating props for a component, always create the type like `type ComponentNameProps = {...}` and reuse it.
+- Always use the `React.` prefix for all exports from the 'react' library (e.g., `React.useState`, `React.useEffect`, `React.ReactNode`).
