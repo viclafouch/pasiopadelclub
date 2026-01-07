@@ -2,7 +2,9 @@
 
 ## Vue d'ensemble
 
-Site de réservation de terrains de padel pour le club Pasio Padel Club situé à Biarritz. L'objectif est de permettre aux utilisateurs de réserver et payer un créneau en ligne, avec un SEO optimisé pour la visibilité locale.
+Site de réservation de terrains de padel pour le club Pasio Padel Club situé à **Anglet** (20 rue Alfred de Vigny, 64600 Anglet). L'objectif est de permettre aux utilisateurs de réserver et payer un créneau en ligne, avec un SEO optimisé pour la visibilité locale.
+
+**Domaine de production :** pasiopadelclub.fr
 
 ---
 
@@ -14,28 +16,31 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 | Backend | Convex |
 | Authentification | BetterAuth (email/mot de passe) |
 | Paiement | Polar |
-| Emails transactionnels | Resend |
+| Emails transactionnels | Resend (templates React Email brandés) |
 | Hébergement | Railway |
+| Tests | Vitest (unitaires + intégration), pas de E2E |
 
 ---
 
 ## Structure des Terrains
 
 ### Semi-couverts (extérieur)
-| Terrain | Joueurs | Durée | Prix |
-|---------|---------|-------|------|
-| Double A | 4 | 90 min | 60€ |
-| Double B | 4 | 90 min | 60€ |
+| Terrain | Joueurs | Durée | Prix | Créneaux |
+|---------|---------|-------|------|----------|
+| Double A | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Double B | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
 
 ### Couverts (intérieur)
-| Terrain | Joueurs | Durée | Prix |
-|---------|---------|-------|------|
-| Double C | 4 | 90 min | 60€ |
-| Double D | 4 | 90 min | 60€ |
-| Simple | 2 | 60 min | 30€ |
-| Kids | 2 | 60 min | 15€ |
+| Terrain | Joueurs | Durée | Prix | Créneaux |
+|---------|---------|-------|------|----------|
+| Double C | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Double D | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Simple | 2 | 60 min | 30€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
+| Kids | 2 | 60 min | 15€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
 
-**Total : 6 terrains** (terrain "Kids" ouvert à tous)
+**Total : 6 terrains**
+- Terrain "Kids" : ouvert à tous (info-bulle explicative dans l'interface)
+- Grilles horaires indépendantes par durée (90 min vs 60 min)
 
 ---
 
@@ -43,11 +48,100 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 - **Type** : Location de terrain uniquement (pas de cours avec coach)
 - **Paiement** : Immédiat et obligatoire via Polar
+- **Concurrence** : Réservation confirmée uniquement après paiement validé (webhook Polar). En cas de double-booking rare, frustration acceptée.
 - **Annulation** : Autorisée uniquement si effectuée au moins 24 heures avant le créneau réservé (remboursement intégral)
 - **Limite par utilisateur** : Maximum 2 réservations actives simultanément
 - **Anticipation** : Réservation possible jusqu'à 10 jours à l'avance
 - **Horaires** : 8h - 22h tous les jours
 - **Tarification** : Prix fixes
+- **Format dates/heures** : Format français court (15/01/2025 - 14:30)
+
+---
+
+## Spécifications UX/UI
+
+### Inscription & Authentification
+- **Vérification email obligatoire** : L'utilisateur reçoit un email de confirmation. Pas de réservation possible avant validation.
+- **Téléphone obligatoire** : Champ requis dès l'inscription pour permettre au club de contacter le client.
+
+### Page de Réservation
+- **Mobile** : Filtres dans un drawer (panneau latéral) accessible via bouton. Grille de créneaux en plein écran.
+- **Créneaux passés** : Affichés grisés pour voir l'occupation de la journée complète.
+- **Limite atteinte (2/2)** : Affichage complet avec bandeau d'alerte permanent rappelant la limite.
+
+### Gestion des erreurs
+- **Polar indisponible** : Message simple "Paiement temporairement indisponible, réessayez plus tard".
+- **Échec email** : Retry automatique 3x avec délai croissant (1min, 5min, 15min). Après 3 échecs, log l'erreur.
+
+---
+
+## Règles Admin
+
+### Blocage utilisateur
+- Quand un utilisateur est bloqué (`isBlocked: true`), toutes ses réservations futures sont **automatiquement annulées avec remboursement intégral**.
+
+### Blocage de créneaux
+- Si l'admin bloque une plage horaire qui chevauche des réservations existantes, celles-ci sont **automatiquement annulées avec remboursement** et email d'excuse envoyé aux utilisateurs concernés.
+
+### Réservation manuelle admin
+- L'admin peut créer une réservation **gratuite uniquement** (cas exceptionnels, blocage pour un client sans paiement).
+
+### Statistiques
+- Niveau basique : revenus du jour, semaine, mois. Pas de détail par terrain ou graphiques avancés.
+
+---
+
+## Formulaire de Contact
+- Accessible **sans connexion** (public)
+- Pas de CAPTCHA (risque de spam accepté pour maximum d'accessibilité)
+
+---
+
+## Galerie Photos
+- **Images statiques** stockées dans `public/`
+- Mises à jour uniquement par un développeur
+- Pas d'upload admin
+
+---
+
+## Compte Utilisateur
+
+### Suppression de compte
+- L'utilisateur peut demander la suppression de son compte
+- **Anonymisation** : Le compte est désactivé, les données personnelles sont anonymisées mais l'historique des réservations reste (obligations comptables)
+
+---
+
+## Emails Transactionnels
+
+### Design
+- **Template brandé basique** : Logo, couleurs du club, mise en page propre avec React Email
+
+### Email de rappel
+- Envoyé **exactement 24h avant** l'heure du créneau (même si c'est à 3h du matin)
+
+### Types d'emails
+1. Confirmation de réservation
+2. Rappel 24h avant
+3. Confirmation d'annulation
+4. Réinitialisation de mot de passe
+5. Vérification d'email à l'inscription
+6. Formulaire de contact (vers admin)
+
+---
+
+## SEO
+
+- **Google My Business** : Fiche existante, vérifier la cohérence NAP (Name, Address, Phone)
+- Schema.org LocalBusiness et SportsActivityLocation
+
+---
+
+## Déploiement
+
+- **Stratégie** : Déploiement direct (push sur main = déploiement immédiat)
+- **Maintenance** : Zero downtime géré par Railway, pas de page maintenance
+- **Domaine** : pasiopadelclub.fr avec HTTPS automatique
 
 ---
 
@@ -58,11 +152,13 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 {
   _id: Id<"users">,
   email: string,
+  emailVerified: boolean,
   firstName: string,
   lastName: string,
   phone: string,
   role: "user" | "admin",
   isBlocked: boolean,
+  isAnonymized: boolean,
   createdAt: number
 }
 ```
@@ -91,8 +187,10 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
   startTime: string,
   endTime: string,
   price: number,
-  polarPaymentId: string,
-  status: "confirmed" | "completed" | "cancelled",
+  polarPaymentId: string | null,
+  paymentType: "online" | "free",
+  status: "pending" | "confirmed" | "completed" | "cancelled",
+  reminderSent: boolean,
   createdAt: number
 }
 ```
@@ -134,6 +232,7 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 - [ ] Configurer l'adaptateur Convex pour BetterAuth
 - [ ] Créer les routes d'authentification API
 - [ ] Configurer le middleware d'authentification
+- [ ] Implémenter la vérification d'email obligatoire
 
 #### 1.3 Structure de Routing
 - [ ] Organiser les routes TanStack Router
@@ -149,7 +248,7 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 
 ### Livrables
 - Convex fonctionnel avec schéma complet
-- Authentification email/mot de passe opérationnelle
+- Authentification email/mot de passe avec vérification email
 - Structure de routing complète
 - Base de données initialisée avec les terrains
 
@@ -164,16 +263,16 @@ Créer les pages publiques du site qui ne nécessitent pas d'authentification ni
 
 #### 2.1 Page Galerie
 - [ ] Créer la route `/galerie`
-- [ ] Intégrer les images statiques du club
+- [ ] Intégrer les images statiques du club (dossier public/)
 - [ ] Layout responsive avec grille d'images
 - [ ] Lightbox pour agrandir les photos
 
 #### 2.2 Page Contact
 - [ ] Créer la route `/contact`
-- [ ] Formulaire de contact (nom, email, message)
-- [ ] Afficher les informations pratiques (adresse, téléphone, horaires)
+- [ ] Formulaire de contact public (nom, email, message) - sans CAPTCHA
+- [ ] Afficher les informations pratiques (20 rue Alfred de Vigny, 64600 Anglet)
 - [ ] Intégrer la carte existante
-- [ ] Envoi d'email via Resend
+- [ ] Envoi d'email via Resend à l'admin
 
 #### 2.3 Pages Légales
 - [ ] Créer la route `/mentions-legales`
@@ -202,14 +301,16 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 
 #### 3.1 Page Inscription
 - [ ] Créer la route `/inscription`
-- [ ] Formulaire : email, mot de passe, confirmation mot de passe, prénom, nom, téléphone
+- [ ] Formulaire : email, mot de passe, confirmation mot de passe, prénom, nom, téléphone (obligatoire)
 - [ ] Validation des champs (Zod)
 - [ ] Gestion des erreurs (email déjà utilisé, etc.)
+- [ ] Email de vérification obligatoire avant accès complet
 - [ ] Redirection après inscription réussie
 
 #### 3.2 Page Connexion
 - [ ] Créer la route `/connexion`
 - [ ] Formulaire : email, mot de passe
+- [ ] Vérifier que l'email est validé avant connexion
 - [ ] Option "Se souvenir de moi"
 - [ ] Lien vers inscription
 - [ ] Gestion des erreurs
@@ -226,7 +327,7 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [ ] Protection des routes authentifiées
 
 ### Livrables
-- Flux d'inscription complet
+- Flux d'inscription complet avec vérification email
 - Flux de connexion complet
 - Récupération de mot de passe
 - Navbar dynamique selon état de connexion
@@ -246,8 +347,8 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - [ ] Indicateur du nombre de réservations actives (X/2)
 
 #### 4.2 Annulation de Réservation
-- [ ] Bouton d'annulation sur chaque réservation à venir
-- [ ] Afficher un message d'erreur si > 24h avant le créneau, impossible dans ce cas.
+- [ ] Bouton d'annulation sur chaque réservation à venir (si > 24h avant)
+- [ ] Afficher un message d'erreur si < 24h avant le créneau
 - [ ] Modale de confirmation avant annulation
 - [ ] Vérification côté serveur du délai de 24h minimum
 - [ ] Déclenchement du remboursement via Polar
@@ -256,19 +357,26 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 
 #### 4.3 Historique des Réservations
 - [ ] Liste des réservations passées
-- [ ] Détails : date, terrain, durée, prix payé
+- [ ] Détails : date (format JJ/MM/AAAA), terrain, durée, prix payé
 - [ ] Pagination ou infinite scroll
 
-#### 4.3 Gestion du Profil
+#### 4.4 Gestion du Profil
 - [ ] Afficher les informations du compte
 - [ ] Modifier : prénom, nom, téléphone
 - [ ] Modifier le mot de passe (ancien + nouveau)
 - [ ] Email non modifiable (identifiant)
 
+#### 4.5 Suppression de compte
+- [ ] Bouton de demande de suppression
+- [ ] Modale de confirmation
+- [ ] Anonymisation des données (pas de suppression complète)
+- [ ] Désactivation du compte
+
 ### Livrables
 - Dashboard utilisateur avec réservations à venir
 - Historique complet des réservations
 - Modification du profil et mot de passe
+- Suppression/anonymisation de compte
 
 ---
 
@@ -282,14 +390,17 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 #### 5.1 Page de Réservation
 - [ ] Créer la route `/reservation`
 - [ ] Sélecteur de date (10 prochains jours)
-- [ ] Filtres par type de terrain (double, simple, kids)
+- [ ] Filtres par type de terrain (double, simple, kids) - dans drawer sur mobile
 - [ ] Filtres par localisation (indoor, outdoor)
+- [ ] Bandeau d'alerte si limite 2/2 atteinte
 
 #### 5.2 Liste des Créneaux
 - [ ] Afficher les créneaux disponibles pour la date sélectionnée
 - [ ] Grouper par terrain
-- [ ] États visuels : disponible, complet, bloqué
+- [ ] États visuels : disponible, complet, bloqué, passé (grisé)
+- [ ] Afficher les créneaux passés de la journée en grisé
 - [ ] Afficher prix et durée pour chaque créneau
+- [ ] Info-bulle sur terrain Kids : "Ouvert à tous"
 
 #### 5.3 Sélection et Récapitulatif
 - [ ] Au clic sur un créneau → vérifier si connecté
@@ -301,12 +412,14 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 - [ ] Query pour récupérer les créneaux disponibles par date
 - [ ] Prendre en compte les réservations existantes
 - [ ] Prendre en compte les blocages admin
-- [ ] Générer les créneaux selon horaires (8h-22h) et durée terrain
+- [ ] Générer les créneaux selon grilles horaires par durée :
+  - 90 min : 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h
+  - 60 min : 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h
 
 ### Livrables
 - Interface de réservation complète
-- Filtres fonctionnels
-- Logique de disponibilité
+- Filtres fonctionnels (drawer mobile)
+- Logique de disponibilité avec grilles indépendantes
 - Récapitulatif avant paiement
 
 ---
@@ -320,7 +433,7 @@ Intégrer Polar pour le paiement en ligne et la confirmation automatique des ré
 
 #### 6.1 Configuration Polar
 - [ ] Configurer les clés API Polar (environnement dev/prod)
-- [ ] Créer les produits/prix correspondant aux tarifs
+- [ ] Créer les produits/prix correspondant aux tarifs (60€, 30€, 15€)
 - [ ] Configurer les webhooks Polar
 
 #### 6.2 Initiation du Paiement
@@ -331,19 +444,26 @@ Intégrer Polar pour le paiement en ligne et la confirmation automatique des ré
 #### 6.3 Webhooks Polar
 - [ ] Endpoint API pour recevoir les webhooks
 - [ ] Vérifier la signature du webhook
-- [ ] Sur paiement réussi : confirmer la réservation
+- [ ] Sur paiement réussi : confirmer la réservation (status: "confirmed")
 - [ ] Sur échec : supprimer la réservation pending
 
 #### 6.4 Pages de Retour
 - [ ] Page succès (`/reservation/success`)
-- [ ] Page échec (`/reservation/echec`)
+- [ ] Page échec (`/reservation/echec`) avec message simple
 - [ ] Redirection appropriée depuis Polar
+
+#### 6.5 Remboursements
+- [ ] Mutation pour déclencher un remboursement via API Polar
+- [ ] Utilisé lors des annulations utilisateur (> 24h)
+- [ ] Utilisé lors des blocages admin sur créneaux existants
+- [ ] Utilisé lors du blocage d'un utilisateur
 
 ### Livrables
 - Paiement Polar fonctionnel
 - Webhooks configurés et sécurisés
 - Réservations créées automatiquement après paiement
 - Pages de confirmation/erreur
+- Système de remboursement
 
 ---
 
@@ -356,27 +476,38 @@ Implémenter les emails de confirmation et de rappel via Resend.
 
 #### 7.1 Configuration Resend
 - [ ] Configurer les clés API Resend
-- [ ] Vérifier le domaine d'envoi
-- [ ] Créer les templates email (React Email ou HTML)
+- [ ] Vérifier le domaine d'envoi (pasiopadelclub.fr)
+- [ ] Créer les templates email avec React Email (brandés : logo, couleurs)
+- [ ] Implémenter retry automatique 3x (1min, 5min, 15min)
 
-#### 7.2 Email de Confirmation
-- [ ] Template : logo, détails réservation, infos club
-- [ ] Envoi automatique après création de la réservation
-- [ ] Contenu : terrain, date, heure, durée, prix payé
+#### 7.2 Email de Confirmation de réservation
+- [ ] Template brandé : logo, détails réservation, infos club
+- [ ] Envoi automatique après confirmation de la réservation
+- [ ] Contenu : terrain, date (JJ/MM/AAAA), heure, durée, prix payé
 
 #### 7.3 Email de Rappel
 - [ ] Template : rappel amical avec détails
 - [ ] Créer une scheduled function Convex (cron)
-- [ ] Envoyer 24h avant le créneau
-- [ ] Gérer les réservations déjà rappelées
+- [ ] Envoyer exactement 24h avant le créneau
+- [ ] Marquer `reminderSent: true` pour éviter les doublons
 
-#### 7.4 Email Contact
+#### 7.4 Email d'Annulation
+- [ ] Template : confirmation d'annulation avec détails du remboursement
+- [ ] Envoi automatique après annulation
+
+#### 7.5 Email de Vérification
+- [ ] Template : lien de vérification d'email
+- [ ] Envoi à l'inscription
+
+#### 7.6 Email Contact
 - [ ] Envoyer le formulaire de contact à l'admin
-- [ ] Copie à l'expéditeur (optionnel)
+- [ ] Pas de copie à l'expéditeur
 
 ### Livrables
+- Emails brandés avec React Email
+- Système de retry 3x
 - Email de confirmation automatique
-- Système de rappel 24h avant
+- Système de rappel 24h avant (exactement)
 - Formulaire de contact fonctionnel
 
 ---
@@ -399,15 +530,14 @@ Créer la structure du dashboard admin avec l'authentification et la vue d'ensem
 - [ ] Design distinct de la partie publique
 
 #### 8.3 Dashboard Principal
-- [ ] Statistiques clés : réservations du jour, de la semaine, du mois
-- [ ] Revenus par période
-- [ ] Graphique simple d'évolution
+- [ ] Statistiques basiques : réservations du jour, de la semaine, du mois
+- [ ] Revenus totaux par période (jour, semaine, mois)
 - [ ] Liste des 5 dernières réservations
 
 ### Livrables
 - Accès admin sécurisé
 - Layout admin complet
-- Dashboard avec statistiques
+- Dashboard avec statistiques basiques
 
 ---
 
@@ -422,31 +552,33 @@ Implémenter les fonctionnalités de gestion complète pour l'administrateur.
 - [ ] Liste paginée des réservations
 - [ ] Filtres : date, terrain, utilisateur, statut
 - [ ] Détail d'une réservation
-- [ ] Export CSV (optionnel)
+- [ ] Création de réservation gratuite (paymentType: "free")
 
 #### 9.2 Gestion des Terrains
 - [ ] Liste des 6 terrains
 - [ ] Activer/désactiver un terrain
-- [ ] Voir les statistiques par terrain
 
 #### 9.3 Gestion des Utilisateurs
 - [ ] Liste des utilisateurs inscrits
 - [ ] Recherche par email/nom
 - [ ] Voir les réservations d'un utilisateur
 - [ ] Bloquer/débloquer un utilisateur
+- [ ] À la mise en blocage : annulation automatique + remboursement de toutes les réservations futures
 
 #### 9.4 Système de Blocage de Créneaux
 - [ ] Interface pour créer un blocage
 - [ ] Sélection : date, heure début, heure fin, terrain(s), raison
-- [ ] Le blocage impacte tous les créneaux qui chevauchent la plage
+- [ ] Affichage des réservations impactées avant confirmation
+- [ ] Annulation automatique + remboursement des réservations concernées
+- [ ] Email d'excuse aux utilisateurs impactés
 - [ ] Liste des blocages actifs
 - [ ] Supprimer un blocage
 
 ### Livrables
 - Gestion complète des réservations
 - Gestion des terrains
-- Gestion des utilisateurs
-- Système de blocage flexible
+- Gestion des utilisateurs avec blocage
+- Système de blocage avec annulation automatique
 
 ---
 
@@ -471,7 +603,6 @@ Optimiser le site pour le référencement local et les performances.
 #### 10.3 Fichiers SEO
 - [ ] Générer sitemap.xml automatiquement
 - [ ] Configurer robots.txt
-- [ ] Créer humans.txt (optionnel)
 
 #### 10.4 Performance
 - [ ] Optimiser les images (WebP, dimensions appropriées)
@@ -480,14 +611,15 @@ Optimiser le site pour le référencement local et les performances.
 - [ ] Tests Lighthouse (cible : 90+ partout)
 
 #### 10.5 Google My Business
+- [ ] Vérifier la cohérence NAP avec la fiche GMB existante
 - [ ] Ajouter le lien vers GMB dans le footer
-- [ ] Vérifier la cohérence NAP (Name, Address, Phone)
 
 ### Livrables
 - Métadonnées complètes sur toutes les pages
 - Schema.org intégré
 - Sitemap et robots.txt
 - Score Lighthouse 90+
+- Cohérence avec fiche GMB
 
 ---
 
@@ -498,20 +630,15 @@ S'assurer de la fiabilité du système avec des tests appropriés.
 
 ### Tâches
 
-#### 11.1 Tests Unitaires
+#### 11.1 Tests Unitaires (Vitest)
 - [ ] Tests des fonctions utilitaires
 - [ ] Tests des validations Zod
-- [ ] Tests des calculs de créneaux
+- [ ] Tests des calculs de créneaux (grilles 60min vs 90min)
 
 #### 11.2 Tests d'Intégration
 - [ ] Tests des mutations Convex
 - [ ] Tests des queries Convex
 - [ ] Tests du flux d'authentification
-
-#### 11.3 Tests E2E (optionnel)
-- [ ] Flux de réservation complet
-- [ ] Flux d'inscription/connexion
-- [ ] Actions admin
 
 ### Livrables
 - Suite de tests unitaires
@@ -530,8 +657,9 @@ Déployer le site en production sur Railway.
 #### 12.1 Configuration Railway
 - [ ] Créer le projet Railway
 - [ ] Configurer les variables d'environnement de production
-- [ ] Configurer le domaine personnalisé
+- [ ] Configurer le domaine pasiopadelclub.fr
 - [ ] SSL/HTTPS automatique
+- [ ] Déploiement direct depuis main (zero downtime)
 
 #### 12.2 Configuration Convex Production
 - [ ] Créer l'environnement de production Convex
@@ -540,32 +668,20 @@ Déployer le site en production sur Railway.
 
 #### 12.3 Configuration Services
 - [ ] Polar en mode production
-- [ ] Resend avec domaine vérifié
+- [ ] Resend avec domaine pasiopadelclub.fr vérifié
 - [ ] BetterAuth en production
 
 #### 12.4 Monitoring
 - [ ] Configurer les logs
 - [ ] Alertes en cas d'erreur
-- [ ] Monitoring des performances
 
 #### 12.5 Go Live
-- [ ] Tests finaux en staging
-- [ ] Mise en production
 - [ ] Vérification post-déploiement
-- [ ] Backup de la base de données
+- [ ] Vérifier cohérence avec fiche Google My Business
 
 ### Livrables
 - Site déployé sur Railway
-- Domaine configuré avec HTTPS
+- Domaine pasiopadelclub.fr configuré avec HTTPS
 - Monitoring en place
-- Documentation de déploiement
 
 ---
-
-## Questions Ouvertes
-
-1. Quelles couleurs exactes pour la charte graphique ?
-2. Adresse physique exacte du club pour les pages légales ?
-3. Templates emails : design personnalisé ou simple texte ?
-4. Le rappel doit-il être envoyé 24h avant ou autre délai ?
-5. Y a-t-il des photos existantes pour la galerie ?
