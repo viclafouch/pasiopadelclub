@@ -1,14 +1,53 @@
 /// <reference types="vite/client" />
-import React from 'react'
 import Footer from '@/components/footer'
+import { authClient } from '@/lib/auth-client'
+import { getToken } from '@/lib/auth-server'
+import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
+import type { ConvexQueryClient } from '@convex-dev/react-query'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import type { QueryClient } from '@tanstack/react-query'
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+  useRouteContext
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import { createServerFn } from '@tanstack/react-start'
 import appCss from '../styles.css?url'
+
+const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
+  return getToken()
+})
+
+type RootRouteContext = {
+  queryClient: QueryClient
+  convexQueryClient: ConvexQueryClient
+}
+
+const NotFoundComponent = () => {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+      <h1 className="mb-4 text-6xl font-bold text-primary">404</h1>
+      <h2 className="mb-4 text-2xl font-semibold">Page non trouvée</h2>
+      <p className="mb-8 text-muted-foreground">
+        La page que vous recherchez n&apos;existe pas ou a été déplacée.
+      </p>
+      <Link
+        to="/"
+        className="rounded-md bg-primary px-6 py-3 text-white transition-colors hover:bg-primary/90"
+      >
+        Retour à l&apos;accueil
+      </Link>
+    </div>
+  )
+}
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,8 +82,8 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export const Route = createRootRoute({
-  shellComponent: RootDocument,
+export const Route = createRootRouteWithContext<RootRouteContext>()({
+  notFoundComponent: NotFoundComponent,
   head: () => {
     return {
       meta: [
@@ -106,5 +145,29 @@ export const Route = createRootRoute({
         }
       ]
     }
+  },
+  beforeLoad: async (routeContext) => {
+    const token = await getAuth()
+
+    if (token) {
+      routeContext.context.convexQueryClient.serverHttpClient?.setAuth(token)
+    }
+
+    return { isAuthenticated: Boolean(token), token }
+  },
+  shellComponent: () => {
+    const routeContextValue = useRouteContext({ from: Route.id })
+
+    return (
+      <ConvexBetterAuthProvider
+        client={routeContextValue.convexQueryClient.convexClient}
+        authClient={authClient}
+        initialToken={routeContextValue.token}
+      >
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ConvexBetterAuthProvider>
+    )
   }
 })

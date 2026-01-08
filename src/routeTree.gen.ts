@@ -9,68 +9,368 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Public__rootRouteRouteImport } from './routes/_public__root/route'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
 import { Route as Public__rootTarifsRouteImport } from './routes/_public__root/tarifs'
+import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
+import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
+import { Route as Public__rootInscriptionIndexRouteImport } from './routes/_public__root/inscription/index'
+import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
+import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
+import { Route as Public__rootConnexionIndexRouteImport } from './routes/_public__root/connexion/index'
+import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
+import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
+import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
-  id: '/_public__root/',
-  path: '/',
+const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
+  id: '/_public__root',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => Public__rootRouteRoute,
+} as any)
 const Public__rootTarifsRoute = Public__rootTarifsRouteImport.update({
-  id: '/_public__root/tarifs',
+  id: '/tarifs',
   path: '/tarifs',
+  getParentRoute: () => Public__rootRouteRoute,
+} as any)
+const Public__rootReservationIndexRoute =
+  Public__rootReservationIndexRouteImport.update({
+    id: '/reservation/',
+    path: '/reservation/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootMentionsLegalesIndexRoute =
+  Public__rootMentionsLegalesIndexRouteImport.update({
+    id: '/mentions-legales/',
+    path: '/mentions-legales/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootInscriptionIndexRoute =
+  Public__rootInscriptionIndexRouteImport.update({
+    id: '/inscription/',
+    path: '/inscription/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootGalerieIndexRoute =
+  Public__rootGalerieIndexRouteImport.update({
+    id: '/galerie/',
+    path: '/galerie/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootContactIndexRoute =
+  Public__rootContactIndexRouteImport.update({
+    id: '/contact/',
+    path: '/contact/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootConnexionIndexRoute =
+  Public__rootConnexionIndexRouteImport.update({
+    id: '/connexion/',
+    path: '/connexion/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootCgvIndexRoute = Public__rootCgvIndexRouteImport.update({
+  id: '/cgv/',
+  path: '/cgv/',
+  getParentRoute: () => Public__rootRouteRoute,
+} as any)
+const AuthenticatedMonCompteIndexRoute =
+  AuthenticatedMonCompteIndexRouteImport.update({
+    id: '/mon-compte/',
+    path: '/mon-compte/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin': typeof AdminAdminIndexRoute
+  '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
+  '/cgv': typeof Public__rootCgvIndexRoute
+  '/connexion': typeof Public__rootConnexionIndexRoute
+  '/contact': typeof Public__rootContactIndexRoute
+  '/galerie': typeof Public__rootGalerieIndexRoute
+  '/inscription': typeof Public__rootInscriptionIndexRoute
+  '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
+  '/reservation': typeof Public__rootReservationIndexRoute
 }
 export interface FileRoutesByTo {
   '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin': typeof AdminAdminIndexRoute
+  '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
+  '/cgv': typeof Public__rootCgvIndexRoute
+  '/connexion': typeof Public__rootConnexionIndexRoute
+  '/contact': typeof Public__rootContactIndexRoute
+  '/galerie': typeof Public__rootGalerieIndexRoute
+  '/inscription': typeof Public__rootInscriptionIndexRoute
+  '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
+  '/reservation': typeof Public__rootReservationIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_admin': typeof AdminRouteRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_public__root': typeof Public__rootRouteRouteWithChildren
   '/_public__root/tarifs': typeof Public__rootTarifsRoute
   '/_public__root/': typeof Public__rootIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
+  '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
+  '/_public__root/connexion/': typeof Public__rootConnexionIndexRoute
+  '/_public__root/contact/': typeof Public__rootContactIndexRoute
+  '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
+  '/_public__root/inscription/': typeof Public__rootInscriptionIndexRoute
+  '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
+  '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/tarifs' | '/'
+  fullPaths:
+    | '/tarifs'
+    | '/'
+    | '/api/auth/$'
+    | '/admin'
+    | '/mon-compte'
+    | '/cgv'
+    | '/connexion'
+    | '/contact'
+    | '/galerie'
+    | '/inscription'
+    | '/mentions-legales'
+    | '/reservation'
   fileRoutesByTo: FileRoutesByTo
-  to: '/tarifs' | '/'
-  id: '__root__' | '/_public__root/tarifs' | '/_public__root/'
+  to:
+    | '/tarifs'
+    | '/'
+    | '/api/auth/$'
+    | '/admin'
+    | '/mon-compte'
+    | '/cgv'
+    | '/connexion'
+    | '/contact'
+    | '/galerie'
+    | '/inscription'
+    | '/mentions-legales'
+    | '/reservation'
+  id:
+    | '__root__'
+    | '/_admin'
+    | '/_authenticated'
+    | '/_public__root'
+    | '/_public__root/tarifs'
+    | '/_public__root/'
+    | '/api/auth/$'
+    | '/_admin/admin/'
+    | '/_authenticated/mon-compte/'
+    | '/_public__root/cgv/'
+    | '/_public__root/connexion/'
+    | '/_public__root/contact/'
+    | '/_public__root/galerie/'
+    | '/_public__root/inscription/'
+    | '/_public__root/mentions-legales/'
+    | '/_public__root/reservation/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  Public__rootTarifsRoute: typeof Public__rootTarifsRoute
-  Public__rootIndexRoute: typeof Public__rootIndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_public__root': {
+      id: '/_public__root'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof Public__rootRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public__root/': {
       id: '/_public__root/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof Public__rootIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/tarifs': {
       id: '/_public__root/tarifs'
       path: '/tarifs'
       fullPath: '/tarifs'
       preLoaderRoute: typeof Public__rootTarifsRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/reservation/': {
+      id: '/_public__root/reservation/'
+      path: '/reservation'
+      fullPath: '/reservation'
+      preLoaderRoute: typeof Public__rootReservationIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/mentions-legales/': {
+      id: '/_public__root/mentions-legales/'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof Public__rootMentionsLegalesIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/inscription/': {
+      id: '/_public__root/inscription/'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof Public__rootInscriptionIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/galerie/': {
+      id: '/_public__root/galerie/'
+      path: '/galerie'
+      fullPath: '/galerie'
+      preLoaderRoute: typeof Public__rootGalerieIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/contact/': {
+      id: '/_public__root/contact/'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof Public__rootContactIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/connexion/': {
+      id: '/_public__root/connexion/'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof Public__rootConnexionIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/cgv/': {
+      id: '/_public__root/cgv/'
+      path: '/cgv'
+      fullPath: '/cgv'
+      preLoaderRoute: typeof Public__rootCgvIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_authenticated/mon-compte/': {
+      id: '/_authenticated/mon-compte/'
+      path: '/mon-compte'
+      fullPath: '/mon-compte'
+      preLoaderRoute: typeof AuthenticatedMonCompteIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_admin/admin/': {
+      id: '/_admin/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
+interface AdminRouteRouteChildren {
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMonCompteIndexRoute: typeof AuthenticatedMonCompteIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMonCompteIndexRoute: AuthenticatedMonCompteIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface Public__rootRouteRouteChildren {
+  Public__rootTarifsRoute: typeof Public__rootTarifsRoute
+  Public__rootIndexRoute: typeof Public__rootIndexRoute
+  Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
+  Public__rootConnexionIndexRoute: typeof Public__rootConnexionIndexRoute
+  Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
+  Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
+  Public__rootInscriptionIndexRoute: typeof Public__rootInscriptionIndexRoute
+  Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
+  Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
+}
+
+const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootTarifsRoute: Public__rootTarifsRoute,
   Public__rootIndexRoute: Public__rootIndexRoute,
+  Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
+  Public__rootConnexionIndexRoute: Public__rootConnexionIndexRoute,
+  Public__rootContactIndexRoute: Public__rootContactIndexRoute,
+  Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,
+  Public__rootInscriptionIndexRoute: Public__rootInscriptionIndexRoute,
+  Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
+  Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
+}
+
+const Public__rootRouteRouteWithChildren =
+  Public__rootRouteRoute._addFileChildren(Public__rootRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
