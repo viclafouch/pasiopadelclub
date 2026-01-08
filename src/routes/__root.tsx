@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import Footer from '@/components/footer'
 import { authClient } from '@/lib/auth-client'
-import { getToken } from '@/lib/auth-server'
+import { fetchAuthQuery, getToken } from '@/lib/auth-server'
 import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -16,10 +16,42 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { createServerFn } from '@tanstack/react-start'
+import { api } from '../../convex/_generated/api'
 import appCss from '../styles.css?url'
 
-const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
-  return getToken()
+type UserRole = 'user' | 'admin'
+
+const getAuthState = createServerFn({ method: 'GET' }).handler(async () => {
+  const token = await getToken()
+
+  if (!token) {
+    return {
+      isAuthenticated: false as const,
+      token: null,
+      user: null,
+      userRole: null
+    }
+  }
+
+  const user = await fetchAuthQuery(api.users.getCurrent).catch(() => {
+    return null
+  })
+
+  if (!user) {
+    return {
+      isAuthenticated: false as const,
+      token: null,
+      user: null,
+      userRole: null
+    }
+  }
+
+  return {
+    isAuthenticated: true as const,
+    token,
+    user,
+    userRole: user.role as UserRole
+  }
 })
 
 type RootRouteContext = {
@@ -146,23 +178,25 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
       ]
     }
   },
-  beforeLoad: async (routeContext) => {
-    const token = await getAuth()
+  beforeLoad: async ({ context }) => {
+    const authState = await getAuthState()
 
-    if (token) {
-      routeContext.context.convexQueryClient.serverHttpClient?.setAuth(token)
+    if (authState.token) {
+      context.convexQueryClient.serverHttpClient?.setAuth(authState.token)
     }
 
-    return { isAuthenticated: Boolean(token), token }
+    return authState
   },
   shellComponent: () => {
-    const routeContextValue = useRouteContext({ from: Route.id })
+    const { convexQueryClient, ...authState } = useRouteContext({
+      from: Route.id
+    })
 
     return (
       <ConvexBetterAuthProvider
-        client={routeContextValue.convexQueryClient.convexClient}
+        client={convexQueryClient.convexClient}
         authClient={authClient}
-        initialToken={routeContextValue.token}
+        initialToken={authState.token}
       >
         <RootDocument>
           <Outlet />

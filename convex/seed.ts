@@ -3,13 +3,7 @@ import { mutation } from './_generated/server'
 export const seedCourts = mutation({
   args: {},
   handler: async (ctx) => {
-    const existingCourts = await ctx.db.query('courts').collect()
-
-    if (existingCourts.length > 0) {
-      return { success: false, message: 'Courts already seeded' }
-    }
-
-    const courts = [
+    const courtsData = [
       {
         name: 'Double A',
         type: 'double' as const,
@@ -66,11 +60,27 @@ export const seedCourts = mutation({
       }
     ]
 
-    for (const court of courts) {
-      await ctx.db.insert('courts', court)
+    let inserted = 0
+    let skipped = 0
+
+    for (const courtData of courtsData) {
+      const existing = await ctx.db
+        .query('courts')
+        .filter((q) => q.eq(q.field('name'), courtData.name))
+        .first()
+
+      if (!existing) {
+        await ctx.db.insert('courts', courtData)
+        inserted++
+      } else {
+        skipped++
+      }
     }
 
-    return { success: true, message: '6 courts seeded successfully' }
+    return {
+      success: true,
+      message: `Courts initialized: ${inserted} inserted, ${skipped} already existed`
+    }
   }
 })
 

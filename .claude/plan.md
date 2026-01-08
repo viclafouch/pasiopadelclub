@@ -292,6 +292,30 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 - Structure de routing complète
 - Base de données initialisée avec les terrains
 
+### 1.5 Améliorations Techniques (Planifiées)
+
+> Ces améliorations ont été identifiées lors de l'audit du Milestone 1 et doivent être réalisées avant de continuer.
+
+#### T3 Env - Gestion des variables d'environnement
+- [ ] Installer T3 Env (`npm install @t3-oss/env-core zod`)
+- [ ] Créer `src/env.ts` avec validation Zod
+- [ ] Migrer `VITE_CONVEX_URL` (client)
+- [ ] Migrer `VITE_CONVEX_SITE_URL` (client)
+- [ ] Migrer `SITE_URL` (serveur)
+- [ ] Mettre à jour `convex/auth.ts` pour utiliser T3 Env
+- [ ] Mettre à jour `src/lib/auth-server.ts` pour utiliser T3 Env
+
+#### Index Convex manquant
+- [ ] Ajouter index composite `by_courtId_date` sur `blockedSlots` (nécessaire pour M5)
+
+#### Architecture Frontend
+- [ ] Déplacer Navbar dans `_public__root/route.tsx` au lieu de la dupliquer dans chaque route
+- [ ] Renommer `tarifs.tsx` en `tarifs/index.tsx` pour cohérence
+
+#### Optimisations Schema (à considérer pour M5)
+- [ ] Évaluer migration `date: string` → `dateUnix: number` pour range queries
+- [ ] Ajouter champs `updatedAt` et `paymentConfirmedAt` sur bookings
+
 ---
 
 ## Milestone 2 : Pages Publiques Statiques

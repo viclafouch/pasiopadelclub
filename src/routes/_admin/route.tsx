@@ -14,7 +14,7 @@ const AdminLayout = () => {
 
 export const Route = createFileRoute('/_admin')({
   beforeLoad: async ({ context }) => {
-    if (!context.isAuthenticated) {
+    if (!context.isAuthenticated || context.userRole !== 'admin') {
       throw redirect({ to: '/' })
     }
   },

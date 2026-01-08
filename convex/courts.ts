@@ -11,11 +11,10 @@ export const list = query({
 export const listActive = query({
   args: {},
   handler: async (ctx) => {
-    const courts = await ctx.db.query('courts').collect()
-
-    return courts.filter((court) => {
-      return court.isActive
-    })
+    return await ctx.db
+      .query('courts')
+      .filter((q) => q.eq(q.field('isActive'), true))
+      .collect()
   }
 })
 
