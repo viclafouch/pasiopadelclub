@@ -212,6 +212,16 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 # MILESTONES
 
+> **IMPORTANT - Workflow obligatoire pour chaque tâche :**
+>
+> 1. **Implémenter** la tâche
+> 2. **Lancer `/code-review`** pour valider le code (obligatoire)
+> 3. **Lancer `npm run lint --fix`** et corriger toutes les erreurs restantes
+> 4. **Une fois tout validé**, cocher la tâche `[x]`
+> 5. **Passer à la tâche suivante**
+>
+> ⚠️ **Ne jamais marquer une tâche comme terminée sans passer par `/code-review` et ne jamais sauter de tâche**
+
 ---
 
 ## Milestone 1 : Infrastructure & Configuration
@@ -219,32 +229,62 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 ### Objectif
 Mettre en place les fondations techniques du projet : Convex, BetterAuth, et structure de routing.
 
-### Tâches
+### 1.1 Configuration Convex
+- [x] Installer Convex (`npm install convex`)
+- [x] Initialiser Convex (`npx convex dev`)
+- [x] Créer `convex/schema.ts` - table `users`
+- [x] Créer `convex/schema.ts` - table `courts`
+- [x] Créer `convex/schema.ts` - table `bookings`
+- [x] Créer `convex/schema.ts` - table `blockedSlots`
+- [x] Ajouter index `by_email` sur users
+- [x] Ajouter index `by_date` sur bookings
+- [x] Ajouter index `by_userId` sur bookings
+- [x] Ajouter index `by_courtId` sur bookings
+- [x] Configurer `.env.local` avec `CONVEX_DEPLOYMENT`
+- [x] Créer `convex/courts.ts` - query `list`
+- [x] Créer `convex/courts.ts` - query `getById`
+- [x] Créer `convex/users.ts` - query `getByEmail`
+- [x] Créer `convex/users.ts` - query `getCurrent`
 
-#### 1.1 Configuration Convex
-- [ ] Installer et configurer Convex
-- [ ] Créer le schéma de base de données (users, courts, bookings, blockedSlots)
-- [ ] Configurer les variables d'environnement
-- [ ] Créer les fonctions de base (queries/mutations)
+### 1.2 Intégration BetterAuth
+- [x] Installer BetterAuth (`npm install better-auth@1.4.9`)
+- [x] Installer adaptateur Convex BetterAuth (`@convex-dev/better-auth`)
+- [x] Créer `convex/auth.ts` - configuration serveur
+- [x] Créer `src/lib/auth-client.ts` - configuration client
+- [x] Créer route API `/api/auth/$`
+- [x] Configurer provider email/password
+- [x] Activer vérification email obligatoire
+- [x] Configurer ConvexBetterAuthProvider dans `__root.tsx`
+- [x] ~~Créer hook `useAuth()` pour le client~~ (non nécessaire, utiliser `authClient` directement)
+- [x] ~~Créer hook `useSession()` pour le client~~ (non nécessaire, utiliser `authClient.useSession()` directement)
 
-#### 1.2 Intégration BetterAuth
-- [ ] Installer BetterAuth
-- [ ] Configurer l'adaptateur Convex pour BetterAuth
-- [ ] Créer les routes d'authentification API
-- [ ] Configurer le middleware d'authentification
-- [ ] Implémenter la vérification d'email obligatoire
+### 1.3 Structure de Routing
+- [x] Créer layout `_public__root.tsx` (existant, vérifier)
+- [x] Créer layout `_authenticated.tsx`
+- [x] Créer layout `_admin.tsx`
+- [x] Créer route `/reservation/index.tsx` (placeholder)
+- [x] Créer route `/galerie/index.tsx` (placeholder)
+- [x] Créer route `/contact/index.tsx` (placeholder)
+- [x] Créer route `/mentions-legales/index.tsx` (placeholder)
+- [x] Créer route `/cgv/index.tsx` (placeholder)
+- [x] Créer route `/connexion/index.tsx` (placeholder)
+- [x] Créer route `/inscription/index.tsx` (placeholder)
+- [x] Créer route `/mon-compte/index.tsx` (placeholder)
+- [x] Créer route `/admin/index.tsx` (placeholder)
+- [x] Configurer `beforeLoad` guard pour routes admin
+- [x] Configurer `beforeLoad` guard pour routes authentifiées
+- [x] Configurer redirection si non authentifié
 
-#### 1.3 Structure de Routing
-- [ ] Organiser les routes TanStack Router
-  - Routes publiques : `/`, `/tarifs`, `/reservation`, `/galerie`, `/contact`, `/mentions-legales`, `/cgv`
-  - Routes authentifiées : `/connexion`, `/inscription`, `/mon-compte`
-  - Routes admin : `/admin/*`
-- [ ] Créer les layouts (public, authenticated, admin)
-- [ ] Configurer les guards de route (protection admin)
-
-#### 1.4 Seed Data
-- [ ] Créer un script pour insérer les 6 terrains de base
-- [ ] Créer un compte admin initial
+### 1.4 Seed Data
+- [x] Créer `convex/seed.ts` - fonction pour insérer terrains
+- [x] Insérer terrain "Double A" (outdoor, 90min, 60€)
+- [x] Insérer terrain "Double B" (outdoor, 90min, 60€)
+- [x] Insérer terrain "Double C" (indoor, 90min, 60€)
+- [x] Insérer terrain "Double D" (indoor, 90min, 60€)
+- [x] Insérer terrain "Simple" (indoor, 60min, 30€)
+- [x] Insérer terrain "Kids" (indoor, 60min, 15€)
+- [x] Créer compte admin initial (email + mot de passe)
+- [x] Exécuter seed en développement
 
 ### Livrables
 - Convex fonctionnel avec schéma complet
@@ -259,30 +299,41 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 ### Objectif
 Créer les pages publiques du site qui ne nécessitent pas d'authentification ni de données dynamiques.
 
-### Tâches
+### 2.1 Page Galerie
+- [ ] Créer route `/galerie/index.tsx`
+- [ ] Ajouter images statiques dans `public/gallery/`
+- [ ] Créer composant `GalleryGrid` responsive
+- [ ] Créer composant `Lightbox` pour agrandir
+- [ ] Implémenter navigation clavier dans lightbox
+- [ ] Ajouter métadonnées SEO page galerie
 
-#### 2.1 Page Galerie
-- [ ] Créer la route `/galerie`
-- [ ] Intégrer les images statiques du club (dossier public/)
-- [ ] Layout responsive avec grille d'images
-- [ ] Lightbox pour agrandir les photos
+### 2.2 Page Contact
+- [ ] Créer route `/contact/index.tsx`
+- [ ] Créer composant `ContactForm` (nom, email, message)
+- [ ] Ajouter validation Zod sur le formulaire
+- [ ] Afficher adresse : 20 rue Alfred de Vigny, 64600 Anglet
+- [ ] Afficher téléphone : 09 71 11 79 28
+- [ ] Afficher email : contact@pasiopadelclub.fr
+- [ ] Afficher horaires : 8h-22h, 7j/7
+- [ ] Intégrer composant Map existant
+- [ ] Créer `convex/contact.ts` - mutation pour envoyer email
+- [ ] Créer action Resend pour email contact
+- [ ] Afficher message succès après envoi
+- [ ] Ajouter métadonnées SEO page contact
 
-#### 2.2 Page Contact
-- [ ] Créer la route `/contact`
-- [ ] Formulaire de contact public (nom, email, message) - sans CAPTCHA
-- [ ] Afficher les informations pratiques (20 rue Alfred de Vigny, 64600 Anglet)
-- [ ] Intégrer la carte existante
-- [ ] Envoi d'email via Resend à l'admin
+### 2.3 Pages Légales
+- [ ] Créer route `/mentions-legales/index.tsx`
+- [ ] Créer template contenu mentions légales
+- [ ] Créer route `/cgv/index.tsx`
+- [ ] Créer template contenu CGV
+- [ ] Ajouter liens footer vers pages légales
 
-#### 2.3 Pages Légales
-- [ ] Créer la route `/mentions-legales`
-- [ ] Créer la route `/cgv`
-- [ ] Templates de contenu (à compléter avec les vraies informations)
-
-#### 2.4 Mise à jour Accueil
-- [ ] Mettre à jour le hero avec les vraies informations du club
-- [ ] Améliorer la section FAQ avec questions pertinentes
-- [ ] Vérifier la cohérence des liens internes
+### 2.4 Mise à jour Accueil
+- [ ] Mettre à jour hero avec vraies infos club
+- [ ] Vérifier/améliorer section FAQ
+- [ ] Vérifier cohérence liens internes navbar
+- [ ] Vérifier cohérence liens footer
+- [ ] Ajouter lien vers page réservation
 
 ### Livrables
 - Page galerie avec photos du club
@@ -297,34 +348,55 @@ Créer les pages publiques du site qui ne nécessitent pas d'authentification ni
 ### Objectif
 Implémenter le flux complet d'inscription et de connexion utilisateur.
 
-### Tâches
+### 3.1 Page Inscription
+- [ ] Créer route `/inscription/index.tsx`
+- [ ] Créer composant `SignupForm`
+- [ ] Champ email avec validation
+- [ ] Champ mot de passe avec validation (min 8 chars)
+- [ ] Champ confirmation mot de passe
+- [ ] Champ prénom (obligatoire)
+- [ ] Champ nom (obligatoire)
+- [ ] Champ téléphone (obligatoire, format FR)
+- [ ] Créer schéma Zod validation inscription
+- [ ] Afficher erreurs de validation
+- [ ] Gérer erreur "email déjà utilisé"
+- [ ] Appeler BetterAuth signup
+- [ ] Afficher message "vérifiez votre email"
+- [ ] Rediriger vers page de confirmation
 
-#### 3.1 Page Inscription
-- [ ] Créer la route `/inscription`
-- [ ] Formulaire : email, mot de passe, confirmation mot de passe, prénom, nom, téléphone (obligatoire)
-- [ ] Validation des champs (Zod)
-- [ ] Gestion des erreurs (email déjà utilisé, etc.)
-- [ ] Email de vérification obligatoire avant accès complet
-- [ ] Redirection après inscription réussie
+### 3.2 Page Connexion
+- [ ] Créer route `/connexion/index.tsx`
+- [ ] Créer composant `LoginForm`
+- [ ] Champ email
+- [ ] Champ mot de passe
+- [ ] Checkbox "Se souvenir de moi"
+- [ ] Lien vers `/inscription`
+- [ ] Lien vers "Mot de passe oublié"
+- [ ] Créer schéma Zod validation connexion
+- [ ] Gérer erreur "email non vérifié"
+- [ ] Gérer erreur "identifiants invalides"
+- [ ] Rediriger vers page précédente après connexion
+- [ ] Rediriger vers accueil si pas de page précédente
 
-#### 3.2 Page Connexion
-- [ ] Créer la route `/connexion`
-- [ ] Formulaire : email, mot de passe
-- [ ] Vérifier que l'email est validé avant connexion
-- [ ] Option "Se souvenir de moi"
-- [ ] Lien vers inscription
-- [ ] Gestion des erreurs
-- [ ] Redirection vers page précédente ou accueil
+### 3.3 Récupération mot de passe
+- [ ] Créer route `/mot-de-passe-oublie/index.tsx`
+- [ ] Créer composant `ForgotPasswordForm`
+- [ ] Envoyer email réinitialisation via BetterAuth
+- [ ] Créer template email réinitialisation
+- [ ] Créer route `/reset-password/index.tsx`
+- [ ] Créer composant `ResetPasswordForm`
+- [ ] Valider token de réinitialisation
+- [ ] Mettre à jour mot de passe
+- [ ] Rediriger vers connexion après succès
 
-#### 3.3 Récupération de mot de passe
-- [ ] Formulaire "Mot de passe oublié"
-- [ ] Email de réinitialisation via Resend
-- [ ] Page de réinitialisation avec nouveau mot de passe
-
-#### 3.4 Gestion de session
-- [ ] Afficher l'état connecté/déconnecté dans la navbar
-- [ ] Bouton de déconnexion
-- [ ] Protection des routes authentifiées
+### 3.4 Gestion de session
+- [ ] Mettre à jour navbar - afficher état connecté
+- [ ] Afficher nom utilisateur si connecté
+- [ ] Ajouter bouton "Mon compte" si connecté
+- [ ] Ajouter bouton "Déconnexion" si connecté
+- [ ] Afficher boutons "Connexion/Inscription" si déconnecté
+- [ ] Implémenter fonction déconnexion
+- [ ] Rediriger vers accueil après déconnexion
 
 ### Livrables
 - Flux d'inscription complet avec vérification email
@@ -339,38 +411,64 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 ### Objectif
 Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses réservations.
 
-### Tâches
+### 4.1 Dashboard Utilisateur
+- [ ] Créer route `/mon-compte/index.tsx`
+- [ ] Créer layout espace utilisateur
+- [ ] Créer navigation espace utilisateur (tabs ou sidebar)
+- [ ] Créer query `bookings.getUpcoming` (réservations à venir)
+- [ ] Afficher liste réservations à venir
+- [ ] Afficher compteur réservations actives (X/2)
+- [ ] Afficher message si aucune réservation
 
-#### 4.1 Dashboard Utilisateur
-- [ ] Créer la route `/mon-compte`
-- [ ] Afficher les réservations à venir (prochains créneaux)
-- [ ] Indicateur du nombre de réservations actives (X/2)
+### 4.2 Annulation de Réservation
+- [ ] Créer composant `BookingCard` avec détails
+- [ ] Ajouter bouton "Annuler" sur chaque réservation
+- [ ] Calculer si annulation possible (> 24h)
+- [ ] Désactiver bouton si < 24h
+- [ ] Afficher tooltip "Annulation impossible < 24h"
+- [ ] Créer composant `CancelBookingModal`
+- [ ] Afficher détails réservation dans modale
+- [ ] Créer mutation `bookings.cancel`
+- [ ] Vérifier délai 24h côté serveur
+- [ ] Appeler action remboursement Polar
+- [ ] Mettre à jour status "cancelled"
+- [ ] Envoyer email confirmation annulation
+- [ ] Afficher message succès après annulation
 
-#### 4.2 Annulation de Réservation
-- [ ] Bouton d'annulation sur chaque réservation à venir (si > 24h avant)
-- [ ] Afficher un message d'erreur si < 24h avant le créneau
-- [ ] Modale de confirmation avant annulation
-- [ ] Vérification côté serveur du délai de 24h minimum
-- [ ] Déclenchement du remboursement via Polar
-- [ ] Mise à jour du statut de la réservation en "cancelled"
-- [ ] Envoi d'email de confirmation d'annulation
+### 4.3 Historique des Réservations
+- [ ] Créer route `/mon-compte/historique.tsx`
+- [ ] Créer query `bookings.getPast` (réservations passées)
+- [ ] Afficher liste réservations passées
+- [ ] Afficher date format JJ/MM/AAAA
+- [ ] Afficher terrain, durée, prix payé
+- [ ] Implémenter pagination (20 par page)
+- [ ] Afficher message si aucun historique
 
-#### 4.3 Historique des Réservations
-- [ ] Liste des réservations passées
-- [ ] Détails : date (format JJ/MM/AAAA), terrain, durée, prix payé
-- [ ] Pagination ou infinite scroll
+### 4.4 Gestion du Profil
+- [ ] Créer route `/mon-compte/profil.tsx`
+- [ ] Afficher email (non modifiable)
+- [ ] Créer formulaire modification prénom
+- [ ] Créer formulaire modification nom
+- [ ] Créer formulaire modification téléphone
+- [ ] Créer mutation `users.updateProfile`
+- [ ] Afficher message succès après modification
+- [ ] Créer section "Changer mot de passe"
+- [ ] Champ ancien mot de passe
+- [ ] Champ nouveau mot de passe
+- [ ] Champ confirmation nouveau mot de passe
+- [ ] Valider ancien mot de passe côté serveur
+- [ ] Afficher message succès après changement
 
-#### 4.4 Gestion du Profil
-- [ ] Afficher les informations du compte
-- [ ] Modifier : prénom, nom, téléphone
-- [ ] Modifier le mot de passe (ancien + nouveau)
-- [ ] Email non modifiable (identifiant)
-
-#### 4.5 Suppression de compte
-- [ ] Bouton de demande de suppression
-- [ ] Modale de confirmation
-- [ ] Anonymisation des données (pas de suppression complète)
-- [ ] Désactivation du compte
+### 4.5 Suppression de compte
+- [ ] Ajouter section "Supprimer mon compte"
+- [ ] Créer composant `DeleteAccountModal`
+- [ ] Demander confirmation par mot de passe
+- [ ] Créer mutation `users.anonymize`
+- [ ] Anonymiser données personnelles
+- [ ] Mettre `isAnonymized: true`
+- [ ] Désactiver le compte
+- [ ] Déconnecter l'utilisateur
+- [ ] Rediriger vers accueil
 
 ### Livrables
 - Dashboard utilisateur avec réservations à venir
@@ -385,36 +483,54 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 ### Objectif
 Créer l'interface de réservation permettant aux utilisateurs de voir les créneaux disponibles et d'en sélectionner un.
 
-### Tâches
+### 5.1 Page de Réservation
+- [ ] Créer route `/reservation/index.tsx`
+- [ ] Créer composant `DateSelector` (10 prochains jours)
+- [ ] Afficher dates en format JJ/MM
+- [ ] Marquer date sélectionnée
+- [ ] Créer composant `FilterDrawer` (mobile)
+- [ ] Bouton pour ouvrir drawer sur mobile
+- [ ] Filtre par type (double, simple, kids)
+- [ ] Filtre par localisation (indoor, outdoor)
+- [ ] Créer composant `FilterBar` (desktop)
+- [ ] Créer composant `LimitBanner` si 2/2 atteint
+- [ ] Afficher bandeau d'alerte permanent
 
-#### 5.1 Page de Réservation
-- [ ] Créer la route `/reservation`
-- [ ] Sélecteur de date (10 prochains jours)
-- [ ] Filtres par type de terrain (double, simple, kids) - dans drawer sur mobile
-- [ ] Filtres par localisation (indoor, outdoor)
-- [ ] Bandeau d'alerte si limite 2/2 atteinte
+### 5.2 Liste des Créneaux
+- [ ] Créer query `slots.getAvailable` (par date)
+- [ ] Générer créneaux 90min pour terrains double
+- [ ] Générer créneaux 60min pour terrains simple/kids
+- [ ] Créer composant `CourtSection` (groupe par terrain)
+- [ ] Créer composant `SlotCard`
+- [ ] Style "available" (vert, cliquable)
+- [ ] Style "booked" (rouge, non cliquable)
+- [ ] Style "blocked" (gris hachuré)
+- [ ] Style "past" (gris, non cliquable)
+- [ ] Afficher heure début - heure fin
+- [ ] Afficher prix sur chaque créneau
+- [ ] Ajouter tooltip "Ouvert à tous" sur terrain Kids
 
-#### 5.2 Liste des Créneaux
-- [ ] Afficher les créneaux disponibles pour la date sélectionnée
-- [ ] Grouper par terrain
-- [ ] États visuels : disponible, complet, bloqué, passé (grisé)
-- [ ] Afficher les créneaux passés de la journée en grisé
-- [ ] Afficher prix et durée pour chaque créneau
-- [ ] Info-bulle sur terrain Kids : "Ouvert à tous"
+### 5.3 Sélection et Récapitulatif
+- [ ] Au clic sur créneau - vérifier si connecté
+- [ ] Rediriger vers connexion si non connecté
+- [ ] Stocker URL retour pour après connexion
+- [ ] Vérifier limite 2 réservations actives
+- [ ] Afficher erreur si limite atteinte
+- [ ] Créer composant `BookingSummaryModal`
+- [ ] Afficher terrain, date, heure, durée
+- [ ] Afficher prix à payer
+- [ ] Bouton "Payer" pour continuer
+- [ ] Bouton "Annuler" pour fermer
 
-#### 5.3 Sélection et Récapitulatif
-- [ ] Au clic sur un créneau → vérifier si connecté
-- [ ] Si non connecté → redirection connexion avec retour
-- [ ] Vérifier limite de 2 réservations actives
-- [ ] Afficher modale/page récapitulatif avant paiement
-
-#### 5.4 Logique de Disponibilité (Convex)
-- [ ] Query pour récupérer les créneaux disponibles par date
-- [ ] Prendre en compte les réservations existantes
-- [ ] Prendre en compte les blocages admin
-- [ ] Générer les créneaux selon grilles horaires par durée :
-  - 90 min : 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h
-  - 60 min : 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h
+### 5.4 Logique de Disponibilité (Convex)
+- [ ] Créer `convex/slots.ts`
+- [ ] Fonction génération créneaux 90min
+- [ ] Fonction génération créneaux 60min
+- [ ] Query `slots.getByDate` avec filtres
+- [ ] Exclure réservations existantes (status confirmed)
+- [ ] Exclure blocages admin
+- [ ] Marquer créneaux passés (pour aujourd'hui)
+- [ ] Ajouter index pour performances
 
 ### Livrables
 - Interface de réservation complète
@@ -429,34 +545,56 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 ### Objectif
 Intégrer Polar pour le paiement en ligne et la confirmation automatique des réservations.
 
-### Tâches
+### 6.1 Configuration Polar
+- [ ] Créer compte Polar
+- [ ] Configurer clés API dev dans `.env.local`
+- [ ] Créer produit "Court Double" (60€)
+- [ ] Créer produit "Court Simple" (30€)
+- [ ] Créer produit "Court Kids" (15€)
+- [ ] Configurer URL webhook
+- [ ] Configurer URLs retour (success/cancel)
 
-#### 6.1 Configuration Polar
-- [ ] Configurer les clés API Polar (environnement dev/prod)
-- [ ] Créer les produits/prix correspondant aux tarifs (60€, 30€, 15€)
-- [ ] Configurer les webhooks Polar
+### 6.2 Initiation du Paiement
+- [ ] Créer `src/lib/polar.ts` - client Polar
+- [ ] Créer `convex/payments.ts`
+- [ ] Créer mutation `bookings.initiate`
+- [ ] Créer booking status "pending"
+- [ ] Créer action `payments.createCheckout`
+- [ ] Générer session Polar Checkout
+- [ ] Retourner URL checkout
+- [ ] Rediriger utilisateur vers Polar
 
-#### 6.2 Initiation du Paiement
-- [ ] Créer une mutation Convex pour initier une session de paiement
-- [ ] Stocker une réservation en état "pending"
-- [ ] Rediriger vers Polar Checkout
+### 6.3 Webhooks Polar
+- [ ] Créer route API `/api/webhooks/polar.ts`
+- [ ] Récupérer raw body pour signature
+- [ ] Valider signature webhook
+- [ ] Gérer event `order.created`
+- [ ] Trouver booking par metadata
+- [ ] Mettre à jour status "confirmed"
+- [ ] Stocker `polarPaymentId`
+- [ ] Déclencher email confirmation
+- [ ] Gérer event `checkout.canceled`
+- [ ] Supprimer booking pending
+- [ ] Logger tous les events
 
-#### 6.3 Webhooks Polar
-- [ ] Endpoint API pour recevoir les webhooks
-- [ ] Vérifier la signature du webhook
-- [ ] Sur paiement réussi : confirmer la réservation (status: "confirmed")
-- [ ] Sur échec : supprimer la réservation pending
+### 6.4 Pages de Retour
+- [ ] Créer route `/reservation/success.tsx`
+- [ ] Afficher message confirmation
+- [ ] Afficher récapitulatif réservation
+- [ ] Bouton vers "Mes réservations"
+- [ ] Créer route `/reservation/echec.tsx`
+- [ ] Afficher message erreur simple
+- [ ] Bouton "Réessayer"
+- [ ] Bouton "Retour accueil"
 
-#### 6.4 Pages de Retour
-- [ ] Page succès (`/reservation/success`)
-- [ ] Page échec (`/reservation/echec`) avec message simple
-- [ ] Redirection appropriée depuis Polar
-
-#### 6.5 Remboursements
-- [ ] Mutation pour déclencher un remboursement via API Polar
-- [ ] Utilisé lors des annulations utilisateur (> 24h)
-- [ ] Utilisé lors des blocages admin sur créneaux existants
-- [ ] Utilisé lors du blocage d'un utilisateur
+### 6.5 Remboursements
+- [ ] Créer action `payments.refund`
+- [ ] Appeler API Polar refund
+- [ ] Gérer erreurs remboursement
+- [ ] Logger résultat remboursement
+- [ ] Utiliser dans annulation utilisateur
+- [ ] Utiliser dans blocage admin
+- [ ] Utiliser dans blocage utilisateur
 
 ### Livrables
 - Paiement Polar fonctionnel
@@ -472,36 +610,47 @@ Intégrer Polar pour le paiement en ligne et la confirmation automatique des ré
 ### Objectif
 Implémenter les emails de confirmation et de rappel via Resend.
 
-### Tâches
+### 7.1 Configuration Resend
+- [ ] Créer compte Resend
+- [ ] Ajouter domaine pasiopadelclub.fr
+- [ ] Vérifier DNS domaine
+- [ ] Configurer clé API dans `.env.local`
+- [ ] Créer `src/lib/resend.ts` - client
+- [ ] Installer React Email
+- [ ] Créer dossier `src/emails/`
 
-#### 7.1 Configuration Resend
-- [ ] Configurer les clés API Resend
-- [ ] Vérifier le domaine d'envoi (pasiopadelclub.fr)
-- [ ] Créer les templates email avec React Email (brandés : logo, couleurs)
-- [ ] Implémenter retry automatique 3x (1min, 5min, 15min)
+### 7.2 Templates emails
+- [ ] Créer composant `EmailHeader` (logo)
+- [ ] Créer composant `EmailFooter` (coordonnées)
+- [ ] Créer composant `EmailButton` (CTA)
+- [ ] Créer composant `BookingDetails` (bloc réservation)
+- [ ] Créer template `BookingConfirmation.tsx`
+- [ ] Créer template `BookingReminder.tsx`
+- [ ] Créer template `BookingCancelled.tsx`
+- [ ] Créer template `BookingCancelledByAdmin.tsx`
+- [ ] Créer template `EmailVerification.tsx`
+- [ ] Créer template `PasswordReset.tsx`
+- [ ] Créer template `ContactForm.tsx`
 
-#### 7.2 Email de Confirmation de réservation
-- [ ] Template brandé : logo, détails réservation, infos club
-- [ ] Envoi automatique après confirmation de la réservation
-- [ ] Contenu : terrain, date (JJ/MM/AAAA), heure, durée, prix payé
+### 7.3 Actions d'envoi
+- [ ] Créer `convex/emails.ts`
+- [ ] Créer action `emails.send` avec retry 3x
+- [ ] Implémenter délais retry (1min, 5min, 15min)
+- [ ] Logger échecs après 3 tentatives
+- [ ] Action `emails.sendBookingConfirmation`
+- [ ] Action `emails.sendBookingReminder`
+- [ ] Action `emails.sendBookingCancelled`
+- [ ] Action `emails.sendEmailVerification`
+- [ ] Action `emails.sendPasswordReset`
+- [ ] Action `emails.sendContactForm`
 
-#### 7.3 Email de Rappel
-- [ ] Template : rappel amical avec détails
-- [ ] Créer une scheduled function Convex (cron)
-- [ ] Envoyer exactement 24h avant le créneau
-- [ ] Marquer `reminderSent: true` pour éviter les doublons
-
-#### 7.4 Email d'Annulation
-- [ ] Template : confirmation d'annulation avec détails du remboursement
-- [ ] Envoi automatique après annulation
-
-#### 7.5 Email de Vérification
-- [ ] Template : lien de vérification d'email
-- [ ] Envoi à l'inscription
-
-#### 7.6 Email Contact
-- [ ] Envoyer le formulaire de contact à l'admin
-- [ ] Pas de copie à l'expéditeur
+### 7.4 Système de rappel
+- [ ] Créer `convex/crons.ts`
+- [ ] Configurer cron toutes les 15 minutes
+- [ ] Query réservations à rappeler (24h avant)
+- [ ] Filtrer `reminderSent: false`
+- [ ] Envoyer email rappel
+- [ ] Mettre `reminderSent: true`
 
 ### Livrables
 - Emails brandés avec React Email
@@ -517,22 +666,37 @@ Implémenter les emails de confirmation et de rappel via Resend.
 ### Objectif
 Créer la structure du dashboard admin avec l'authentification et la vue d'ensemble.
 
-### Tâches
+### 8.1 Authentification Admin
+- [ ] Créer middleware vérification rôle admin
+- [ ] Appliquer sur toutes routes `/admin/*`
+- [ ] Rediriger vers accueil si non admin
+- [ ] Afficher message "Accès non autorisé"
 
-#### 8.1 Authentification Admin
-- [ ] Middleware de protection des routes `/admin/*`
-- [ ] Vérification du rôle "admin"
-- [ ] Redirection si non autorisé
+### 8.2 Layout Admin
+- [ ] Créer composant `AdminSidebar`
+- [ ] Lien Dashboard
+- [ ] Lien Réservations
+- [ ] Lien Terrains
+- [ ] Lien Utilisateurs
+- [ ] Lien Blocages
+- [ ] Créer composant `AdminHeader`
+- [ ] Afficher nom admin
+- [ ] Bouton déconnexion
+- [ ] Créer layout `_admin.tsx` avec sidebar/header
+- [ ] Style distinct de la partie publique
 
-#### 8.2 Layout Admin
-- [ ] Sidebar navigation (Dashboard, Réservations, Terrains, Utilisateurs, Blocages)
-- [ ] Header avec nom admin et déconnexion
-- [ ] Design distinct de la partie publique
-
-#### 8.3 Dashboard Principal
-- [ ] Statistiques basiques : réservations du jour, de la semaine, du mois
-- [ ] Revenus totaux par période (jour, semaine, mois)
-- [ ] Liste des 5 dernières réservations
+### 8.3 Dashboard Principal
+- [ ] Créer route `/admin/index.tsx`
+- [ ] Créer query `stats.getBookingsToday`
+- [ ] Créer query `stats.getBookingsWeek`
+- [ ] Créer query `stats.getBookingsMonth`
+- [ ] Créer query `stats.getRevenueToday`
+- [ ] Créer query `stats.getRevenueWeek`
+- [ ] Créer query `stats.getRevenueMonth`
+- [ ] Créer composant `StatCard`
+- [ ] Afficher 6 stats (réservations + revenus)
+- [ ] Créer query `bookings.getLatest(5)`
+- [ ] Afficher liste 5 dernières réservations
 
 ### Livrables
 - Accès admin sécurisé
@@ -546,33 +710,68 @@ Créer la structure du dashboard admin avec l'authentification et la vue d'ensem
 ### Objectif
 Implémenter les fonctionnalités de gestion complète pour l'administrateur.
 
-### Tâches
+### 9.1 Gestion des Réservations
+- [ ] Créer route `/admin/reservations/index.tsx`
+- [ ] Créer query `bookings.listAdmin` avec pagination
+- [ ] Créer composant `BookingsTable`
+- [ ] Colonne date
+- [ ] Colonne terrain
+- [ ] Colonne utilisateur
+- [ ] Colonne statut
+- [ ] Colonne prix
+- [ ] Créer filtres (date, terrain, statut)
+- [ ] Créer route `/admin/reservations/[id].tsx`
+- [ ] Afficher détails complets réservation
+- [ ] Créer composant `CreateFreeBookingModal`
+- [ ] Formulaire réservation gratuite
+- [ ] Mutation `bookings.createFree`
 
-#### 9.1 Gestion des Réservations
-- [ ] Liste paginée des réservations
-- [ ] Filtres : date, terrain, utilisateur, statut
-- [ ] Détail d'une réservation
-- [ ] Création de réservation gratuite (paymentType: "free")
+### 9.2 Gestion des Terrains
+- [ ] Créer route `/admin/terrains/index.tsx`
+- [ ] Créer query `courts.listAdmin`
+- [ ] Créer composant `CourtsTable`
+- [ ] Afficher nom, type, localisation, prix, statut
+- [ ] Créer toggle activer/désactiver
+- [ ] Mutation `courts.toggleActive`
 
-#### 9.2 Gestion des Terrains
-- [ ] Liste des 6 terrains
-- [ ] Activer/désactiver un terrain
+### 9.3 Gestion des Utilisateurs
+- [ ] Créer route `/admin/utilisateurs/index.tsx`
+- [ ] Créer query `users.listAdmin` avec pagination
+- [ ] Créer composant `UsersTable`
+- [ ] Colonne email
+- [ ] Colonne nom complet
+- [ ] Colonne téléphone
+- [ ] Colonne statut (actif/bloqué)
+- [ ] Créer recherche par email/nom
+- [ ] Créer route `/admin/utilisateurs/[id].tsx`
+- [ ] Afficher détails utilisateur
+- [ ] Afficher ses réservations
+- [ ] Créer bouton bloquer/débloquer
+- [ ] Mutation `users.toggleBlock`
+- [ ] Si blocage : annuler réservations futures
+- [ ] Si blocage : déclencher remboursements
+- [ ] Si blocage : envoyer emails
 
-#### 9.3 Gestion des Utilisateurs
-- [ ] Liste des utilisateurs inscrits
-- [ ] Recherche par email/nom
-- [ ] Voir les réservations d'un utilisateur
-- [ ] Bloquer/débloquer un utilisateur
-- [ ] À la mise en blocage : annulation automatique + remboursement de toutes les réservations futures
-
-#### 9.4 Système de Blocage de Créneaux
-- [ ] Interface pour créer un blocage
-- [ ] Sélection : date, heure début, heure fin, terrain(s), raison
-- [ ] Affichage des réservations impactées avant confirmation
-- [ ] Annulation automatique + remboursement des réservations concernées
-- [ ] Email d'excuse aux utilisateurs impactés
-- [ ] Liste des blocages actifs
-- [ ] Supprimer un blocage
+### 9.4 Système de Blocage de Créneaux
+- [ ] Créer route `/admin/blocages/index.tsx`
+- [ ] Créer query `blockedSlots.list`
+- [ ] Créer composant `BlockedSlotsTable`
+- [ ] Afficher date, heures, terrain(s), raison
+- [ ] Créer composant `CreateBlockModal`
+- [ ] Sélecteur date
+- [ ] Sélecteur heure début
+- [ ] Sélecteur heure fin
+- [ ] Sélecteur terrain(s) ou tous
+- [ ] Champ raison (optionnel)
+- [ ] Query réservations impactées avant création
+- [ ] Afficher liste réservations à annuler
+- [ ] Demander confirmation
+- [ ] Mutation `blockedSlots.create`
+- [ ] Annuler réservations impactées
+- [ ] Déclencher remboursements
+- [ ] Envoyer emails d'excuse
+- [ ] Créer bouton supprimer blocage
+- [ ] Mutation `blockedSlots.delete`
 
 ### Livrables
 - Gestion complète des réservations
@@ -587,32 +786,46 @@ Implémenter les fonctionnalités de gestion complète pour l'administrateur.
 ### Objectif
 Optimiser le site pour le référencement local et les performances.
 
-### Tâches
+### 10.1 Métadonnées
+- [ ] Créer composant `SEO` réutilisable
+- [ ] Ajouter title unique par page
+- [ ] Ajouter description unique par page
+- [ ] Ajouter og:title par page
+- [ ] Ajouter og:description par page
+- [ ] Ajouter og:image par page
+- [ ] Ajouter Twitter Cards
+- [ ] Ajouter canonical URLs
 
-#### 10.1 Métadonnées
-- [ ] Title et description uniques par page
-- [ ] Open Graph tags (og:title, og:description, og:image)
-- [ ] Twitter Cards
-- [ ] Canonical URLs
+### 10.2 Schema.org
+- [ ] Créer JSON-LD LocalBusiness
+- [ ] Nom : Pasio Padel Club
+- [ ] Adresse : 20 rue Alfred de Vigny, 64600 Anglet
+- [ ] Téléphone : 09 71 11 79 28
+- [ ] Horaires : 8h-22h, 7j/7
+- [ ] Créer JSON-LD SportsActivityLocation
+- [ ] Intégrer dans `<head>` de chaque page
 
-#### 10.2 Schema.org
-- [ ] LocalBusiness pour le club
-- [ ] SportsActivityLocation
-- [ ] Intégration dans le head
+### 10.3 Fichiers SEO
+- [ ] Créer `public/robots.txt`
+- [ ] Configurer génération sitemap.xml
+- [ ] Ajouter toutes les routes publiques
 
-#### 10.3 Fichiers SEO
-- [ ] Générer sitemap.xml automatiquement
-- [ ] Configurer robots.txt
+### 10.4 Performance
+- [ ] Convertir images en WebP
+- [ ] Définir dimensions appropriées
+- [ ] Ajouter lazy loading images
+- [ ] Analyser bundle size
+- [ ] Optimiser imports
+- [ ] Lancer audit Lighthouse
+- [ ] Corriger problèmes Performance
+- [ ] Corriger problèmes Accessibility
+- [ ] Corriger problèmes Best Practices
+- [ ] Corriger problèmes SEO
+- [ ] Atteindre score 90+ partout
 
-#### 10.4 Performance
-- [ ] Optimiser les images (WebP, dimensions appropriées)
-- [ ] Lazy loading des images
-- [ ] Vérifier le bundle size
-- [ ] Tests Lighthouse (cible : 90+ partout)
-
-#### 10.5 Google My Business
-- [ ] Vérifier la cohérence NAP avec la fiche GMB existante
-- [ ] Ajouter le lien vers GMB dans le footer
+### 10.5 Google My Business
+- [ ] Vérifier cohérence NAP avec fiche GMB
+- [ ] Ajouter lien GMB dans footer
 
 ### Livrables
 - Métadonnées complètes sur toutes les pages
@@ -628,17 +841,23 @@ Optimiser le site pour le référencement local et les performances.
 ### Objectif
 S'assurer de la fiabilité du système avec des tests appropriés.
 
-### Tâches
+### 11.1 Tests Unitaires (Vitest)
+- [ ] Configurer Vitest
+- [ ] Tests fonctions utilitaires dates
+- [ ] Tests fonctions formatage prix
+- [ ] Tests validations Zod inscription
+- [ ] Tests validations Zod connexion
+- [ ] Tests calcul créneaux 90min
+- [ ] Tests calcul créneaux 60min
+- [ ] Tests calcul disponibilité
+- [ ] Tests vérification délai 24h
 
-#### 11.1 Tests Unitaires (Vitest)
-- [ ] Tests des fonctions utilitaires
-- [ ] Tests des validations Zod
-- [ ] Tests des calculs de créneaux (grilles 60min vs 90min)
-
-#### 11.2 Tests d'Intégration
-- [ ] Tests des mutations Convex
-- [ ] Tests des queries Convex
-- [ ] Tests du flux d'authentification
+### 11.2 Tests d'Intégration
+- [ ] Tests mutations Convex bookings
+- [ ] Tests mutations Convex users
+- [ ] Tests queries Convex slots
+- [ ] Tests queries Convex stats
+- [ ] Tests flux authentification
 
 ### Livrables
 - Suite de tests unitaires
@@ -652,36 +871,44 @@ S'assurer de la fiabilité du système avec des tests appropriés.
 ### Objectif
 Déployer le site en production sur Railway.
 
-### Tâches
+### 12.1 Configuration Railway
+- [ ] Créer projet Railway
+- [ ] Lier repository GitHub
+- [ ] Configurer variables environnement prod
+- [ ] Configurer domaine pasiopadelclub.fr
+- [ ] Vérifier SSL/HTTPS automatique
+- [ ] Configurer déploiement auto depuis main
 
-#### 12.1 Configuration Railway
-- [ ] Créer le projet Railway
-- [ ] Configurer les variables d'environnement de production
-- [ ] Configurer le domaine pasiopadelclub.fr
-- [ ] SSL/HTTPS automatique
-- [ ] Déploiement direct depuis main (zero downtime)
+### 12.2 Configuration Convex Production
+- [ ] Créer environnement production Convex
+- [ ] Configurer variables prod Convex
+- [ ] Déployer schéma en production
+- [ ] Exécuter seed terrains en prod
+- [ ] Créer compte admin production
 
-#### 12.2 Configuration Convex Production
-- [ ] Créer l'environnement de production Convex
-- [ ] Migrer le schéma
-- [ ] Seed les données de production (terrains)
+### 12.3 Configuration Services
+- [ ] Configurer Polar mode production
+- [ ] Mettre à jour clés API Polar
+- [ ] Configurer webhook Polar prod
+- [ ] Vérifier domaine Resend prod
+- [ ] Mettre à jour clés API Resend
+- [ ] Configurer BetterAuth prod
 
-#### 12.3 Configuration Services
-- [ ] Polar en mode production
-- [ ] Resend avec domaine pasiopadelclub.fr vérifié
-- [ ] BetterAuth en production
+### 12.4 Monitoring
+- [ ] Configurer logs Railway
+- [ ] Configurer alertes erreurs
+- [ ] Vérifier logs Convex
 
-#### 12.4 Monitoring
-- [ ] Configurer les logs
-- [ ] Alertes en cas d'erreur
-
-#### 12.5 Go Live
-- [ ] Vérification post-déploiement
-- [ ] Vérifier cohérence avec fiche Google My Business
+### 12.5 Go Live
+- [ ] Tests finaux complets
+- [ ] Vérifier toutes les pages
+- [ ] Tester flux réservation complet
+- [ ] Tester flux paiement
+- [ ] Tester emails
+- [ ] Vérifier cohérence avec fiche GMB
+- [ ] Annoncer mise en ligne
 
 ### Livrables
 - Site déployé sur Railway
 - Domaine pasiopadelclub.fr configuré avec HTTPS
 - Monitoring en place
-
----

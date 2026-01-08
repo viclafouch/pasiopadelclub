@@ -49,32 +49,10 @@ Site vitrine pour **Pasio Padel Club**, un club de padel situé à Anglet, Franc
 ## Workflow
 
 ### Plan Management
-- Before starting any task, always check the current plan in `.claude/plans/` directory
+- Before starting any task, always check the current plan in `.claude/plan.md` file & update it if necessary
 - If the plan needs updates based on new requirements or decisions, update it before implementation
 - Keep the plan synchronized with actual implementation progress
 
 ### Design Tasks
 - For any design-related questions or implementations (UI components, layouts, styling, visual elements), use the `/frontend-design` skill
 - This ensures consistent, production-grade frontend interfaces with high design quality
-
-## Global Standards
-
-### Language & Naming
-- Use English for the entire codebase (variable names, function names, file names, documentation), except for user-facing content which may be in French.
-- Do not write comments. They are not needed.
-- Boolean variables must follow: `^(is|has)[A-Z]([A-Za-z0-9]?)+` (e.g., `isActive`, `hasError`)
-- Functions returning boolean must follow: `^(matchIs|matchAs)[A-Z]([A-Za-z0-9]?)+`
-
-### Code Style
-- Write code that reads like natural language
-- Prefer explicit over implicit when it aids understanding
-- Use meaningful variable and function names
-- Keep functions small and focused on single responsibilities
-- Export only what needs to be public
-- Organize by feature, not by technical layer
-
-### Error Handling
-- Handle errors gracefully with clear messages
-- Fail fast when appropriate, recover gracefully when possible
-- Use Result types or proper error boundaries
-- Validate at system boundaries with runtime checks
