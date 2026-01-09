@@ -210,17 +210,19 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 ---
 
-# MILESTONES
+# Workflow
 
 > **IMPORTANT - Workflow obligatoire pour chaque tâche :**
 >
 > 1. **Implémenter** la tâche
-> 2. **Lancer `/code-review`** pour valider le code (obligatoire)
+> 2. **Lancer `code-simplifier`** pour simplifier et valider le code (obligatoire)
+>    - Vérifie le respect des règles `.claude/rules/` (TypeScript, comments, code-style, testing)
+>    - Simplifie le code pour clarté et maintenabilité
 > 3. **Lancer `npm run lint --fix`** et corriger toutes les erreurs restantes
 > 4. **Une fois tout validé**, cocher la tâche `[x]`
 > 5. **Passer à la tâche suivante**
 >
-> ⚠️ **Ne jamais marquer une tâche comme terminée sans passer par `/code-review` et ne jamais sauter de tâche**
+> ⚠️ **Ne jamais marquer une tâche comme terminée sans passer par `code-simplifier` et ne jamais sauter de tâche**
 
 ---
 

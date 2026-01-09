@@ -21,6 +21,15 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - For any design-related questions or implementations (UI components, layouts, styling, visual elements), use the `/frontend-design` skill
 - This ensures consistent, production-grade frontend interfaces with high design quality
 
+### Code Quality
+- After implementing each task, run `code-simplifier` agent to simplify and validate the code
+- The agent verifies compliance with all rules in `.claude/rules/`:
+  - `typescript.md`: naming conventions, type safety, async handling
+  - `comments.md`: no redundant comments, self-documenting code
+  - `code-style.md`: clarity over brevity, proper naming, no unnecessary abstractions
+  - `testing.md`: BDD-style tests, proper mocking, coverage
+- Never mark a task complete without running `code-simplifier`
+
 ### Libraries
 If you're ever unsure how a library works, use the Context7 MCP server to research it rather than crawling around node modules or other build files.
 
