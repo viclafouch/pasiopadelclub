@@ -14,7 +14,7 @@ const AuthenticatedLayout = () => {
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
-    if (!context.isAuthenticated) {
+    if (!context.user) {
       throw redirect({
         to: '/',
         search: {

@@ -23,7 +23,12 @@ export function getRouter() {
 
   const router = createRouter({
     routeTree,
-    context: { queryClient, convexQueryClient },
+    context: {
+      queryClient,
+      convexQueryClient,
+      user: null,
+      token: null
+    },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     Wrap: ({ children }) => {

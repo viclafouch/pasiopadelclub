@@ -1,13 +1,12 @@
-import React from 'react'
 import { cn } from '@/lib/utils'
 import type { LinkOptions } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 
 const navLinks = [
   { linkOptions: { to: '/' }, label: 'Accueil' },
-  { linkOptions: { to: '/' }, label: 'Nos terrains' },
-  { linkOptions: { to: '/' }, label: 'Tarifs' },
-  { linkOptions: { to: '/' }, label: 'Contact' }
+  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
+  { linkOptions: { to: '/galerie' }, label: 'Galerie' },
+  { linkOptions: { to: '/contact' }, label: 'Contact' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
 export const Navbar = ({ className }: { className?: string }) => {

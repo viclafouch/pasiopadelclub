@@ -324,39 +324,39 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 Créer les pages publiques du site qui ne nécessitent pas d'authentification ni de données dynamiques.
 
 ### 2.1 Page Galerie
-- [ ] Créer route `/galerie/index.tsx`
-- [ ] Ajouter images statiques dans `public/gallery/`
-- [ ] Créer composant `GalleryGrid` responsive
-- [ ] Créer composant `Lightbox` pour agrandir
-- [ ] Implémenter navigation clavier dans lightbox
-- [ ] Ajouter métadonnées SEO page galerie
+- [x] Créer route `/galerie/index.tsx`
+- [x] Ajouter images statiques (placeholder Unsplash pour l'instant)
+- [x] Créer composant `GalleryGrid` responsive avec filtres par catégorie
+- [x] Créer composant `Lightbox` pour agrandir
+- [x] Implémenter navigation clavier dans lightbox (Escape, ArrowLeft, ArrowRight)
+- [x] Ajouter métadonnées SEO page galerie
 
 ### 2.2 Page Contact
-- [ ] Créer route `/contact/index.tsx`
-- [ ] Créer composant `ContactForm` (nom, email, message)
-- [ ] Ajouter validation Zod sur le formulaire
-- [ ] Afficher adresse : 20 rue Alfred de Vigny, 64600 Anglet
-- [ ] Afficher téléphone : 09 71 11 79 28
-- [ ] Afficher email : contact@pasiopadelclub.fr
-- [ ] Afficher horaires : 8h-22h, 7j/7
-- [ ] Intégrer composant Map existant
-- [ ] Créer `convex/contact.ts` - mutation pour envoyer email
-- [ ] Créer action Resend pour email contact
-- [ ] Afficher message succès après envoi
-- [ ] Ajouter métadonnées SEO page contact
+- [x] Créer route `/contact/index.tsx`
+- [x] Créer composant `ContactForm` (nom, email, message)
+- [x] Ajouter validation Zod sur le formulaire
+- [x] Afficher adresse : 20 rue Alfred de Vigny, 64600 Anglet
+- [x] Afficher téléphone : 09 71 11 79 28
+- [x] Afficher email : contact@pasiopadelclub.fr
+- [x] Afficher horaires : 8h-22h, 7j/7
+- [x] Intégrer Google Maps iframe
+- [ ] Créer `convex/contact.ts` - mutation pour envoyer email (M7)
+- [ ] Créer action Resend pour email contact (M7)
+- [x] Afficher message succès après envoi (UI only, backend M7)
+- [x] Ajouter métadonnées SEO page contact
 
 ### 2.3 Pages Légales
-- [ ] Créer route `/mentions-legales/index.tsx`
-- [ ] Créer template contenu mentions légales
-- [ ] Créer route `/cgv/index.tsx`
-- [ ] Créer template contenu CGV
-- [ ] Ajouter liens footer vers pages légales
+- [x] Créer route `/mentions-legales/index.tsx`
+- [x] Créer template contenu mentions légales
+- [x] Créer route `/cgv/index.tsx`
+- [x] Créer template contenu CGV
+- [x] Ajouter liens footer vers pages légales
 
 ### 2.4 Mise à jour Accueil
 - [ ] Mettre à jour hero avec vraies infos club
 - [ ] Vérifier/améliorer section FAQ
-- [ ] Vérifier cohérence liens internes navbar
-- [ ] Vérifier cohérence liens footer
+- [x] Vérifier cohérence liens internes navbar (Accueil, Tarifs, Galerie, Contact)
+- [x] Vérifier cohérence liens footer (Tarifs, Galerie, Contact + CGV, Mentions légales)
 - [ ] Ajouter lien vers page réservation
 
 ### Livrables

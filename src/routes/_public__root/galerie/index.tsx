@@ -1,20 +1,322 @@
+import { useCallback, useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { createFileRoute } from '@tanstack/react-router'
 
+type GalleryImage = {
+  id: number
+  src: string
+  alt: string
+  category: string
+}
+
+const galleryImages: GalleryImage[] = [
+  {
+    id: 1,
+    src: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
+    alt: 'Court de padel 1',
+    category: 'Courts'
+  },
+  {
+    id: 2,
+    src: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&q=80',
+    alt: 'Joueurs de padel',
+    category: 'Matchs'
+  },
+  {
+    id: 3,
+    src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    alt: 'Équipement de padel',
+    category: 'Équipement'
+  },
+  {
+    id: 4,
+    src: 'https://images.unsplash.com/photo-1599586120429-48281b6f0ece?w=800&q=80',
+    alt: 'Court intérieur',
+    category: 'Courts'
+  },
+  {
+    id: 5,
+    src: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&q=80',
+    alt: 'Tournoi de padel',
+    category: 'Événements'
+  },
+  {
+    id: 6,
+    src: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+    alt: 'Espace détente',
+    category: 'Club'
+  },
+  {
+    id: 7,
+    src: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
+    alt: 'Match en double',
+    category: 'Matchs'
+  },
+  {
+    id: 8,
+    src: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
+    alt: 'Cours collectif',
+    category: 'Cours'
+  },
+  {
+    id: 9,
+    src: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=80',
+    alt: 'Vue du club',
+    category: 'Club'
+  }
+]
+
+const categories = [
+  'Tous',
+  ...new Set(
+    galleryImages.map((img) => {
+      return img.category
+    })
+  )
+]
+
+type LightboxProps = {
+  images: GalleryImage[]
+  currentIndex: number
+  onClose: () => void
+  onPrevious: () => void
+  onNext: () => void
+}
+
+const Lightbox = ({
+  images,
+  currentIndex,
+  onClose,
+  onPrevious,
+  onNext
+}: LightboxProps) => {
+  const currentImage = images[currentIndex]
+
+  useEffect(() => {
+    if (!currentImage) {
+      return undefined
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+      } else if (event.key === 'ArrowLeft') {
+        onPrevious()
+      } else if (event.key === 'ArrowRight') {
+        onNext()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [currentImage, onClose, onNext, onPrevious])
+
+  if (!currentImage) {
+    return null
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm">
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+        aria-label="Fermer"
+      >
+        <X className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      <button
+        type="button"
+        onClick={onPrevious}
+        className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:left-8"
+        aria-label="Image précédente"
+      >
+        <ChevronLeft className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      <button
+        type="button"
+        onClick={onNext}
+        className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:right-8"
+        aria-label="Image suivante"
+      >
+        <ChevronRight className="h-6 w-6" aria-hidden="true" />
+      </button>
+
+      <div className="relative max-h-[90vh] max-w-[90vw]">
+        <img
+          src={currentImage.src}
+          alt={currentImage.alt}
+          className="max-h-[85vh] max-w-full rounded-lg object-contain"
+        />
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-center">
+          <p className="text-lg font-medium text-white">{currentImage.alt}</p>
+          <p className="mt-1 text-sm text-white/70">
+            {currentIndex + 1} / {images.length}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const GaleriePage = () => {
+  const [selectedCategory, setSelectedCategory] = useState('Tous')
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
+  const filteredImages =
+    selectedCategory === 'Tous'
+      ? galleryImages
+      : galleryImages.filter((img) => {
+          return img.category === selectedCategory
+        })
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index)
+  }
+
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null)
+  }, [])
+
+  const goToPrevious = useCallback(() => {
+    setLightboxIndex((prev) => {
+      if (prev === null) {
+        return null
+      }
+
+      return prev === 0 ? filteredImages.length - 1 : prev - 1
+    })
+  }, [filteredImages.length])
+
+  const goToNext = useCallback(() => {
+    setLightboxIndex((prev) => {
+      if (prev === null) {
+        return null
+      }
+
+      return prev === filteredImages.length - 1 ? 0 : prev + 1
+    })
+  }, [filteredImages.length])
+
   return (
     <>
       <Navbar className="static bg-primary text-primary-foreground" />
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold">Galerie</h1>
-        <p className="mt-4 text-muted-foreground">
-          Page en cours de construction.
-        </p>
+      <main className="min-h-screen bg-background">
+        <section className="relative overflow-hidden py-20 lg:py-28">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+          <div className="absolute top-0 left-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+
+          <div className="container relative">
+            <div className="mx-auto max-w-3xl text-center">
+              <h1 className="font-[Bricolage_Grotesque] text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+                Notre Galerie
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground">
+                Découvrez nos installations, nos événements et l&apos;ambiance
+                unique de Pasio Padel Club.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="pb-20 lg:pb-28">
+          <div className="container">
+            <div className="mb-10 flex flex-wrap justify-center gap-3">
+              {categories.map((category) => {
+                return (
+                  <button
+                    type="button"
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category)
+                    }}
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
+                      selectedCategory === category
+                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                        : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredImages.map((image, index) => {
+                return (
+                  <button
+                    type="button"
+                    key={image.id}
+                    onClick={() => {
+                      openLightbox(index)
+                    }}
+                    className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-card/50"
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute bottom-0 left-0 right-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">
+                      <span className="inline-block rounded-full bg-primary/90 px-3 py-1 text-xs font-medium text-primary-foreground backdrop-blur-sm">
+                        {image.category}
+                      </span>
+                      <p className="mt-2 text-sm font-medium text-white">
+                        {image.alt}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {filteredImages.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="text-muted-foreground">
+                  Aucune image dans cette catégorie.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </section>
       </main>
+
+      {lightboxIndex !== null ? (
+        <Lightbox
+          images={filteredImages}
+          currentIndex={lightboxIndex}
+          onClose={closeLightbox}
+          onPrevious={goToPrevious}
+          onNext={goToNext}
+        />
+      ) : null}
     </>
   )
 }
 
 export const Route = createFileRoute('/_public__root/galerie/')({
-  component: GaleriePage
+  component: GaleriePage,
+  head: () => {
+    return {
+      meta: [
+        { title: 'Galerie | Pasio Padel Club - Anglet' },
+        {
+          name: 'description',
+          content:
+            "Découvrez la galerie photos de Pasio Padel Club à Anglet : nos courts de padel, événements, tournois et l'ambiance du club."
+        }
+      ]
+    }
+  }
 })
