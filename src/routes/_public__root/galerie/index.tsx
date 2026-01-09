@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { Navbar } from '@/components/navbar'
 import { createFileRoute } from '@tanstack/react-router'
 
 type GalleryImage = {
@@ -208,7 +207,6 @@ const GaleriePage = () => {
 
   return (
     <>
-      <Navbar className="static bg-primary text-primary-foreground" />
       <main className="min-h-screen bg-background">
         <section className="relative overflow-hidden py-20 lg:py-28">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />

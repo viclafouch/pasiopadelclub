@@ -58,4 +58,5 @@ export default defineSchema({
   })
     .index('by_date', ['date'])
     .index('by_courtId', ['courtId'])
+    .index('by_courtId_date', ['courtId', 'date'])
 })

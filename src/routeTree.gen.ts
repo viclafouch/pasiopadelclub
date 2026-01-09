@@ -13,7 +13,7 @@ import { Route as Public__rootRouteRouteImport } from './routes/_public__root/ro
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
-import { Route as Public__rootTarifsRouteImport } from './routes/_public__root/tarifs'
+import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
 import { Route as Public__rootInscriptionIndexRouteImport } from './routes/_public__root/inscription/index'
@@ -42,9 +42,9 @@ const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   path: '/',
   getParentRoute: () => Public__rootRouteRoute,
 } as any)
-const Public__rootTarifsRoute = Public__rootTarifsRouteImport.update({
-  id: '/tarifs',
-  path: '/tarifs',
+const Public__rootTarifsIndexRoute = Public__rootTarifsIndexRouteImport.update({
+  id: '/tarifs/',
+  path: '/tarifs/',
   getParentRoute: () => Public__rootRouteRoute,
 } as any)
 const Public__rootReservationIndexRoute =
@@ -106,7 +106,6 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin': typeof AdminAdminIndexRoute
@@ -118,9 +117,9 @@ export interface FileRoutesByFullPath {
   '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
+  '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/tarifs': typeof Public__rootTarifsRoute
   '/': typeof Public__rootIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin': typeof AdminAdminIndexRoute
@@ -132,13 +131,13 @@ export interface FileRoutesByTo {
   '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
+  '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_admin': typeof AdminRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public__root': typeof Public__rootRouteRouteWithChildren
-  '/_public__root/tarifs': typeof Public__rootTarifsRoute
   '/_public__root/': typeof Public__rootIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
@@ -150,11 +149,11 @@ export interface FileRoutesById {
   '/_public__root/inscription/': typeof Public__rootInscriptionIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
   '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
+  '/_public__root/tarifs/': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/tarifs'
     | '/'
     | '/api/auth/$'
     | '/admin'
@@ -166,9 +165,9 @@ export interface FileRouteTypes {
     | '/inscription'
     | '/mentions-legales'
     | '/reservation'
+    | '/tarifs'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/tarifs'
     | '/'
     | '/api/auth/$'
     | '/admin'
@@ -180,12 +179,12 @@ export interface FileRouteTypes {
     | '/inscription'
     | '/mentions-legales'
     | '/reservation'
+    | '/tarifs'
   id:
     | '__root__'
     | '/_admin'
     | '/_authenticated'
     | '/_public__root'
-    | '/_public__root/tarifs'
     | '/_public__root/'
     | '/api/auth/$'
     | '/_admin/admin/'
@@ -197,6 +196,7 @@ export interface FileRouteTypes {
     | '/_public__root/inscription/'
     | '/_public__root/mentions-legales/'
     | '/_public__root/reservation/'
+    | '/_public__root/tarifs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -236,11 +236,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
-    '/_public__root/tarifs': {
-      id: '/_public__root/tarifs'
+    '/_public__root/tarifs/': {
+      id: '/_public__root/tarifs/'
       path: '/tarifs'
       fullPath: '/tarifs'
-      preLoaderRoute: typeof Public__rootTarifsRouteImport
+      preLoaderRoute: typeof Public__rootTarifsIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/reservation/': {
@@ -340,7 +340,6 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface Public__rootRouteRouteChildren {
-  Public__rootTarifsRoute: typeof Public__rootTarifsRoute
   Public__rootIndexRoute: typeof Public__rootIndexRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
   Public__rootConnexionIndexRoute: typeof Public__rootConnexionIndexRoute
@@ -349,10 +348,10 @@ interface Public__rootRouteRouteChildren {
   Public__rootInscriptionIndexRoute: typeof Public__rootInscriptionIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
   Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
+  Public__rootTarifsIndexRoute: typeof Public__rootTarifsIndexRoute
 }
 
 const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
-  Public__rootTarifsRoute: Public__rootTarifsRoute,
   Public__rootIndexRoute: Public__rootIndexRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
   Public__rootConnexionIndexRoute: Public__rootConnexionIndexRoute,
@@ -361,6 +360,7 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootInscriptionIndexRoute: Public__rootInscriptionIndexRoute,
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
   Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
+  Public__rootTarifsIndexRoute: Public__rootTarifsIndexRoute,
 }
 
 const Public__rootRouteRouteWithChildren =

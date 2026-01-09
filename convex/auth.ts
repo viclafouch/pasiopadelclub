@@ -5,14 +5,13 @@ import type { GenericCtx } from '@convex-dev/better-auth'
 import type { DataModel } from './_generated/dataModel'
 import { components } from './_generated/api'
 import authConfig from './auth.config'
-
-const siteUrl = process.env.SITE_URL!
+import { convexEnv } from './env'
 
 export const authComponent = createClient<DataModel>(components.betterAuth)
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
-    baseURL: siteUrl,
+    baseURL: convexEnv.SITE_URL,
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,

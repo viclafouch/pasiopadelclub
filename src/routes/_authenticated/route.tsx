@@ -4,7 +4,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 const AuthenticatedLayout = () => {
   return (
     <>
-      <Navbar className="static bg-primary text-primary-foreground" />
+      <Navbar variant="solid" />
       <main className="min-h-screen bg-background">
         <Outlet />
       </main>
