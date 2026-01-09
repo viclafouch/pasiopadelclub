@@ -21,10 +21,6 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - For any design-related questions or implementations (UI components, layouts, styling, visual elements), use the `/frontend-design` skill
 - This ensures consistent, production-grade frontend interfaces with high design quality
 
-### Form Tasks
-- For implementing forms (contact, login, signup, profile, reservation, admin), use the `/forms` skill
-- This ensures consistent patterns with TanStack Form, Zod validation, accessibility, and proper error handling
-
 ### Libraries
 If you're ever unsure how a library works, use the Context7 MCP server to research it rather than crawling around node modules or other build files.
 
