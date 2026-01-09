@@ -1,16 +1,4 @@
----
-name: code-review
-description: Expert code reviewer ensuring clean, self-documented, and properly typed code. Use this skill after implementing any feature to validate code quality before marking a task as complete.
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
-  - Edit
-  - WebFetch
-  - WebSearch
----
-
-# Code Review & Simplification Specialist
+## Code Style
 
 Expert code simplification and review specialist. Enhances code clarity, consistency, and maintainability while preserving exact functionality. Prioritizes readable, explicit code over compact solutions.
 
@@ -43,7 +31,7 @@ Avoid over-simplification that could:
 - Booleans: `is*`, `has*`, `should*`, `can*`
 - Boolean functions: `matchIs*`, `matchAs*`
 - Event handlers: `handle*`, `on*`
-- No single-letter variables (except `i`, `j` for indexes)
+- No single-letter variables
 - No abbreviations unless universal (`id`, `url`, `api`)
 
 ### Self-Documented Code
@@ -51,19 +39,6 @@ Avoid over-simplification that could:
 - Complex logic extracted into well-named functions
 - Magic numbers replaced with named constants
 - No comments - code should speak for itself
-
-### TypeScript Strictness
-**FORBIDDEN:**
-- `@ts-ignore`, `@ts-expect-error`, `@ts-nocheck`
-- `as any` type casting
-- `any` type explicitly
-- Excluding files from `tsconfig.json`
-
-**Required:**
-- Use types from libraries (`Doc<'table'>` from Convex, etc.)
-- **NEVER recreate types that exist in schemas or libraries**
-- Use generics when appropriate
-- Use `unknown` with type guards if truly needed
 
 ### No Unnecessary Abstractions
 **FORBIDDEN:**
@@ -89,36 +64,3 @@ Avoid over-simplification that could:
 - `role="alert"` on error messages
 - `aria-busy` on loading buttons
 - `aria-hidden` on decorative icons
-
-## Review Process
-
-1. Identify recently modified code sections
-2. Analyze for clarity and consistency improvements
-3. Apply project standards from CLAUDE.md
-4. Ensure functionality unchanged
-5. Verify refined code is simpler and more maintainable
-
-## Output Format
-
-```
-## Code Review Summary
-
-### Status: APPROVED / NEEDS CHANGES
-
-### Issues Found (if any):
-1. [File:Line] Issue description
-   - Before: `code`
-   - After: `code`
-
-### Positive Observations:
-- What was done well
-
-### Recommendations (optional):
-- Non-blocking suggestions
-```
-
-Apply fixes automatically unless `--dry-run` specified.
-
-## Language
-
-Respond in French since this is a French project.
