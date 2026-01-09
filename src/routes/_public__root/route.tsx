@@ -1,7 +1,16 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { Navbar } from '@/components/navbar'
+import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 
 const PublicLayout = () => {
-  return <Outlet />
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
+
+  return (
+    <>
+      <Navbar variant={isHomePage ? 'overlay' : 'solid'} />
+      <Outlet />
+    </>
+  )
 }
 
 export const Route = createFileRoute('/_public__root')({
