@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import Footer from '@/components/footer'
 import { authClient } from '@/lib/auth-client'
-import { fetchAuthQuery, getToken } from '@/lib/auth-server'
+import { getToken } from '@/lib/auth-server'
 import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -16,27 +16,8 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { createServerFn } from '@tanstack/react-start'
-import { api } from '../../convex/_generated/api'
 import type { Doc } from '../../convex/_generated/dataModel'
 import appCss from '../styles.css?url'
-
-const getAuthState = createServerFn({ method: 'GET' }).handler(async () => {
-  const token = await getToken()
-
-  if (!token) {
-    return { user: null, token: null }
-  }
-
-  const user = await fetchAuthQuery(api.users.getCurrent).catch(() => {
-    return null
-  })
-
-  if (!user) {
-    return { user: null, token: null }
-  }
-
-  return { user, token }
-})
 
 type RootRouteContext = {
   queryClient: QueryClient
@@ -44,6 +25,10 @@ type RootRouteContext = {
   user: Doc<'users'> | null
   token: string | null
 }
+
+const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
+  return getToken()
+})
 
 const NotFoundComponent = () => {
   return (
@@ -165,15 +150,18 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
     }
   },
   beforeLoad: async ({ context }) => {
-    const { user, token } = await getAuthState()
+    const token = await getAuth()
 
     if (token) {
       context.convexQueryClient.serverHttpClient?.setAuth(token)
     }
 
-    return { user, token }
+    return {
+      isAuthenticated: Boolean(token),
+      token
+    }
   },
-  shellComponent: () => {
+  component: () => {
     const { convexQueryClient, token } = useRouteContext({
       from: Route.id
     })
