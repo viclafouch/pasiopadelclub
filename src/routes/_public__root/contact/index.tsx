@@ -44,7 +44,7 @@ const ContactPage = () => {
 
         <div className="container relative">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-[Bricolage_Grotesque] text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
               Contactez-nous
             </h1>
             <p className="mt-6 text-lg text-muted-foreground">
@@ -278,7 +278,7 @@ const ContactPage = () => {
             <div className="order-1 lg:order-2">
               <div className="space-y-8">
                 <div>
-                  <h2 className="mb-6 font-[Bricolage_Grotesque] text-2xl font-bold text-foreground">
+                  <h2 className="mb-6 font-display text-2xl font-bold text-foreground">
                     Informations
                   </h2>
                   <div className="space-y-5">

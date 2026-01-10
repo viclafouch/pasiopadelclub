@@ -17,6 +17,16 @@ paths: "**/*.{ts,tsx}"
 - Use types from libraries as possible
 - NEVER recreate types that exist in schemas or libraries
 
+### Type Derivation
+A derived type is a type computed from an existing source (constant, object, array, or another type) rather than manually duplicated.
+
+**NEVER duplicate types that can be derived:**
+- From constants: use `keyof typeof`, `typeof`, `ReturnType`, `Parameters`
+- From arrays: use `typeof arr[number]`
+- From existing types: use `Pick`, `Omit`, `Partial`, `Required`
+
+This ensures type safety and single source of truth.
+
 ### Async/Await
 - Always handle promise rejections
 - Avoid floating promises (unhandled)

@@ -8,7 +8,7 @@ type LegalSectionProps = {
 const LegalSection = ({ title, children }: LegalSectionProps) => {
   return (
     <section className="mb-10">
-      <h2 className="mb-4 font-[Bricolage_Grotesque] text-xl font-bold text-foreground">
+      <h2 className="mb-4 font-display text-xl font-bold text-foreground">
         {title}
       </h2>
       <div className="space-y-3 text-muted-foreground">{children}</div>
@@ -24,7 +24,7 @@ const CgvPage = () => {
 
         <div className="container relative">
           <div className="mx-auto max-w-3xl">
-            <h1 className="font-[Bricolage_Grotesque] text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               Conditions Générales de Vente
             </h1>
             <p className="mt-4 text-muted-foreground">

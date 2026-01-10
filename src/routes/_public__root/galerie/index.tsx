@@ -214,7 +214,7 @@ const GaleriePage = () => {
 
           <div className="container relative">
             <div className="mx-auto max-w-3xl text-center">
-              <h1 className="font-[Bricolage_Grotesque] text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
                 Notre Galerie
               </h1>
               <p className="mt-6 text-lg text-muted-foreground">

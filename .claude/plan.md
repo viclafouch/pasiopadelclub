@@ -362,14 +362,14 @@ Créer les pages publiques du site qui ne nécessitent pas d'authentification ni
 - [ ] Ajouter lien vers page réservation
 
 ### 2.5 Page Tarifs
-- [ ] Créer route `/tarifs/index.tsx`
-- [ ] Créer 3 cartes tarifaires (une par prix)
-- [ ] **Carte principale "Double" (mise en avant)** : 60€, 90min, 4 joueurs, terrains A/B (outdoor) + C/D (indoor)
-- [ ] Carte secondaire "Simple" : 30€, 60min, 2 joueurs, indoor
-- [ ] Carte secondaire "Kids" : 15€, 60min, 2 joueurs, indoor + info-bulle "Ouvert à tous"
-- [ ] Design : carte Double plus grande/proéminente, Simple et Kids plus discrètes
-- [ ] Ajouter CTA "Réserver" vers page réservation
-- [ ] Ajouter métadonnées SEO page tarifs
+- [x] Créer route `/tarifs/index.tsx`
+- [x] Créer 3 cartes tarifaires (une par prix)
+- [x] **Carte principale "Double" (mise en avant)** : 60€, 90min, 4 joueurs, terrains A/B (outdoor) + C/D (indoor)
+- [x] Carte secondaire "Simple" : 30€, 60min, 2 joueurs, indoor
+- [x] Carte secondaire "Kids" : 15€, 60min, 2 joueurs, indoor + info-bulle "Ouvert à tous"
+- [x] Design : carte Double plus grande/proéminente, Simple et Kids plus discrètes
+- [x] Ajouter CTA "Réserver" vers page réservation
+- [x] Ajouter métadonnées SEO page tarifs
 
 ### Livrables
 - Page galerie avec photos du club

@@ -40,6 +40,9 @@ Avoid over-simplification that could:
 - Magic numbers replaced with named constants
 - No comments - code should speak for itself
 
+### JSX
+- No empty lines between sibling JSX elements (blank lines are forbidden inside JSX blocks)
+
 ### No Unnecessary Abstractions
 **FORBIDDEN:**
 - Wrapper functions that just call another function
