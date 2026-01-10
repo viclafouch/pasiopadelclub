@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -92,7 +92,7 @@ const Lightbox = ({
 }: LightboxProps) => {
   const currentImage = images[currentIndex]
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!currentImage) {
       return undefined
     }
@@ -167,8 +167,8 @@ const Lightbox = ({
 }
 
 const GaleriePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Tous')
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [selectedCategory, setSelectedCategory] = React.useState('Tous')
+  const [lightboxIndex, setLightboxIndex] = React.useState<number | null>(null)
 
   const filteredImages =
     selectedCategory === 'Tous'
@@ -181,11 +181,11 @@ const GaleriePage = () => {
     setLightboxIndex(index)
   }
 
-  const closeLightbox = useCallback(() => {
+  const closeLightbox = React.useCallback(() => {
     setLightboxIndex(null)
   }, [])
 
-  const goToPrevious = useCallback(() => {
+  const goToPrevious = React.useCallback(() => {
     setLightboxIndex((prev) => {
       if (prev === null) {
         return null
@@ -195,7 +195,7 @@ const GaleriePage = () => {
     })
   }, [filteredImages.length])
 
-  const goToNext = useCallback(() => {
+  const goToNext = React.useCallback(() => {
     setLightboxIndex((prev) => {
       if (prev === null) {
         return null

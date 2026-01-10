@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import React from 'react'
 import { CheckCircle2, Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
 import { z } from 'zod/v3'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -11,8 +14,20 @@ const contactSchema = z.object({
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères')
 })
 
+const getErrorMessage = (error: unknown): string => {
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (error && typeof error === 'object' && 'message' in error) {
+    return String(error.message)
+  }
+
+  return 'Erreur de validation'
+}
+
 const ContactPage = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitted, setIsSubmitted] = React.useState(false)
 
   const form = useForm({
     defaultValues: {
@@ -41,7 +56,6 @@ const ContactPage = () => {
       <section className="relative overflow-hidden py-20 lg:py-28">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
         <div className="absolute top-0 right-0 h-[500px] w-[500px] -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
-
         <div className="container relative">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
@@ -54,7 +68,6 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-
       <section className="pb-20 lg:pb-28">
         <div className="container">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
@@ -101,143 +114,106 @@ const ContactPage = () => {
                         const errorId = `${field.name}-error`
 
                         return (
-                          <div>
-                            <label
-                              htmlFor={field.name}
-                              className="mb-2 block text-sm font-medium text-foreground"
-                            >
-                              Nom complet
-                            </label>
-                            <input
+                          <div className="space-y-2">
+                            <Label htmlFor={field.name}>Nom complet</Label>
+                            <Input
                               type="text"
                               id={field.name}
                               name={field.name}
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(event) => {
-                                field.handleChange(event.target.value)
+                                return field.handleChange(event.target.value)
                               }}
                               autoComplete="name"
                               aria-invalid={hasError}
                               aria-describedby={hasError ? errorId : undefined}
-                              className={`w-full rounded-lg border bg-background px-4 py-3 text-foreground transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                                hasError
-                                  ? 'border-destructive'
-                                  : 'border-border hover:border-border/80'
-                              }`}
+                              className="h-11"
                               placeholder="Jean Dupont"
                             />
                             {hasError ? (
                               <p
                                 id={errorId}
                                 role="alert"
-                                className="mt-1.5 text-sm text-destructive"
+                                className="text-sm text-destructive"
                               >
-                                {typeof field.state.meta.errors[0] === 'string'
-                                  ? field.state.meta.errors[0]
-                                  : field.state.meta.errors[0]?.message}
+                                {getErrorMessage(field.state.meta.errors[0])}
                               </p>
                             ) : null}
                           </div>
                         )
                       }}
                     </form.Field>
-
                     <form.Field name="email">
                       {(field) => {
                         const hasError = field.state.meta.errors.length > 0
                         const errorId = `${field.name}-error`
 
                         return (
-                          <div>
-                            <label
-                              htmlFor={field.name}
-                              className="mb-2 block text-sm font-medium text-foreground"
-                            >
-                              Adresse email
-                            </label>
-                            <input
+                          <div className="space-y-2">
+                            <Label htmlFor={field.name}>Adresse email</Label>
+                            <Input
                               type="email"
                               id={field.name}
                               name={field.name}
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(event) => {
-                                field.handleChange(event.target.value)
+                                return field.handleChange(event.target.value)
                               }}
                               autoComplete="email"
                               aria-invalid={hasError}
                               aria-describedby={hasError ? errorId : undefined}
-                              className={`w-full rounded-lg border bg-background px-4 py-3 text-foreground transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                                hasError
-                                  ? 'border-destructive'
-                                  : 'border-border hover:border-border/80'
-                              }`}
+                              className="h-11"
                               placeholder="jean@exemple.fr"
                             />
                             {hasError ? (
                               <p
                                 id={errorId}
                                 role="alert"
-                                className="mt-1.5 text-sm text-destructive"
+                                className="text-sm text-destructive"
                               >
-                                {typeof field.state.meta.errors[0] === 'string'
-                                  ? field.state.meta.errors[0]
-                                  : field.state.meta.errors[0]?.message}
+                                {getErrorMessage(field.state.meta.errors[0])}
                               </p>
                             ) : null}
                           </div>
                         )
                       }}
                     </form.Field>
-
                     <form.Field name="message">
                       {(field) => {
                         const hasError = field.state.meta.errors.length > 0
                         const errorId = `${field.name}-error`
 
                         return (
-                          <div>
-                            <label
-                              htmlFor={field.name}
-                              className="mb-2 block text-sm font-medium text-foreground"
-                            >
-                              Message
-                            </label>
-                            <textarea
+                          <div className="space-y-2">
+                            <Label htmlFor={field.name}>Message</Label>
+                            <Textarea
                               id={field.name}
                               name={field.name}
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(event) => {
-                                field.handleChange(event.target.value)
+                                return field.handleChange(event.target.value)
                               }}
                               rows={5}
                               aria-invalid={hasError}
                               aria-describedby={hasError ? errorId : undefined}
-                              className={`w-full resize-none rounded-lg border bg-background px-4 py-3 text-foreground transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                                hasError
-                                  ? 'border-destructive'
-                                  : 'border-border hover:border-border/80'
-                              }`}
                               placeholder="Votre message..."
                             />
                             {hasError ? (
                               <p
                                 id={errorId}
                                 role="alert"
-                                className="mt-1.5 text-sm text-destructive"
+                                className="text-sm text-destructive"
                               >
-                                {typeof field.state.meta.errors[0] === 'string'
-                                  ? field.state.meta.errors[0]
-                                  : field.state.meta.errors[0]?.message}
+                                {getErrorMessage(field.state.meta.errors[0])}
                               </p>
                             ) : null}
                           </div>
                         )
                       }}
                     </form.Field>
-
                     <form.Subscribe
                       selector={(state) => {
                         return state.isSubmitting
@@ -274,7 +250,6 @@ const ContactPage = () => {
                 )}
               </div>
             </div>
-
             <div className="order-1 lg:order-2">
               <div className="space-y-8">
                 <div>
@@ -298,7 +273,6 @@ const ContactPage = () => {
                         </p>
                       </div>
                     </div>
-
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Phone
@@ -316,7 +290,6 @@ const ContactPage = () => {
                         </a>
                       </div>
                     </div>
-
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Mail
@@ -334,7 +307,6 @@ const ContactPage = () => {
                         </a>
                       </div>
                     </div>
-
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Clock
@@ -355,7 +327,6 @@ const ContactPage = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="overflow-hidden rounded-2xl border border-border/50">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2894.5400183835977!2d-1.496321923788685!3d43.49106897111039!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd514182cba36089%3A0xe20604785805f73!2sPASIO%20PADEL%20CLUB!5e0!3m2!1sfr!2sfr!4v1767301750127!5m2!1sfr!2sfr"

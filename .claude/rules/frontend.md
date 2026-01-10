@@ -4,8 +4,13 @@ paths: "**/*.{ts,tsx}"
 
 ## Frontend design
 
+### React
+- Use `React.useState`, `React.useEffect`, etc. — never destructure React imports.
+- **Use `useMutation`** for async operations (forms, API calls) instead of multiple `useState` and manual state management for loading/success/error.
+
 ### Libraries
-- Use shadcn as possible. If you need a create a component, check if it's already available in the library, example with a Button, modal, tooltip, etc.
+- ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
+- Do not update the code in the `src/components/ui` folder, just fix the linter errors.
 
 ### Accessibility (WCAG 2.1 AA)
 - Keyboard navigation support
@@ -13,6 +18,16 @@ paths: "**/*.{ts,tsx}"
 - Color contrast compliance
 - Focus management
 - ARIA attributes usage
+
+### JSX Size Limit
+- **Max 200 lines** for components with specific logic (forms, modals, interactive features)
+- Split into sub-components when exceeded (e.g., FormField, SuccessState, etc.)
+- Static content pages (mentions légales, CGV) are exempt
+
+### Separation of Concerns
+- Each file has **one clear responsibility**
+- Extract logic into dedicated files organized by domain (`components/auth/`, `hooks/`, `lib/`)
+- Keep entry points minimal - they orchestrate, not implement
 
 ### Component Architecture
 - Reusable component patterns

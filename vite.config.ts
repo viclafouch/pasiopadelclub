@@ -16,7 +16,10 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     viteReact()
-  ]
+  ],
+  ssr: {
+    noExternal: ['@convex-dev/better-auth']
+  }
 })
 
 export default config

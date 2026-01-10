@@ -43,6 +43,9 @@ Avoid over-simplification that could:
 ### JSX
 - No empty lines between sibling JSX elements (blank lines are forbidden inside JSX blocks)
 
+### Conditionals
+- **Always use ternary** instead of `&&` for conditional expressions
+
 ### No Unnecessary Abstractions
 **FORBIDDEN:**
 - Wrapper functions that just call another function

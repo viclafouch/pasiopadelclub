@@ -14,8 +14,8 @@ paths: "**/*.{ts,tsx}"
 - NO `any`, `as any` and excluding files from `tsconfig.json`
 - NO `@ts-ignore`, `@ts-expect-error`, `@ts-nocheck`
 - Prefer `unknown` over `any` when type is truly unknown
-- Use types from libraries as possible
 - NEVER recreate types that exist in schemas or libraries
+- **Reuse existing types** from libraries, React, schemas, or internal code for precision and autocompletion
 
 ### Type Derivation
 A derived type is a type computed from an existing source (constant, object, array, or another type) rather than manually duplicated.

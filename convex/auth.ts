@@ -15,7 +15,24 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: true
+      // Keep this to false for now, we'll enable it later
+      requireEmailVerification: false
+    },
+    user: {
+      additionalFields: {
+        firstName: {
+          type: 'string',
+          required: true
+        },
+        lastName: {
+          type: 'string',
+          required: true
+        },
+        phone: {
+          type: 'string',
+          required: true
+        }
+      }
     },
     plugins: [convex({ authConfig })]
   })

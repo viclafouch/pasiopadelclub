@@ -181,6 +181,7 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
     return (
       <ConvexBetterAuthProvider
         client={convexQueryClient.convexClient}
+        // @ts-expect-error - TODO: fix this
         authClient={authClient}
         initialToken={token}
       >

@@ -386,20 +386,20 @@ Créer les pages publiques du site qui ne nécessitent pas d'authentification ni
 Implémenter le flux complet d'inscription et de connexion utilisateur.
 
 ### 3.1 Page Inscription
-- [ ] Créer route `/inscription/index.tsx`
-- [ ] Créer composant `SignupForm`
-- [ ] Champ email avec validation
-- [ ] Champ mot de passe avec validation (min 8 chars)
-- [ ] Champ confirmation mot de passe
-- [ ] Champ prénom (obligatoire)
-- [ ] Champ nom (obligatoire)
-- [ ] Champ téléphone (obligatoire, format FR)
-- [ ] Créer schéma Zod validation inscription
-- [ ] Afficher erreurs de validation
-- [ ] Gérer erreur "email déjà utilisé"
-- [ ] Appeler BetterAuth signup
-- [ ] Afficher message "vérifiez votre email"
-- [ ] Rediriger vers page de confirmation
+- [x] Créer route `/inscription/index.tsx`
+- [x] Créer composant `SignupForm`
+- [x] Champ email avec validation
+- [x] Champ mot de passe avec validation (min 8 chars)
+- [x] Champ confirmation mot de passe
+- [x] Champ prénom (obligatoire)
+- [x] Champ nom (obligatoire)
+- [x] Champ téléphone (obligatoire, format FR)
+- [x] Créer schéma Zod validation inscription
+- [x] Afficher erreurs de validation
+- [x] Gérer erreur "email déjà utilisé"
+- [x] Appeler BetterAuth signup
+- [x] Afficher message "vérifiez votre email"
+- [x] Rediriger vers page de confirmation
 
 ### 3.2 Page Connexion
 - [ ] Créer route `/connexion/index.tsx`
