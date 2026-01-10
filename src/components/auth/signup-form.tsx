@@ -193,7 +193,7 @@ export const SignupForm = () => {
       confirmPassword: ''
     },
     validators: {
-      onChange: signupSchema
+      onSubmit: signupSchema
     },
     onSubmit: async ({ value }) => {
       signupMutation.mutate({

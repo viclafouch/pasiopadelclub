@@ -147,7 +147,7 @@ export const LoginForm = () => {
       rememberMe: false
     },
     validators: {
-      onChange: loginSchema
+      onSubmit: loginSchema
     },
     onSubmit: async ({ value }) => {
       loginMutation.mutate({

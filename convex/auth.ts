@@ -1,22 +1,30 @@
 import { createClient } from '@convex-dev/better-auth'
 import { convex } from '@convex-dev/better-auth/plugins'
-import { betterAuth } from 'better-auth/minimal'
+import { betterAuth, type BetterAuthOptions } from 'better-auth/minimal'
 import type { GenericCtx } from '@convex-dev/better-auth'
 import type { DataModel } from './_generated/dataModel'
 import { components } from './_generated/api'
 import authConfig from './auth.config'
+import authSchema from './betterAuth/schema'
 
 const siteUrl = process.env.SITE_URL
 
-export const authComponent = createClient<DataModel>(components.betterAuth)
+export const authComponent = createClient<DataModel, typeof authSchema>(
+  components.betterAuth,
+  {
+    local: {
+      schema: authSchema
+    }
+  }
+)
 
-export const createAuth = (ctx: GenericCtx<DataModel>) => {
-  return betterAuth({
+export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
+  return {
     baseURL: siteUrl,
+    trustedOrigins: siteUrl ? [siteUrl] : [],
     database: authComponent.adapter(ctx),
     emailAndPassword: {
       enabled: true,
-      // Keep this to false for now, we'll enable it later
       requireEmailVerification: false
     },
     user: {
@@ -36,5 +44,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
       }
     },
     plugins: [convex({ authConfig })]
-  })
+  } satisfies BetterAuthOptions
+}
+
+export const createAuth = (ctx: GenericCtx<DataModel>) => {
+  return betterAuth(createAuthOptions(ctx))
 }

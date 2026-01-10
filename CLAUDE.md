@@ -24,6 +24,8 @@ For multi-step plans, divide them into multiple phases with different headings. 
 ### Before Writing Code
 - **Read relevant rules** in `.claude/rules/` before implementation
 - Apply rules proactively, not reactively after correction
+- **ALWAYS check documentation via Context7** before fixing bugs or implementing features with external libraries
+- Never guess library APIs - verify the correct approach in docs first
 
 ### Code Quality
 - After implementing each task, run `code-simplifier` agent to simplify and validate the code
@@ -35,5 +37,7 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - Never mark a task complete without running `code-simplifier`
 
 ### Libraries
-If you're ever unsure how a library works, use the Context7 MCP server to research it rather than crawling around node modules or other build files.
+- **Consult Context7 BEFORE writing code** that uses external libraries - not after getting it wrong
+- Never assume or guess library behavior - always verify in documentation first
+- Use Context7 MCP server instead of crawling node_modules or build files
 
