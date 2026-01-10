@@ -402,21 +402,21 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [x] Rediriger vers page de confirmation
 
 ### 3.2 Page Connexion
-- [ ] Créer route `/connexion/index.tsx`
-- [ ] Créer composant `LoginForm`
-- [ ] Champ email
-- [ ] Champ mot de passe
-- [ ] Checkbox "Se souvenir de moi"
-- [ ] Lien vers `/inscription`
-- [ ] Lien vers "Mot de passe oublié"
-- [ ] Créer schéma Zod validation connexion
-- [ ] Gérer erreur "email non vérifié"
-- [ ] Gérer erreur "identifiants invalides"
-- [ ] Rediriger vers page précédente après connexion
-- [ ] Rediriger vers accueil si pas de page précédente
+- [x] Créer route `/connexion/index.tsx`
+- [x] Créer composant `LoginForm`
+- [x] Champ email
+- [x] Champ mot de passe
+- [x] Checkbox "Se souvenir de moi"
+- [x] Lien vers `/inscription`
+- [x] Lien vers "Mot de passe oublié"
+- [x] Créer schéma Zod validation connexion
+- [x] Gérer erreur "email non vérifié"
+- [x] Gérer erreur "identifiants invalides"
+- [x] Rediriger vers page précédente après connexion
+- [x] Rediriger vers accueil si pas de page précédente
 
 ### 3.3 Récupération mot de passe
-- [ ] Créer route `/mot-de-passe-oublie/index.tsx`
+- [x] Créer route `/mot-de-passe-oublie/index.tsx` (placeholder)
 - [ ] Créer composant `ForgotPasswordForm`
 - [ ] Envoyer email réinitialisation via BetterAuth
 - [ ] Créer template email réinitialisation

@@ -21,6 +21,10 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - For any design-related questions or implementations (UI components, layouts, styling, visual elements), use the `/frontend-design` skill
 - This ensures consistent, production-grade frontend interfaces with high design quality
 
+### Before Writing Code
+- **Read relevant rules** in `.claude/rules/` before implementation
+- Apply rules proactively, not reactively after correction
+
 ### Code Quality
 - After implementing each task, run `code-simplifier` agent to simplify and validate the code
 - The agent verifies compliance with all rules in `.claude/rules/`:

@@ -15,6 +15,7 @@ import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
+import { Route as Public__rootMotDePasseOublieIndexRouteImport } from './routes/_public__root/mot-de-passe-oublie/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
 import { Route as Public__rootInscriptionIndexRouteImport } from './routes/_public__root/inscription/index'
 import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
@@ -51,6 +52,12 @@ const Public__rootReservationIndexRoute =
   Public__rootReservationIndexRouteImport.update({
     id: '/reservation/',
     path: '/reservation/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootMotDePasseOublieIndexRoute =
+  Public__rootMotDePasseOublieIndexRouteImport.update({
+    id: '/mot-de-passe-oublie/',
+    path: '/mot-de-passe-oublie/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
 const Public__rootMentionsLegalesIndexRoute =
@@ -116,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
+  '/mot-de-passe-oublie': typeof Public__rootMotDePasseOublieIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
+  '/mot-de-passe-oublie': typeof Public__rootMotDePasseOublieIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
@@ -148,6 +157,7 @@ export interface FileRoutesById {
   '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
   '/_public__root/inscription/': typeof Public__rootInscriptionIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
+  '/_public__root/mot-de-passe-oublie/': typeof Public__rootMotDePasseOublieIndexRoute
   '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
   '/_public__root/tarifs/': typeof Public__rootTarifsIndexRoute
 }
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/galerie'
     | '/inscription'
     | '/mentions-legales'
+    | '/mot-de-passe-oublie'
     | '/reservation'
     | '/tarifs'
   fileRoutesByTo: FileRoutesByTo
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/galerie'
     | '/inscription'
     | '/mentions-legales'
+    | '/mot-de-passe-oublie'
     | '/reservation'
     | '/tarifs'
   id:
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/_public__root/galerie/'
     | '/_public__root/inscription/'
     | '/_public__root/mentions-legales/'
+    | '/_public__root/mot-de-passe-oublie/'
     | '/_public__root/reservation/'
     | '/_public__root/tarifs/'
   fileRoutesById: FileRoutesById
@@ -248,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/reservation'
       fullPath: '/reservation'
       preLoaderRoute: typeof Public__rootReservationIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/mot-de-passe-oublie/': {
+      id: '/_public__root/mot-de-passe-oublie/'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof Public__rootMotDePasseOublieIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/mentions-legales/': {
@@ -347,6 +367,7 @@ interface Public__rootRouteRouteChildren {
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
   Public__rootInscriptionIndexRoute: typeof Public__rootInscriptionIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
+  Public__rootMotDePasseOublieIndexRoute: typeof Public__rootMotDePasseOublieIndexRoute
   Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
   Public__rootTarifsIndexRoute: typeof Public__rootTarifsIndexRoute
 }
@@ -359,6 +380,8 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,
   Public__rootInscriptionIndexRoute: Public__rootInscriptionIndexRoute,
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
+  Public__rootMotDePasseOublieIndexRoute:
+    Public__rootMotDePasseOublieIndexRoute,
   Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
   Public__rootTarifsIndexRoute: Public__rootTarifsIndexRoute,
 }

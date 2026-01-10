@@ -16,11 +16,13 @@ paths: "**/*.{ts,tsx}"
 - Prefer `unknown` over `any` when type is truly unknown
 - NEVER recreate types that exist in schemas or libraries
 - **Reuse existing types** from libraries, React, schemas, or internal code for precision and autocompletion
+- **Prefer `satisfies`** over type annotations (`: Type`) to validate while preserving inference
 
 ### Type Derivation
 A derived type is a type computed from an existing source (constant, object, array, or another type) rather than manually duplicated.
 
 **NEVER duplicate types that can be derived:**
+- From Zod schemas: use `z.infer<typeof schema>`
 - From constants: use `keyof typeof`, `typeof`, `ReturnType`, `Parameters`
 - From arrays: use `typeof arr[number]`
 - From existing types: use `Pick`, `Omit`, `Partial`, `Required`
