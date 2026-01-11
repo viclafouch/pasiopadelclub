@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authClient } from '@/lib/auth-client'
-import { getAuthErrorMessage } from '@/lib/auth-errors'
+import { useAuthActions } from '@convex-dev/auth/react'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
@@ -25,10 +24,19 @@ const getErrorMessage = (error: unknown): string => {
   }
 
   if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message)
+    const message = String(error.message)
+
+    if (
+      message.includes('Invalid credentials') ||
+      message.includes('invalid')
+    ) {
+      return 'Email ou mot de passe incorrect'
+    }
+
+    return message
   }
 
-  return 'Erreur de validation'
+  return 'Une erreur est survenue lors de la connexion'
 }
 
 type FormFieldProps = Pick<
@@ -121,18 +129,15 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const navigate = useNavigate()
   const search = useSearch({ strict: false }) as { redirect?: string }
+  const { signIn } = useAuthActions()
 
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
-      const { error } = await authClient.signIn.email({
+      await signIn('password', {
         email: values.email,
         password: values.password,
-        rememberMe: values.rememberMe
+        flow: 'signIn'
       })
-
-      if (error) {
-        throw error
-      }
     },
     onSuccess: () => {
       const redirectTo = search.redirect ?? '/'
@@ -173,7 +178,7 @@ export const LoginForm = () => {
           role="alert"
           className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
         >
-          {getAuthErrorMessage(loginMutation.error)}
+          {getErrorMessage(loginMutation.error)}
         </div>
       ) : null}
       <form.Field name="email">

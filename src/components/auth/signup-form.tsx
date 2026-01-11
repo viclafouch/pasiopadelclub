@@ -4,9 +4,8 @@ import { z } from 'zod/v3'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authClient } from '@/lib/auth-client'
-import { getAuthErrorMessage } from '@/lib/auth-errors'
 import { cn } from '@/lib/utils'
+import { useAuthActions } from '@convex-dev/auth/react'
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
@@ -49,10 +48,19 @@ const getErrorMessage = (error: unknown): string => {
   }
 
   if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message)
+    const message = String(error.message)
+
+    if (
+      message.includes('already exists') ||
+      message.includes('User already')
+    ) {
+      return 'Un compte existe déjà avec cette adresse email'
+    }
+
+    return message
   }
 
-  return 'Erreur de validation'
+  return 'Une erreur est survenue lors de la création du compte'
 }
 
 type FormFieldProps = Pick<
@@ -148,11 +156,10 @@ const SignupSuccess = () => {
         <CheckCircle2 className="h-8 w-8 text-primary" aria-hidden="true" />
       </div>
       <h2 className="mb-2 text-xl font-semibold text-foreground">
-        Vérifiez votre email
+        Compte créé avec succès
       </h2>
       <p className="text-muted-foreground">
-        Un email de confirmation a été envoyé à votre adresse. Cliquez sur le
-        lien pour activer votre compte.
+        Votre compte a été créé. Vous pouvez maintenant vous connecter.
       </p>
       <Link to="/connexion" className="mt-6 text-primary hover:underline">
         Aller à la page de connexion
@@ -164,22 +171,18 @@ const SignupSuccess = () => {
 export const SignupForm = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
+  const { signIn } = useAuthActions()
 
   const signupMutation = useMutation({
     mutationFn: async (values: Omit<SignupFormValues, 'confirmPassword'>) => {
-      const { error } = await authClient.signUp.email({
-        name: `${values.firstName} ${values.lastName}`,
+      await signIn('password', {
         email: values.email,
         password: values.password,
         firstName: values.firstName,
         lastName: values.lastName,
         phone: values.phone,
-        callbackURL: '/connexion'
+        flow: 'signUp'
       })
-
-      if (error) {
-        throw error
-      }
     }
   })
 
@@ -225,7 +228,7 @@ export const SignupForm = () => {
           role="alert"
           className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
         >
-          {getAuthErrorMessage(signupMutation.error)}
+          {getErrorMessage(signupMutation.error)}
         </div>
       ) : null}
       <div className="grid gap-5 sm:grid-cols-2">

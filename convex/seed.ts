@@ -1,8 +1,9 @@
+/* eslint-disable no-await-in-loop */
 import { mutation } from './_generated/server'
 
 export const seedCourts = mutation({
   args: {},
-  handler: async (ctx) => {
+  handler: async (context) => {
     const courtsData = [
       {
         name: 'Double A',
@@ -64,16 +65,18 @@ export const seedCourts = mutation({
     let skipped = 0
 
     for (const courtData of courtsData) {
-      const existing = await ctx.db
+      const existing = await context.db
         .query('courts')
-        .filter((q) => q.eq(q.field('name'), courtData.name))
+        .filter((item) => {
+          return item.eq(item.field('name'), courtData.name)
+        })
         .first()
 
       if (!existing) {
-        await ctx.db.insert('courts', courtData)
-        inserted++
+        await context.db.insert('courts', courtData)
+        inserted += 1
       } else {
-        skipped++
+        skipped += 1
       }
     }
 
@@ -86,30 +89,28 @@ export const seedCourts = mutation({
 
 export const seedAdmin = mutation({
   args: {},
-  handler: async (ctx) => {
-    const existingAdmin = await ctx.db
+  handler: async (context) => {
+    const existingAdmin = await context.db
       .query('users')
-      .withIndex('by_email', (q) => {
-        return q.eq('email', 'admin@pasiopadelclub.fr')
+      .withIndex('email', (item) => {
+        return item.eq('email', 'admin@pasiopadelclub.fr')
       })
       .first()
 
     if (existingAdmin) {
+      if (existingAdmin.role !== 'admin') {
+        await context.db.patch(existingAdmin._id, { role: 'admin' })
+
+        return { success: true, message: 'User promoted to admin' }
+      }
+
       return { success: false, message: 'Admin already exists' }
     }
 
-    await ctx.db.insert('users', {
-      email: 'admin@pasiopadelclub.fr',
-      emailVerified: true,
-      firstName: 'Admin',
-      lastName: 'Pasio',
-      phone: '0971117928',
-      role: 'admin',
-      isBlocked: false,
-      isAnonymized: false,
-      createdAt: Date.now()
-    })
-
-    return { success: true, message: 'Admin user created' }
+    return {
+      success: false,
+      message:
+        'Create admin via signup form first, then run this to promote to admin role'
+    }
   }
 })

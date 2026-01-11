@@ -1,6 +1,10 @@
-import { getAuthConfigProvider } from '@convex-dev/better-auth/auth-config'
 import type { AuthConfig } from 'convex/server'
 
 export default {
-  providers: [getAuthConfigProvider()]
+  providers: [
+    {
+      domain: process.env.CONVEX_SITE_URL as string,
+      applicationID: 'convex'
+    }
+  ]
 } satisfies AuthConfig

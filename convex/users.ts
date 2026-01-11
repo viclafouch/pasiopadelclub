@@ -1,38 +1,39 @@
 import { v } from 'convex/values'
+import { getAuthUserId } from '@convex-dev/auth/server'
 import { query } from './_generated/server'
-import { authComponent } from './auth'
-
-async function getCurrentUserWithRole(ctx: { db: { query: Function } }) {
-  const authUser = await authComponent.getAuthUser(ctx as never)
-  if (!authUser) return null
-
-  const user = await ctx.db
-    .query('users')
-    .withIndex('by_email', (q: { eq: Function }) => q.eq('email', authUser.email))
-    .first()
-
-  return user
-}
 
 export const getCurrent = query({
   args: {},
-  handler: async (ctx) => {
-    return await getCurrentUserWithRole(ctx)
+  handler: async (context) => {
+    const userId = await getAuthUserId(context)
+
+    if (userId === null) {
+      return null
+    }
+
+    return context.db.get(userId)
   }
 })
 
 export const getByEmail = query({
   args: { email: v.string() },
-  handler: async (ctx, args) => {
-    const currentUser = await getCurrentUserWithRole(ctx)
+  handler: async (context, args) => {
+    const userId = await getAuthUserId(context)
+
+    if (userId === null) {
+      throw new Error('Unauthorized: Authentication required')
+    }
+
+    const currentUser = await context.db.get(userId)
+
     if (!currentUser || currentUser.role !== 'admin') {
       throw new Error('Unauthorized: Admin access required')
     }
 
-    return await ctx.db
+    return context.db
       .query('users')
-      .withIndex('by_email', (q) => {
-        return q.eq('email', args.email)
+      .withIndex('email', (item) => {
+        return item.eq('email', args.email)
       })
       .first()
   }
@@ -40,19 +41,26 @@ export const getByEmail = query({
 
 export const getById = query({
   args: { userId: v.id('users') },
-  handler: async (ctx, args) => {
-    const currentUser = await getCurrentUserWithRole(ctx)
-    if (!currentUser) {
+  handler: async (context, args) => {
+    const currentUserId = await getAuthUserId(context)
+
+    if (currentUserId === null) {
       throw new Error('Unauthorized: Authentication required')
     }
 
-    const isOwnProfile = currentUser._id === args.userId
+    const currentUser = await context.db.get(currentUserId)
+
+    if (!currentUser) {
+      throw new Error('Unauthorized: User not found')
+    }
+
+    const isOwnProfile = currentUserId === args.userId
     const isAdmin = currentUser.role === 'admin'
 
     if (!isOwnProfile && !isAdmin) {
       throw new Error('Unauthorized: Cannot access other user profiles')
     }
 
-    return await ctx.db.get(args.userId)
+    return context.db.get(args.userId)
   }
 })

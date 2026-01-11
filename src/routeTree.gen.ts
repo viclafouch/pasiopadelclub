@@ -24,7 +24,6 @@ import { Route as Public__rootConnexionIndexRouteImport } from './routes/_public
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
   id: '/_public__root',
@@ -106,15 +105,9 @@ const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof Public__rootIndexRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin': typeof AdminAdminIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
@@ -129,7 +122,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof Public__rootIndexRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin': typeof AdminAdminIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
@@ -148,7 +140,6 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public__root': typeof Public__rootRouteRouteWithChildren
   '/_public__root/': typeof Public__rootIndexRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
@@ -165,7 +156,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/api/auth/$'
     | '/admin'
     | '/mon-compte'
     | '/cgv'
@@ -180,7 +170,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/api/auth/$'
     | '/admin'
     | '/mon-compte'
     | '/cgv'
@@ -198,7 +187,6 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_public__root'
     | '/_public__root/'
-    | '/api/auth/$'
     | '/_admin/admin/'
     | '/_authenticated/mon-compte/'
     | '/_public__root/cgv/'
@@ -216,7 +204,6 @@ export interface RootRouteChildren {
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -326,13 +313,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -393,7 +373,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRouteRoute: AdminRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

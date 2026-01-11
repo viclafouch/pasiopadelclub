@@ -14,7 +14,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 |--------|-------------|
 | Frontend | React 19, TanStack Start avec Tanstack Router (SSR), Tailwind CSS 4, Shadcn, Vite |
 | Backend | Convex |
-| Authentification | BetterAuth (email/mot de passe) |
+| Authentification | Convex Auth (email/mot de passe) |
 | Paiement | Polar |
 | Emails transactionnels | Resend (templates React Email brandés) |
 | Hébergement | Railway |
@@ -229,7 +229,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 ## Milestone 1 : Infrastructure & Configuration
 
 ### Objectif
-Mettre en place les fondations techniques du projet : Convex, BetterAuth, et structure de routing.
+Mettre en place les fondations techniques du projet : Convex, Convex Auth, et structure de routing.
 
 ### 1.1 Configuration Convex
 - [x] Installer Convex (`npm install convex`)
@@ -248,17 +248,20 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 - [x] Créer `convex/users.ts` - query `getByEmail`
 - [x] Créer `convex/users.ts` - query `getCurrent`
 
-### 1.2 Intégration BetterAuth
-- [x] Installer BetterAuth (`npm install better-auth@1.4.9`)
-- [x] Installer adaptateur Convex BetterAuth (`@convex-dev/better-auth`)
-- [x] Créer `convex/auth.ts` - configuration serveur
-- [x] Créer `src/lib/auth-client.ts` - configuration client
-- [x] Créer route API `/api/auth/$`
-- [x] Configurer provider email/password
-- [x] Activer vérification email obligatoire
-- [x] Configurer ConvexBetterAuthProvider dans `__root.tsx`
-- [x] ~~Créer hook `useAuth()` pour le client~~ (non nécessaire, utiliser `authClient` directement)
-- [x] ~~Créer hook `useSession()` pour le client~~ (non nécessaire, utiliser `authClient.useSession()` directement)
+### 1.2 Intégration Convex Auth
+- [x] Désinstaller Better Auth (`npm uninstall better-auth @convex-dev/better-auth`)
+- [x] Supprimer dossier `convex/betterAuth/`
+- [x] Supprimer `convex/convex.config.ts` (système components)
+- [x] Mettre à jour `convex/auth.config.ts` pour Convex Auth
+- [x] Supprimer route API `/api/auth/$`
+- [x] Installer Convex Auth (`npm install @convex-dev/auth @auth/core`)
+- [x] Créer `convex/auth.ts` - configuration Convex Auth avec Password provider
+- [x] Mettre à jour `convex/schema.ts` - ajouter `authTables`, unifier table `users`
+- [x] Créer `convex/http.ts` - route HTTP pour auth
+- [x] Supprimer `src/lib/auth-client.ts` (Convex Auth utilise `useAuthActions` directement)
+- [x] Supprimer `src/lib/auth-server.ts` (plus nécessaire)
+- [x] Configurer `ConvexAuthProvider` dans `router.tsx` (via Wrap)
+- [x] Configurer variables env `AUTH_SECRET` et `JWT_PRIVATE_KEY`
 
 ### 1.3 Structure de Routing
 - [x] Créer layout `_public__root.tsx` (existant, vérifier)
@@ -289,8 +292,8 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 - [x] Exécuter seed en développement
 
 ### Livrables
-- Convex fonctionnel avec schéma complet
-- Authentification email/mot de passe avec vérification email
+- Convex fonctionnel avec schéma unifié (pas de component séparé)
+- Authentification Convex Auth email/mot de passe
 - Structure de routing complète
 - Base de données initialisée avec les terrains
 
@@ -305,7 +308,7 @@ Mettre en place les fondations techniques du projet : Convex, BetterAuth, et str
 - [x] Migrer `VITE_CONVEX_SITE_URL` (serveur)
 - [x] Migrer `SITE_URL` (serveur - Convex)
 - [x] Mettre à jour `convex/auth.ts` pour utiliser validation Zod (`convex/env.ts`)
-- [x] Mettre à jour `src/lib/auth-server.ts` pour utiliser T3 Env
+- [x] ~~Mettre à jour `src/lib/auth-server.ts` pour utiliser T3 Env~~ (fichier supprimé - Convex Auth)
 
 #### Index Convex manquant
 - [x] Ajouter index composite `by_courtId_date` sur `blockedSlots` (nécessaire pour M5)
@@ -397,7 +400,7 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [x] Créer schéma Zod validation inscription
 - [x] Afficher erreurs de validation
 - [x] Gérer erreur "email déjà utilisé"
-- [x] Appeler BetterAuth signup
+- [x] Appeler Convex Auth signup via `signIn('password', { flow: 'signUp' })`
 - [x] Afficher message "vérifiez votre email"
 - [x] Rediriger vers page de confirmation
 
@@ -418,7 +421,7 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 ### 3.3 Récupération mot de passe
 - [x] Créer route `/mot-de-passe-oublie/index.tsx` (placeholder)
 - [ ] Créer composant `ForgotPasswordForm`
-- [ ] Envoyer email réinitialisation via BetterAuth
+- [ ] Envoyer email réinitialisation via Convex Auth (Password provider avec reset)
 - [ ] Créer template email réinitialisation
 - [ ] Créer route `/reset-password/index.tsx`
 - [ ] Créer composant `ResetPasswordForm`
@@ -929,7 +932,7 @@ Déployer le site en production sur Railway.
 - [ ] Configurer webhook Polar prod
 - [ ] Vérifier domaine Resend prod
 - [ ] Mettre à jour clés API Resend
-- [ ] Configurer BetterAuth prod
+- [ ] Configurer Convex Auth prod (AUTH_SECRET)
 
 ### 12.4 Monitoring
 - [ ] Configurer logs Railway

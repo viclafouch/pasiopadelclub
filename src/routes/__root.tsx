@@ -1,9 +1,6 @@
 /// <reference types="vite/client" />
+
 import Footer from '@/components/footer'
-import { authClient } from '@/lib/auth-client'
-import { getToken } from '@/lib/auth-server'
-import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
-import type { ConvexQueryClient } from '@convex-dev/react-query'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import {
@@ -11,24 +8,14 @@ import {
   HeadContent,
   Link,
   Outlet,
-  Scripts,
-  useRouteContext
+  Scripts
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { createServerFn } from '@tanstack/react-start'
-import type { Doc } from '../../convex/_generated/dataModel'
 import appCss from '../styles.css?url'
 
 type RootRouteContext = {
   queryClient: QueryClient
-  convexQueryClient: ConvexQueryClient
-  user: Doc<'users'> | null
-  token: string | null
 }
-
-const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
-  return getToken()
-})
 
 const NotFoundComponent = () => {
   return (
@@ -149,34 +136,11 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
       ]
     }
   },
-  beforeLoad: async ({ context }) => {
-    const token = await getAuth()
-
-    if (token) {
-      context.convexQueryClient.serverHttpClient?.setAuth(token)
-    }
-
-    return {
-      isAuthenticated: Boolean(token),
-      token
-    }
-  },
   component: () => {
-    const { convexQueryClient, token } = useRouteContext({
-      from: Route.id
-    })
-
     return (
-      <ConvexBetterAuthProvider
-        client={convexQueryClient.convexClient}
-        // @ts-expect-error - TODO: fix this
-        authClient={authClient}
-        initialToken={token}
-      >
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ConvexBetterAuthProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
     )
   }
 })

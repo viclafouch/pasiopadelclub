@@ -19,8 +19,7 @@ export default [
       '**/.output/**',
       '**/.nitro/**',
       '**/.tanstack/**',
-      '**/db/generated/**',
-      '**/convex/**'
+      '**/convex/_generated/**'
     ]
   },
   {
