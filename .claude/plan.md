@@ -220,7 +220,8 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 >    - Simplifie le code pour clarté et maintenabilité
 > 3. **Lancer `npm run lint`** et corriger toutes les erreurs restantes
 > 4. **Une fois tout validé**, cocher la tâche `[x]`
-> 5. **Attendre la demande explicite de l'utilisateur pour passer à la milestone suivante**
+> 5. **NE COMMIT JAMAIS LES CHANGEMENTS TANT QUE L'UTILISATEUR N'A PAS ACCEPTÉ LES CHANGEMENTS**
+> 6. **Attendre la demande explicite de l'utilisateur pour passer à la milestone suivante**
 >
 > ⚠️ **Ne jamais marquer une tâche comme terminée sans passer par `code-simplifier` et ne jamais sauter de tâche**
 > ⚠️ **Ne JAMAIS passer automatiquement à la milestone suivante - attendre la demande explicite de l'utilisateur**
@@ -435,7 +436,9 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [x] Ajouter bouton "Déconnexion" si connecté
 - [x] Afficher boutons "Connexion/Inscription" si déconnecté
 - [x] Implémenter fonction déconnexion
-- [x] Rediriger vers accueil après déconnexion
+- [x] Rediriger vers accueil après déconnexion (uniquement sur pages protégées)
+- [x] Rediriger /connexion vers accueil si déjà connecté
+- [x] Rediriger /inscription vers accueil si déjà connecté
 
 ### Livrables
 - Flux d'inscription complet avec vérification email

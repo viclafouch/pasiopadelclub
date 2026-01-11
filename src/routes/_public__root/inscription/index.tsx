@@ -1,7 +1,26 @@
+import React from 'react'
+import { useConvexAuth } from 'convex/react'
 import { SignupForm } from '@/components/auth/signup-form'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 const InscriptionPage = () => {
+  const { isLoading, isAuthenticated } = useConvexAuth()
+  const navigate = useNavigate()
+
+  React.useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate({ to: '/' })
+    }
+  }, [isLoading, isAuthenticated, navigate])
+
+  if (isLoading || isAuthenticated) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <section className="relative overflow-hidden py-20 lg:py-28">
