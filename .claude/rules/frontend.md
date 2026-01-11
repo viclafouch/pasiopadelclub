@@ -7,6 +7,10 @@ paths: "**/*.{ts,tsx}"
 ### React
 - Use `React.useState`, `React.useEffect`, etc. — never destructure React imports.
 - **Use `useMutation`** for async operations (forms, API calls) instead of multiple `useState` and manual state management for loading/success/error.
+- **NEVER use `useCallback` or `useMemo`** unless you have a proven performance problem. These are premature optimizations that add complexity without benefit in 99% of cases. Only valid uses:
+  - Passing callbacks to heavily memoized child components (`React.memo`)
+  - Expensive computations that are measurably slow (profile first)
+  - Dependencies in `useEffect` that would cause infinite loops without memoization
 
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.

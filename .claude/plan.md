@@ -429,13 +429,13 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [x] Rediriger vers connexion après succès
 
 ### 3.4 Gestion de session
-- [ ] Mettre à jour navbar - afficher état connecté
-- [ ] Afficher nom utilisateur si connecté
-- [ ] Ajouter bouton "Mon compte" si connecté
-- [ ] Ajouter bouton "Déconnexion" si connecté
-- [ ] Afficher boutons "Connexion/Inscription" si déconnecté
-- [ ] Implémenter fonction déconnexion
-- [ ] Rediriger vers accueil après déconnexion
+- [x] Mettre à jour navbar - afficher état connecté
+- [x] Afficher nom utilisateur si connecté
+- [x] Ajouter bouton "Mon compte" si connecté
+- [x] Ajouter bouton "Déconnexion" si connecté
+- [x] Afficher boutons "Connexion/Inscription" si déconnecté
+- [x] Implémenter fonction déconnexion
+- [x] Rediriger vers accueil après déconnexion
 
 ### Livrables
 - Flux d'inscription complet avec vérification email
