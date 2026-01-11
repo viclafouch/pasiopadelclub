@@ -218,11 +218,12 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 > 2. **Lancer `code-simplifier`** pour simplifier et valider le code (obligatoire)
 >    - Vérifie le respect des règles `.claude/rules/` (TypeScript, comments, code-style, testing)
 >    - Simplifie le code pour clarté et maintenabilité
-> 3. **Lancer `npm run lint --fix`** et corriger toutes les erreurs restantes
+> 3. **Lancer `npm run lint`** et corriger toutes les erreurs restantes
 > 4. **Une fois tout validé**, cocher la tâche `[x]`
-> 5. **Passer à la tâche suivante**
+> 5. **Attendre la demande explicite de l'utilisateur pour passer à la milestone suivante**
 >
 > ⚠️ **Ne jamais marquer une tâche comme terminée sans passer par `code-simplifier` et ne jamais sauter de tâche**
+> ⚠️ **Ne JAMAIS passer automatiquement à la milestone suivante - attendre la demande explicite de l'utilisateur**
 
 ---
 
@@ -419,15 +420,13 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 - [x] Rediriger vers accueil si pas de page précédente
 
 ### 3.3 Récupération mot de passe
-- [x] Créer route `/mot-de-passe-oublie/index.tsx` (placeholder)
-- [ ] Créer composant `ForgotPasswordForm`
-- [ ] Envoyer email réinitialisation via Convex Auth (Password provider avec reset)
-- [ ] Créer template email réinitialisation
-- [ ] Créer route `/reset-password/index.tsx`
-- [ ] Créer composant `ResetPasswordForm`
-- [ ] Valider token de réinitialisation
-- [ ] Mettre à jour mot de passe
-- [ ] Rediriger vers connexion après succès
+- [x] Créer route `/mot-de-passe-oublie/index.tsx`
+- [x] Créer composant `ForgotPasswordForm` (flow 2 étapes: email → code+nouveau mdp)
+- [x] Envoyer email réinitialisation via Convex Auth (Password provider avec reset)
+- [x] Créer `convex/ResendOTPPasswordReset.ts` - provider OTP 8 chiffres
+- [x] Créer composant partagé `FormField` pour éviter duplication code
+- [x] Valider code OTP et mettre à jour mot de passe
+- [x] Rediriger vers connexion après succès
 
 ### 3.4 Gestion de session
 - [ ] Mettre à jour navbar - afficher état connecté

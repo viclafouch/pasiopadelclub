@@ -1,9 +1,9 @@
 import React from 'react'
-import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { LogIn } from 'lucide-react'
 import { z } from 'zod/v3'
+import { FormField } from '@/components/auth/form-field'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthActions } from '@convex-dev/auth/react'
 import { useForm } from '@tanstack/react-form'
@@ -37,92 +37,6 @@ const getErrorMessage = (error: unknown): string => {
   }
 
   return 'Une erreur est survenue lors de la connexion'
-}
-
-type FormFieldProps = Pick<
-  React.ComponentProps<'input'>,
-  'name' | 'type' | 'placeholder' | 'autoComplete'
-> & {
-  label: string
-  field: {
-    state: { value: string; meta: { errors: unknown[] } }
-    handleBlur: () => void
-    handleChange: (value: string) => void
-  }
-  showPasswordToggle?: boolean
-  isPasswordVisible?: boolean
-  onTogglePassword?: () => void
-}
-
-const FormField = ({
-  label,
-  name,
-  type = 'text',
-  placeholder,
-  autoComplete,
-  field,
-  showPasswordToggle,
-  isPasswordVisible,
-  onTogglePassword
-}: FormFieldProps) => {
-  const hasError = field.state.meta.errors.length > 0
-  const errorId = `${name}-error`
-
-  function getInputType(): React.HTMLInputTypeAttribute {
-    if (!showPasswordToggle) {
-      return type
-    }
-
-    return isPasswordVisible ? 'text' : 'password'
-  }
-
-  const inputType = getInputType()
-
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
-      <div className="relative">
-        <Input
-          type={inputType}
-          id={name}
-          name={name}
-          value={field.state.value}
-          onBlur={field.handleBlur}
-          onChange={(event) => {
-            return field.handleChange(event.target.value)
-          }}
-          autoComplete={autoComplete}
-          aria-invalid={hasError}
-          aria-describedby={hasError ? errorId : undefined}
-          className="h-11"
-          placeholder={placeholder}
-        />
-        {showPasswordToggle ? (
-          <button
-            type="button"
-            onClick={onTogglePassword}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={
-              isPasswordVisible
-                ? 'Masquer le mot de passe'
-                : 'Afficher le mot de passe'
-            }
-          >
-            {isPasswordVisible ? (
-              <EyeOff className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Eye className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
-        ) : null}
-      </div>
-      {hasError ? (
-        <p id={errorId} role="alert" className="text-sm text-destructive">
-          {getErrorMessage(field.state.meta.errors[0])}
-        </p>
-      ) : null}
-    </div>
-  )
 }
 
 export const LoginForm = () => {
