@@ -14,7 +14,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 |--------|-------------|
 | Frontend | React 19, TanStack Start avec Tanstack Router (SSR), Tailwind CSS 4, Shadcn, Vite |
 | Backend | Convex |
-| Authentification | Convex Auth (email/mot de passe) |
+| Authentification | Clerk |
 | Paiement | Polar |
 | Emails transactionnels | Resend (templates React Email brandés) |
 | Hébergement | Railway |
@@ -250,20 +250,12 @@ Mettre en place les fondations techniques du projet : Convex, Convex Auth, et st
 - [x] Créer `convex/users.ts` - query `getByEmail`
 - [x] Créer `convex/users.ts` - query `getCurrent`
 
-### 1.2 Intégration Convex Auth
-- [x] Désinstaller Better Auth (`npm uninstall better-auth @convex-dev/better-auth`)
-- [x] Supprimer dossier `convex/betterAuth/`
-- [x] Supprimer `convex/convex.config.ts` (système components)
-- [x] Mettre à jour `convex/auth.config.ts` pour Convex Auth
-- [x] Supprimer route API `/api/auth/$`
-- [x] Installer Convex Auth (`npm install @convex-dev/auth @auth/core`)
-- [x] Créer `convex/auth.ts` - configuration Convex Auth avec Password provider
-- [x] Mettre à jour `convex/schema.ts` - ajouter `authTables`, unifier table `users`
-- [x] Créer `convex/http.ts` - route HTTP pour auth
-- [x] Supprimer `src/lib/auth-client.ts` (Convex Auth utilise `useAuthActions` directement)
-- [x] Supprimer `src/lib/auth-server.ts` (plus nécessaire)
-- [x] Configurer `ConvexAuthProvider` dans `router.tsx` (via Wrap)
-- [x] Configurer variables env `AUTH_SECRET` et `JWT_PRIVATE_KEY`
+### 1.2 Intégration Authentification (Clerk)
+- [x] Installer Clerk (`@clerk/tanstack-react-start`, `@clerk/localizations`)
+- [x] Configurer variables env Clerk (`VITE_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`)
+- [x] Créer `convex/http.ts` - webhook Clerk pour sync users
+- [x] Configurer `ClerkProvider` + `ConvexProviderWithClerk` dans `__root.tsx`
+- [x] Créer `src/server/auth.ts` - `authStateFn` pour SSR auth
 
 ### 1.3 Structure de Routing
 - [x] Créer layout `_public__root.tsx` (existant, vérifier)
@@ -294,9 +286,9 @@ Mettre en place les fondations techniques du projet : Convex, Convex Auth, et st
 - [x] Exécuter seed en développement
 
 ### Livrables
-- Convex fonctionnel avec schéma unifié (pas de component séparé)
-- Authentification Convex Auth email/mot de passe
-- Structure de routing complète
+- Convex fonctionnel avec schéma unifié
+- Authentification Clerk intégrée avec sync Convex
+- Structure de routing complète avec guards
 - Base de données initialisée avec les terrains
 
 ### 1.5 Améliorations Techniques (Planifiées)
@@ -385,66 +377,48 @@ Créer les pages publiques du site qui ne nécessitent pas d'authentification ni
 
 ---
 
-## Milestone 3 : Authentification Utilisateur
+## Milestone 3 : Authentification Utilisateur (Clerk)
 
 ### Objectif
-Implémenter le flux complet d'inscription et de connexion utilisateur.
+Implémenter le flux complet d'inscription et de connexion utilisateur via Clerk.
 
-### 3.1 Page Inscription
-- [x] Créer route `/inscription/index.tsx`
-- [x] Créer composant `SignupForm`
-- [x] Champ email avec validation
-- [x] Champ mot de passe avec validation (min 8 chars)
-- [x] Champ confirmation mot de passe
-- [x] Champ prénom (obligatoire)
-- [x] Champ nom (obligatoire)
-- [x] Champ téléphone (obligatoire, format FR)
-- [x] Créer schéma Zod validation inscription
-- [x] Afficher erreurs de validation
-- [x] Gérer erreur "email déjà utilisé"
-- [x] Appeler Convex Auth signup via `signIn('password', { flow: 'signUp' })`
-- [x] Afficher message "vérifiez votre email"
-- [x] Rediriger vers page de confirmation
+### 3.1 Configuration Clerk
+- [x] Installer Clerk (`@clerk/tanstack-react-start`)
+- [x] Configurer `VITE_CLERK_PUBLISHABLE_KEY` et `CLERK_SECRET_KEY`
+- [x] Intégrer `ClerkProvider` dans `__root.tsx`
+- [x] Configurer `ConvexProviderWithClerk` pour auth Convex
+- [x] Créer `src/server/auth.ts` avec `authStateFn`
 
-### 3.2 Page Connexion
-- [x] Créer route `/connexion/index.tsx`
-- [x] Créer composant `LoginForm`
-- [x] Champ email
-- [x] Champ mot de passe
-- [x] Checkbox "Se souvenir de moi"
-- [x] Lien vers `/inscription`
-- [x] Lien vers "Mot de passe oublié"
-- [x] Créer schéma Zod validation connexion
-- [x] Gérer erreur "email non vérifié"
-- [x] Gérer erreur "identifiants invalides"
-- [x] Rediriger vers page précédente après connexion
-- [x] Rediriger vers accueil si pas de page précédente
+### 3.2 Pages Auth (Clerk Components)
+- [x] Créer route `/inscription/index.tsx` avec `<SignUp />`
+- [x] Créer route `/connexion/index.tsx` avec `<SignIn />`
+- [x] Configurer URLs de redirection entre pages
+- [x] Localisation française (`@clerk/localizations`)
 
-### 3.3 Récupération mot de passe
-- [x] Créer route `/mot-de-passe-oublie/index.tsx`
-- [x] Créer composant `ForgotPasswordForm` (flow 2 étapes: email → code+nouveau mdp)
-- [x] Envoyer email réinitialisation via Convex Auth (Password provider avec reset)
-- [x] Créer `convex/ResendOTPPasswordReset.ts` - provider OTP 8 chiffres
-- [x] Créer composant partagé `FormField` pour éviter duplication code
-- [x] Valider code OTP et mettre à jour mot de passe
-- [x] Rediriger vers connexion après succès
+### 3.3 Sécurité des Redirections
+- [x] Valider paramètre `redirect` (open redirect protection)
+- [x] Vérifier que le path commence par `/` et non `//`
+- [x] Rediriger vers `/` si path invalide
 
-### 3.4 Gestion de session
+### 3.4 Gestion de Session
 - [x] Mettre à jour navbar - afficher état connecté
 - [x] Afficher nom utilisateur si connecté
 - [x] Ajouter bouton "Mon compte" si connecté
 - [x] Ajouter bouton "Déconnexion" si connecté
 - [x] Afficher boutons "Connexion/Inscription" si déconnecté
-- [x] Implémenter fonction déconnexion
-- [x] Rediriger vers accueil après déconnexion (uniquement sur pages protégées)
-- [x] Rediriger /connexion vers accueil si déjà connecté
-- [x] Rediriger /inscription vers accueil si déjà connecté
+- [x] Guards `beforeLoad` sur routes authentifiées
+- [x] Guards `beforeLoad` sur routes admin
+
+### 3.5 Synchronisation Convex
+- [x] Créer webhook Clerk → Convex pour sync users
+- [x] Mutation `users.upsertFromClerk`
+- [x] Query `users.getCurrent` via token Clerk
 
 ### Livrables
-- Flux d'inscription complet avec vérification email
-- Flux de connexion complet
-- Récupération de mot de passe
-- Navbar dynamique selon état de connexion
+- Authentification Clerk fonctionnelle
+- Inscription/connexion via composants Clerk
+- Protection contre open redirect
+- Sync users Clerk → Convex
 
 ---
 
@@ -455,68 +429,65 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 
 ### 4.1 Dashboard Utilisateur
 - [x] Créer route `/mon-compte/index.tsx`
-- [x] Créer layout espace utilisateur
-- [x] Créer navigation espace utilisateur (tabs ou sidebar)
+- [x] Créer layout espace utilisateur avec tabs
+- [x] Persister tab sélectionné dans l'URL (`?tab=`)
 - [x] Créer query `bookings.getUpcoming` (réservations à venir)
+- [x] Créer query `bookings.getActiveCount`
 - [x] Afficher liste réservations à venir
 - [x] Afficher compteur réservations actives (X/2)
+- [x] Afficher bandeau alerte si limite atteinte
 - [x] Afficher message si aucune réservation
+- [x] Prefetch data dans loader (toutes les tabs)
+- [x] `forceMount` sur tabs pour éviter démontage subscriptions
 
-### 4.2 Annulation de Réservation
-- [ ] Créer composant `BookingCard` avec détails
-- [ ] Ajouter bouton "Annuler" sur chaque réservation
-- [ ] Calculer si annulation possible (> 24h)
-- [ ] Désactiver bouton si < 24h
-- [ ] Afficher tooltip "Annulation impossible < 24h"
-- [ ] Créer composant `CancelBookingModal`
-- [ ] Afficher détails réservation dans modale
+### 4.2 Composant BookingCard
+- [x] Créer composant `BookingCard` avec détails (terrain, date, heure, prix)
+- [x] Créer composant `BookingCardSkeleton`
+- [x] Afficher badge status (confirmée, annulée, etc.)
+- [x] Bouton "Annuler" (variant destructive)
+- [x] Props: `booking`, `onCancel`, `showCancelButton`
+
+### 4.3 Annulation de Réservation (UX Pattern)
+- [x] Bouton annuler **toujours cliquable** (jamais disabled)
+- [x] Dialog adaptatif selon possibilité d'annulation :
+  - Si > 24h : confirmation avec "Oui, annuler" / "Non, garder"
+  - Si < 24h : explication de la règle + bouton "Compris"
+- [x] Créer `matchCanCancelBooking(startAt)` utility
 - [ ] Créer mutation `bookings.cancel`
 - [ ] Vérifier délai 24h côté serveur
-- [ ] Appeler action remboursement Polar
+- [ ] Appeler action remboursement Polar (M6)
 - [ ] Mettre à jour status "cancelled"
-- [ ] Envoyer email confirmation annulation
-- [ ] Afficher message succès après annulation
+- [ ] Envoyer email confirmation annulation (M7)
 
-### 4.3 Historique des Réservations
-- [ ] Créer route `/mon-compte/historique.tsx`
-- [ ] Créer query `bookings.getPast` (réservations passées)
-- [ ] Afficher liste réservations passées
-- [ ] Afficher date format JJ/MM/AAAA
-- [ ] Afficher terrain, durée, prix payé
-- [ ] Implémenter pagination (20 par page)
-- [ ] Afficher message si aucun historique
+### 4.4 Historique des Réservations
+- [x] Tab historique dans `/mon-compte`
+- [x] Créer query `bookings.getPast` avec pagination
+- [x] Afficher liste réservations passées avec `BookingCard`
+- [x] Afficher message si aucun historique
+- [ ] Implémenter "Charger plus" si > 20 réservations
 
-### 4.4 Gestion du Profil
-- [ ] Créer route `/mon-compte/profil.tsx`
-- [ ] Afficher email (non modifiable)
-- [ ] Créer formulaire modification prénom
-- [ ] Créer formulaire modification nom
-- [ ] Créer formulaire modification téléphone
+### 4.5 Gestion du Profil
+- [x] Tab profil dans `/mon-compte`
+- [x] Afficher email, téléphone, prénom, nom (lecture seule)
+- [ ] Créer formulaire modification prénom/nom/téléphone
 - [ ] Créer mutation `users.updateProfile`
 - [ ] Afficher message succès après modification
-- [ ] Créer section "Changer mot de passe"
-- [ ] Champ ancien mot de passe
-- [ ] Champ nouveau mot de passe
-- [ ] Champ confirmation nouveau mot de passe
-- [ ] Valider ancien mot de passe côté serveur
-- [ ] Afficher message succès après changement
+- [ ] Changement mot de passe via Clerk (lien externe)
 
-### 4.5 Suppression de compte
+### 4.6 Suppression de compte
 - [ ] Ajouter section "Supprimer mon compte"
-- [ ] Créer composant `DeleteAccountModal`
-- [ ] Demander confirmation par mot de passe
+- [ ] Dialog de confirmation avec explication
 - [ ] Créer mutation `users.anonymize`
 - [ ] Anonymiser données personnelles
-- [ ] Mettre `isAnonymized: true`
-- [ ] Désactiver le compte
-- [ ] Déconnecter l'utilisateur
+- [ ] Déconnexion via Clerk
 - [ ] Rediriger vers accueil
 
 ### Livrables
-- Dashboard utilisateur avec réservations à venir
-- Historique complet des réservations
-- Modification du profil et mot de passe
-- Suppression/anonymisation de compte
+- Dashboard utilisateur avec tabs URL-persisted
+- BookingCard réutilisable
+- Annulation avec dialog explicatif (pas de boutons disabled)
+- Historique paginé
+- Profil avec modification
 
 ---
 
@@ -527,6 +498,7 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 
 ### 5.1 Page de Réservation
 - [ ] Créer route `/reservation/index.tsx`
+- [ ] **URL as State** : persister date, filtres dans l'URL (`?date=&type=&location=`)
 - [ ] Créer composant `DateSelector` (10 prochains jours)
 - [ ] Afficher dates en format JJ/MM
 - [ ] Marquer date sélectionnée
@@ -828,15 +800,16 @@ Implémenter les fonctionnalités de gestion complète pour l'administrateur.
 ### Objectif
 Optimiser le site pour le référencement local et les performances.
 
-### 10.1 Métadonnées
-- [ ] Créer composant `SEO` réutilisable
-- [ ] Ajouter title unique par page
-- [ ] Ajouter description unique par page
-- [ ] Ajouter og:title par page
-- [ ] Ajouter og:description par page
-- [ ] Ajouter og:image par page
-- [ ] Ajouter Twitter Cards
-- [ ] Ajouter canonical URLs
+### 10.1 Métadonnées (via `seo()` utility)
+- [x] Créer utility `seo()` dans `src/utils/seo.ts`
+- [x] Configurer `VITE_SITE_URL` pour URLs canoniques
+- [x] Ajouter title unique par page (format: `{title} | Pasio Padel Club`)
+- [x] Ajouter description unique par page
+- [x] Ajouter og:title, og:description, og:url par page
+- [x] Ajouter og:locale fr_FR
+- [x] Ajouter Twitter Cards (title, description)
+- [x] Support og:image optionnel
+- [x] Appliquer `seo()` à toutes les routes (11 pages)
 
 ### 10.2 Schema.org
 - [ ] Créer JSON-LD LocalBusiness
@@ -845,7 +818,7 @@ Optimiser le site pour le référencement local et les performances.
 - [ ] Téléphone : 09 71 11 79 28
 - [ ] Horaires : 8h-22h, 7j/7
 - [ ] Créer JSON-LD SportsActivityLocation
-- [ ] Intégrer dans `<head>` de chaque page
+- [ ] Intégrer dans `__root.tsx`
 
 ### 10.3 Fichiers SEO
 - [ ] Créer `public/robots.txt`
@@ -853,58 +826,68 @@ Optimiser le site pour le référencement local et les performances.
 - [ ] Ajouter toutes les routes publiques
 
 ### 10.4 Performance
-- [ ] Convertir images en WebP
+- [ ] Convertir images galerie en WebP
 - [ ] Définir dimensions appropriées
-- [ ] Ajouter lazy loading images
-- [ ] Analyser bundle size
-- [ ] Optimiser imports
+- [ ] Vérifier lazy loading images (déjà en place)
+- [ ] Analyser bundle size avec `vite-bundle-visualizer`
+- [ ] Optimiser imports (tree-shaking)
 - [ ] Lancer audit Lighthouse
-- [ ] Corriger problèmes Performance
-- [ ] Corriger problèmes Accessibility
-- [ ] Corriger problèmes Best Practices
-- [ ] Corriger problèmes SEO
-- [ ] Atteindre score 90+ partout
+- [ ] Score Performance 90+
+- [ ] Score Accessibility 90+
+- [ ] Score Best Practices 90+
+- [ ] Score SEO 90+
 
 ### 10.5 Google My Business
 - [ ] Vérifier cohérence NAP avec fiche GMB
 - [ ] Ajouter lien GMB dans footer
 
 ### Livrables
-- Métadonnées complètes sur toutes les pages
-- Schema.org intégré
+- Utility `seo()` appliqué à toutes les pages
+- Schema.org LocalBusiness intégré
 - Sitemap et robots.txt
 - Score Lighthouse 90+
-- Cohérence avec fiche GMB
 
 ---
 
-## Milestone 11 : Tests & Qualité
+## Milestone 11 : Tests, Sécurité & Qualité
 
 ### Objectif
-S'assurer de la fiabilité du système avec des tests appropriés.
+S'assurer de la fiabilité et sécurité du système.
 
 ### 11.1 Tests Unitaires (Vitest)
 - [ ] Configurer Vitest
-- [ ] Tests fonctions utilitaires dates
+- [ ] Tests fonctions utilitaires dates (`formatDateFr`, `formatTimeFr`)
 - [ ] Tests fonctions formatage prix
-- [ ] Tests validations Zod inscription
-- [ ] Tests validations Zod connexion
+- [ ] Tests `matchCanCancelBooking` (délai 24h)
 - [ ] Tests calcul créneaux 90min
 - [ ] Tests calcul créneaux 60min
 - [ ] Tests calcul disponibilité
-- [ ] Tests vérification délai 24h
+- [ ] Tests validation search params (Zod)
 
 ### 11.2 Tests d'Intégration
 - [ ] Tests mutations Convex bookings
 - [ ] Tests mutations Convex users
 - [ ] Tests queries Convex slots
 - [ ] Tests queries Convex stats
-- [ ] Tests flux authentification
+
+### 11.3 Error Boundaries
+- [ ] Créer composant `ErrorBoundary` générique
+- [ ] Wrapper routes principales (pas l'app entière)
+- [ ] Afficher UI de récupération (retry, retour accueil)
+- [ ] Logger erreurs pour debugging
+
+### 11.4 Audit Sécurité
+- [ ] Lancer `security-auditor` agent sur routes auth
+- [ ] Vérifier protection CSRF sur mutations Convex
+- [ ] Vérifier validation côté serveur (délai 24h, limites)
+- [ ] Vérifier sanitization inputs (XSS)
+- [ ] Vérifier rate limiting webhooks
 
 ### Livrables
 - Suite de tests unitaires
 - Tests d'intégration Convex
-- Couverture de code acceptable
+- Error boundaries sur routes
+- Audit sécurité validé
 
 ---
 
@@ -934,7 +917,8 @@ Déployer le site en production sur Railway.
 - [ ] Configurer webhook Polar prod
 - [ ] Vérifier domaine Resend prod
 - [ ] Mettre à jour clés API Resend
-- [ ] Configurer Convex Auth prod (AUTH_SECRET)
+- [ ] Configurer Clerk prod (clés API production)
+- [ ] Configurer webhook Clerk prod → Convex
 
 ### 12.4 Monitoring
 - [ ] Configurer logs Railway
