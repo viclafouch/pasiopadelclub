@@ -11,18 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Public__rootRouteRouteImport } from './routes/_public__root/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
-import { Route as Public__rootMotDePasseOublieIndexRouteImport } from './routes/_public__root/mot-de-passe-oublie/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
-import { Route as Public__rootInscriptionIndexRouteImport } from './routes/_public__root/inscription/index'
 import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
 import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
-import { Route as Public__rootConnexionIndexRouteImport } from './routes/_public__root/connexion/index'
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
+import { Route as AuthInscriptionIndexRouteImport } from './routes/_auth/inscription/index'
+import { Route as AuthConnexionIndexRouteImport } from './routes/_auth/connexion/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 
 const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
@@ -31,6 +31,10 @@ const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -53,22 +57,10 @@ const Public__rootReservationIndexRoute =
     path: '/reservation/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
-const Public__rootMotDePasseOublieIndexRoute =
-  Public__rootMotDePasseOublieIndexRouteImport.update({
-    id: '/mot-de-passe-oublie/',
-    path: '/mot-de-passe-oublie/',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
 const Public__rootMentionsLegalesIndexRoute =
   Public__rootMentionsLegalesIndexRouteImport.update({
     id: '/mentions-legales/',
     path: '/mentions-legales/',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
-const Public__rootInscriptionIndexRoute =
-  Public__rootInscriptionIndexRouteImport.update({
-    id: '/inscription/',
-    path: '/inscription/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
 const Public__rootGalerieIndexRoute =
@@ -83,12 +75,6 @@ const Public__rootContactIndexRoute =
     path: '/contact/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
-const Public__rootConnexionIndexRoute =
-  Public__rootConnexionIndexRouteImport.update({
-    id: '/connexion/',
-    path: '/connexion/',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
 const Public__rootCgvIndexRoute = Public__rootCgvIndexRouteImport.update({
   id: '/cgv/',
   path: '/cgv/',
@@ -100,6 +86,16 @@ const AuthenticatedMonCompteIndexRoute =
     path: '/mon-compte/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthInscriptionIndexRoute = AuthInscriptionIndexRouteImport.update({
+  id: '/inscription/',
+  path: '/inscription/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthConnexionIndexRoute = AuthConnexionIndexRouteImport.update({
+  id: '/connexion/',
+  path: '/connexion/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -109,46 +105,44 @@ const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof Public__rootIndexRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/connexion': typeof AuthConnexionIndexRoute
+  '/inscription': typeof AuthInscriptionIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
-  '/connexion': typeof Public__rootConnexionIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
   '/galerie': typeof Public__rootGalerieIndexRoute
-  '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
-  '/mot-de-passe-oublie': typeof Public__rootMotDePasseOublieIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof Public__rootIndexRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/connexion': typeof AuthConnexionIndexRoute
+  '/inscription': typeof AuthInscriptionIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
-  '/connexion': typeof Public__rootConnexionIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
   '/galerie': typeof Public__rootGalerieIndexRoute
-  '/inscription': typeof Public__rootInscriptionIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
-  '/mot-de-passe-oublie': typeof Public__rootMotDePasseOublieIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_admin': typeof AdminRouteRouteWithChildren
+  '/_auth': typeof AuthRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public__root': typeof Public__rootRouteRouteWithChildren
   '/_public__root/': typeof Public__rootIndexRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_auth/connexion/': typeof AuthConnexionIndexRoute
+  '/_auth/inscription/': typeof AuthInscriptionIndexRoute
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
-  '/_public__root/connexion/': typeof Public__rootConnexionIndexRoute
   '/_public__root/contact/': typeof Public__rootContactIndexRoute
   '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
-  '/_public__root/inscription/': typeof Public__rootInscriptionIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
-  '/_public__root/mot-de-passe-oublie/': typeof Public__rootMotDePasseOublieIndexRoute
   '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
   '/_public__root/tarifs/': typeof Public__rootTarifsIndexRoute
 }
@@ -157,51 +151,50 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/connexion'
+    | '/inscription'
     | '/mon-compte'
     | '/cgv'
-    | '/connexion'
     | '/contact'
     | '/galerie'
-    | '/inscription'
     | '/mentions-legales'
-    | '/mot-de-passe-oublie'
     | '/reservation'
     | '/tarifs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/connexion'
+    | '/inscription'
     | '/mon-compte'
     | '/cgv'
-    | '/connexion'
     | '/contact'
     | '/galerie'
-    | '/inscription'
     | '/mentions-legales'
-    | '/mot-de-passe-oublie'
     | '/reservation'
     | '/tarifs'
   id:
     | '__root__'
     | '/_admin'
+    | '/_auth'
     | '/_authenticated'
     | '/_public__root'
     | '/_public__root/'
     | '/_admin/admin/'
+    | '/_auth/connexion/'
+    | '/_auth/inscription/'
     | '/_authenticated/mon-compte/'
     | '/_public__root/cgv/'
-    | '/_public__root/connexion/'
     | '/_public__root/contact/'
     | '/_public__root/galerie/'
-    | '/_public__root/inscription/'
     | '/_public__root/mentions-legales/'
-    | '/_public__root/mot-de-passe-oublie/'
     | '/_public__root/reservation/'
     | '/_public__root/tarifs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
 }
@@ -220,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_admin': {
@@ -250,25 +250,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootReservationIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
-    '/_public__root/mot-de-passe-oublie/': {
-      id: '/_public__root/mot-de-passe-oublie/'
-      path: '/mot-de-passe-oublie'
-      fullPath: '/mot-de-passe-oublie'
-      preLoaderRoute: typeof Public__rootMotDePasseOublieIndexRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
     '/_public__root/mentions-legales/': {
       id: '/_public__root/mentions-legales/'
       path: '/mentions-legales'
       fullPath: '/mentions-legales'
       preLoaderRoute: typeof Public__rootMentionsLegalesIndexRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
-    '/_public__root/inscription/': {
-      id: '/_public__root/inscription/'
-      path: '/inscription'
-      fullPath: '/inscription'
-      preLoaderRoute: typeof Public__rootInscriptionIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/galerie/': {
@@ -285,13 +271,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootContactIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
-    '/_public__root/connexion/': {
-      id: '/_public__root/connexion/'
-      path: '/connexion'
-      fullPath: '/connexion'
-      preLoaderRoute: typeof Public__rootConnexionIndexRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
     '/_public__root/cgv/': {
       id: '/_public__root/cgv/'
       path: '/cgv'
@@ -305,6 +284,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/mon-compte'
       preLoaderRoute: typeof AuthenticatedMonCompteIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_auth/inscription/': {
+      id: '/_auth/inscription/'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof AuthInscriptionIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/connexion/': {
+      id: '/_auth/connexion/'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof AuthConnexionIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_admin/admin/': {
       id: '/_admin/admin/'
@@ -328,6 +321,20 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface AuthRouteRouteChildren {
+  AuthConnexionIndexRoute: typeof AuthConnexionIndexRoute
+  AuthInscriptionIndexRoute: typeof AuthInscriptionIndexRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthConnexionIndexRoute: AuthConnexionIndexRoute,
+  AuthInscriptionIndexRoute: AuthInscriptionIndexRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMonCompteIndexRoute: typeof AuthenticatedMonCompteIndexRoute
 }
@@ -342,12 +349,9 @@ const AuthenticatedRouteRouteWithChildren =
 interface Public__rootRouteRouteChildren {
   Public__rootIndexRoute: typeof Public__rootIndexRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
-  Public__rootConnexionIndexRoute: typeof Public__rootConnexionIndexRoute
   Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
-  Public__rootInscriptionIndexRoute: typeof Public__rootInscriptionIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
-  Public__rootMotDePasseOublieIndexRoute: typeof Public__rootMotDePasseOublieIndexRoute
   Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
   Public__rootTarifsIndexRoute: typeof Public__rootTarifsIndexRoute
 }
@@ -355,13 +359,9 @@ interface Public__rootRouteRouteChildren {
 const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootIndexRoute: Public__rootIndexRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
-  Public__rootConnexionIndexRoute: Public__rootConnexionIndexRoute,
   Public__rootContactIndexRoute: Public__rootContactIndexRoute,
   Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,
-  Public__rootInscriptionIndexRoute: Public__rootInscriptionIndexRoute,
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
-  Public__rootMotDePasseOublieIndexRoute:
-    Public__rootMotDePasseOublieIndexRoute,
   Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
   Public__rootTarifsIndexRoute: Public__rootTarifsIndexRoute,
 }
@@ -371,6 +371,7 @@ const Public__rootRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   AdminRouteRoute: AdminRouteRouteWithChildren,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
 }
@@ -379,10 +380,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

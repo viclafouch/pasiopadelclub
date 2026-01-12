@@ -16,6 +16,11 @@ paths: "**/*.{ts,tsx}"
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
 - Do not update the code in the `src/components/ui` folder, just fix the linter errors.
 
+### Forms
+- **TanStack Form** for form state management
+- **Zod** for validation schemas
+- **useMutation** (TanStack Query) for submission
+
 ### Accessibility (WCAG 2.1 AA)
 - Keyboard navigation support
 - Screen reader compatibility

@@ -92,8 +92,8 @@ export const seedAdmin = mutation({
   handler: async (context) => {
     const existingAdmin = await context.db
       .query('users')
-      .withIndex('email', (item) => {
-        return item.eq('email', 'admin@pasiopadelclub.fr')
+      .withIndex('by_email', (indexQuery) => {
+        return indexQuery.eq('email', 'admin@pasiopadelclub.fr')
       })
       .first()
 

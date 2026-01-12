@@ -1,20 +1,20 @@
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
-import { authTables } from '@convex-dev/auth/server'
 
 export default defineSchema({
-  ...authTables,
   users: defineTable({
-    email: v.optional(v.string()),
-    emailVerificationTime: v.optional(v.number()),
-    isAnonymous: v.optional(v.boolean()),
+    clerkId: v.string(),
+    email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     phone: v.optional(v.string()),
-    role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
-    isBlocked: v.optional(v.boolean()),
-    isAnonymized: v.optional(v.boolean())
-  }).index('email', ['email']),
+    role: v.union(v.literal('user'), v.literal('admin')),
+    isBlocked: v.boolean(),
+    isAnonymized: v.boolean(),
+    createdAt: v.number()
+  })
+    .index('by_clerkId', ['clerkId'])
+    .index('by_email', ['email']),
 
   courts: defineTable({
     name: v.string(),

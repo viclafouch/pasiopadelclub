@@ -16,10 +16,7 @@ const config = defineConfig({
     tanstackStart(),
     nitro(),
     viteReact()
-  ],
-  ssr: {
-    noExternal: ['@convex-dev/better-auth']
-  }
+  ]
 })
 
 export default config

@@ -1,11 +1,9 @@
-import { useQuery } from 'convex/react'
 import { LogIn, LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useAuthActions } from '@convex-dev/auth/react'
+import { useAuth, useUser } from '@clerk/tanstack-react-start'
 import type { LinkOptions } from '@tanstack/react-router'
-import { Link, useLocation, useNavigate } from '@tanstack/react-router'
-import { api } from '../../convex/_generated/api'
+import { Link } from '@tanstack/react-router'
 
 const NAV_LINKS = [
   { linkOptions: { to: '/' }, label: 'Accueil' },
@@ -18,32 +16,20 @@ type NavbarProps = {
   variant?: 'overlay' | 'solid'
 }
 
-const PROTECTED_ROUTES = ['/mon-compte', '/admin'] satisfies LinkOptions['to'][]
-
 export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
-  const currentUser = useQuery(api.users.getCurrent)
-  const { signOut } = useAuthActions()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { user } = useUser()
+  const { signOut } = useAuth()
 
-  const isAuthenticated = currentUser !== null && currentUser !== undefined
   const isOverlay = variant === 'overlay'
 
   const handleSignOut = async () => {
     await signOut()
-    const isProtectedRoute = PROTECTED_ROUTES.some((route) => {
-      return location.pathname.startsWith(route)
-    })
-
-    if (isProtectedRoute) {
-      navigate({ to: '/' })
-    }
   }
 
   return (
     <nav
       className={cn(
-        'left-0 right-0 z-50 py-4',
+        'h-[60px] left-0 right-0 z-50 py-4',
         isOverlay ? 'sticky top-0' : 'static bg-primary text-primary-foreground'
       )}
     >
@@ -66,10 +52,10 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
               )
             })}
           </ul>
-          {isAuthenticated ? (
+          {user ? (
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-white">
-                {currentUser.firstName}
+                {user.firstName}
               </span>
               <Link
                 to="/mon-compte"

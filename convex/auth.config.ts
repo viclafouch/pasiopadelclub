@@ -1,10 +1,9 @@
 import type { AuthConfig } from 'convex/server'
-import { convexEnv } from './env'
 
 export default {
   providers: [
     {
-      domain: convexEnv.CONVEX_SITE_URL,
+      domain: process.env.CLERK_JWT_ISSUER_DOMAIN!,
       applicationID: 'convex'
     }
   ]

@@ -1,6 +1,12 @@
 /// <reference types="vite/client" />
 
+import type { ConvexReactClient } from 'convex/react'
+import { ConvexProviderWithClerk } from 'convex/react-clerk'
 import Footer from '@/components/footer'
+import { authStateFn } from '@/server/auth'
+import { frFR } from '@clerk/localizations'
+import { ClerkProvider, useAuth } from '@clerk/tanstack-react-start'
+import type { ConvexQueryClient } from '@convex-dev/react-query'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import {
@@ -8,13 +14,16 @@ import {
   HeadContent,
   Link,
   Outlet,
-  Scripts
+  Scripts,
+  useRouteContext
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import appCss from '../styles.css?url'
 
 type RootRouteContext = {
   queryClient: QueryClient
+  convexClient: ConvexReactClient
+  convexQueryClient: ConvexQueryClient
 }
 
 const NotFoundComponent = () => {
@@ -36,44 +45,64 @@ const NotFoundComponent = () => {
 }
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
+  const { convexClient } = useRouteContext({ from: '__root__' })
+
   return (
-    <html lang="fr">
-      <head>
-        <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="stylesheet"
-        />
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Footer />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right'
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />
-            }
-          ]}
-        />
-        <Scripts />
-      </body>
-    </html>
+    <ClerkProvider localization={frFR}>
+      <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
+        <html lang="fr">
+          <head>
+            <link
+              href="https://fonts.cdnfonts.com/css/satoshi"
+              rel="stylesheet"
+            />
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link
+              rel="preconnect"
+              href="https://fonts.gstatic.com"
+              crossOrigin=""
+            />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+              rel="stylesheet"
+            />
+            <HeadContent />
+          </head>
+          <body>
+            {children}
+            <Footer />
+            <TanStackDevtools
+              config={{
+                position: 'bottom-right'
+              }}
+              plugins={[
+                {
+                  name: 'Tanstack Router',
+                  render: <TanStackRouterDevtoolsPanel />
+                }
+              ]}
+            />
+            <Scripts />
+          </body>
+        </html>
+      </ConvexProviderWithClerk>
+    </ClerkProvider>
   )
 }
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
+  beforeLoad: async ({ context }) => {
+    const user = await authStateFn()
+
+    if (user) {
+      context.convexQueryClient.serverHttpClient?.setAuth(user.token)
+    }
+
+    return {
+      user
+    }
+  },
   head: () => {
     return {
       meta: [
