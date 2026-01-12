@@ -11,23 +11,18 @@ import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 type BookingCardProps = {
   booking: BookingWithCourt
   onCancel?: (bookingId: BookingId) => void
-  canCancel?: boolean
   showCancelButton?: boolean
 }
 
 export const BookingCard = ({
   booking,
   onCancel,
-  canCancel = true,
   showCancelButton = true
 }: BookingCardProps) => {
   const statusBadge = getBookingStatusBadge(booking.status)
   const { court } = booking
   const isConfirmed = booking.status === 'confirmed'
   const showCancel = showCancelButton && isConfirmed
-  const cancelButtonLabel = canCancel
-    ? 'Annuler la réservation'
-    : 'Annulation impossible (< 24h)'
 
   const handleCancel = () => {
     onCancel?.(booking._id)
@@ -74,13 +69,8 @@ export const BookingCard = ({
       </CardContent>
       {showCancel ? (
         <CardFooter>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleCancel}
-            disabled={!canCancel}
-          >
-            {cancelButtonLabel}
+          <Button variant="outline" className="w-full" onClick={handleCancel}>
+            Annuler la réservation
           </Button>
         </CardFooter>
       ) : null}

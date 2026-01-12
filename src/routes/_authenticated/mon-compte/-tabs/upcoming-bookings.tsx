@@ -75,6 +75,9 @@ export const UpcomingBookingsTab = () => {
   const bookingToCancel = upcomingBookings.find((booking) => {
     return booking._id === cancelingId
   })
+  const canCancelBooking = bookingToCancel
+    ? matchCanCancelBooking(bookingToCancel.startAt)
+    : false
 
   const isLimitReached = activeCount >= MAX_ACTIVE_BOOKINGS
 
@@ -111,7 +114,6 @@ export const UpcomingBookingsTab = () => {
                   key={booking._id}
                   booking={booking}
                   onCancel={handleCancelClick}
-                  canCancel={matchCanCancelBooking(booking.startAt)}
                 />
               )
             })}
@@ -121,30 +123,48 @@ export const UpcomingBookingsTab = () => {
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Annuler la réservation</AlertDialogTitle>
+            <AlertDialogTitle>
+              {canCancelBooking
+                ? 'Annuler la réservation'
+                : 'Annulation impossible'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              {bookingToCancel ? (
-                <>
-                  Voulez-vous vraiment annuler votre réservation du{' '}
-                  <span className="font-medium">
-                    {formatDateFr(new Date(bookingToCancel.startAt))}
-                  </span>{' '}
-                  à{' '}
-                  <span className="font-medium">
-                    {formatTimeFr(new Date(bookingToCancel.startAt))}
-                  </span>{' '}
-                  ? Vous serez remboursé intégralement.
-                </>
+              {canCancelBooking ? (
+                bookingToCancel ? (
+                  <>
+                    Voulez-vous vraiment annuler votre réservation du{' '}
+                    <span className="font-medium">
+                      {formatDateFr(new Date(bookingToCancel.startAt))}
+                    </span>{' '}
+                    à{' '}
+                    <span className="font-medium">
+                      {formatTimeFr(new Date(bookingToCancel.startAt))}
+                    </span>{' '}
+                    ? Vous serez remboursé intégralement.
+                  </>
+                ) : (
+                  'Voulez-vous vraiment annuler cette réservation ?'
+                )
               ) : (
-                'Voulez-vous vraiment annuler cette réservation ?'
+                <>
+                  Les réservations ne peuvent être annulées moins de 24 heures
+                  avant le créneau prévu. Cette règle nous permet de garantir la
+                  disponibilité des terrains pour tous nos joueurs.
+                </>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Non, garder</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmCancel}>
-              Oui, annuler
-            </AlertDialogAction>
+            {canCancelBooking ? (
+              <>
+                <AlertDialogCancel>Non, garder</AlertDialogCancel>
+                <AlertDialogAction onClick={handleConfirmCancel}>
+                  Oui, annuler
+                </AlertDialogAction>
+              </>
+            ) : (
+              <AlertDialogCancel>Compris</AlertDialogCancel>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

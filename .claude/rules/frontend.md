@@ -33,6 +33,10 @@ paths: "**/*.{ts,tsx}"
 - Focus management
 - ARIA attributes usage
 
+### UX Patterns
+- **Never disable buttons** - always allow clicks, explain constraints in dialog/feedback
+- Show "why not" instead of blocking - users understand context better than silent disabled states
+
 ### JSX Size Limit
 - **Max 200 lines** for components with specific logic (forms, modals, interactive features)
 - Split into sub-components when exceeded (e.g., FormField, SuccessState, etc.)
