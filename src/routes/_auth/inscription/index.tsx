@@ -1,3 +1,4 @@
+import { seo } from '@/utils/seo'
 import { SignUp } from '@clerk/tanstack-react-start'
 import { shadcn } from '@clerk/themes'
 import { createFileRoute } from '@tanstack/react-router'
@@ -14,14 +15,12 @@ export const Route = createFileRoute('/_auth/inscription/')({
   component: InscriptionPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Inscription | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            'Créez votre compte Pasio Padel Club pour réserver vos créneaux de padel en ligne à Anglet.'
-        }
-      ]
+      meta: seo({
+        title: 'Inscription',
+        description:
+          'Créez votre compte Pasio Padel Club pour réserver vos créneaux de padel en ligne à Anglet.',
+        pathname: '/inscription'
+      })
     }
   }
 })

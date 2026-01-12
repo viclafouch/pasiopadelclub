@@ -5,6 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { seo } from '@/utils/seo'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 const LOCATION_LABELS = {
@@ -293,14 +294,12 @@ export const Route = createFileRoute('/_public__root/tarifs/')({
   component: TarifsPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Tarifs | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            'Découvrez les tarifs de Pasio Padel Club à Anglet : terrains Double (60€/90min), Simple (30€/60min) et Kids (15€/60min). Réservez en ligne 7j/7.'
-        }
-      ]
+      meta: seo({
+        title: 'Tarifs',
+        description:
+          'Découvrez les tarifs de Pasio Padel Club à Anglet : terrains Double (60€/90min), Simple (30€/60min) et Kids (15€/60min). Réservez en ligne 7j/7.',
+        pathname: '/tarifs'
+      })
     }
   }
 })

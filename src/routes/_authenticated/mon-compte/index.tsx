@@ -4,6 +4,7 @@ import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
 import { z } from 'zod'
 import { BookingCardSkeleton } from '@/components/booking-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { seo } from '@/utils/seo'
 import { api } from '~/convex/_generated/api'
 import { convexQuery } from '@convex-dev/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
@@ -126,5 +127,15 @@ export const Route = createFileRoute('/_authenticated/mon-compte/')({
     )
     context.queryClient.ensureQueryData(convexQuery(api.users.getCurrent, {}))
   },
-  component: MonComptePage
+  component: MonComptePage,
+  head: () => {
+    return {
+      meta: seo({
+        title: 'Mon compte',
+        description:
+          'Gérez vos réservations de padel, consultez votre historique et modifiez vos informations personnelles.',
+        pathname: '/mon-compte'
+      })
+    }
+  }
 })

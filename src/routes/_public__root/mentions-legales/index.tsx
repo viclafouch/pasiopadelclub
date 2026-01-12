@@ -1,3 +1,4 @@
+import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 type LegalSectionProps = {
@@ -175,14 +176,12 @@ export const Route = createFileRoute('/_public__root/mentions-legales/')({
   component: MentionsLegalesPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Mentions légales | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            "Mentions légales de Pasio Padel Club à Anglet. Informations sur l'éditeur, l'hébergement et la protection des données personnelles."
-        }
-      ]
+      meta: seo({
+        title: 'Mentions légales',
+        description:
+          "Mentions légales de Pasio Padel Club à Anglet. Informations sur l'éditeur, l'hébergement et la protection des données personnelles.",
+        pathname: '/mentions-legales'
+      })
     }
   }
 })

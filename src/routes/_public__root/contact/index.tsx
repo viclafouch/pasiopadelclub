@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -352,14 +353,12 @@ export const Route = createFileRoute('/_public__root/contact/')({
   component: ContactPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Contact | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            'Contactez Pasio Padel Club à Anglet. Adresse : 20 rue Alfred de Vigny, 64600 Anglet. Téléphone : 09 71 11 79 28. Ouvert 7j/7 de 8h à 22h.'
-        }
-      ]
+      meta: seo({
+        title: 'Contact',
+        description:
+          'Contactez Pasio Padel Club à Anglet. Adresse : 20 rue Alfred de Vigny, 64600 Anglet. Téléphone : 09 71 11 79 28. Ouvert 7j/7 de 8h à 22h.',
+        pathname: '/contact'
+      })
     }
   }
 })

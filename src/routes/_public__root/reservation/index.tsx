@@ -1,3 +1,4 @@
+import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 const ReservationPage = () => {
@@ -12,5 +13,15 @@ const ReservationPage = () => {
 }
 
 export const Route = createFileRoute('/_public__root/reservation/')({
-  component: ReservationPage
+  component: ReservationPage,
+  head: () => {
+    return {
+      meta: seo({
+        title: 'Réservation',
+        description:
+          'Réservez votre court de padel en ligne à Pasio Padel Club Anglet. Choisissez votre créneau parmi nos 6 terrains disponibles 7j/7.',
+        pathname: '/reservation'
+      })
+    }
+  }
 })

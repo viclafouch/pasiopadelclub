@@ -1,3 +1,4 @@
+import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 const AdminPage = () => {
@@ -12,5 +13,14 @@ const AdminPage = () => {
 }
 
 export const Route = createFileRoute('/_admin/admin/')({
-  component: AdminPage
+  component: AdminPage,
+  head: () => {
+    return {
+      meta: seo({
+        title: 'Administration',
+        description: "Panneau d'administration de Pasio Padel Club.",
+        pathname: '/admin'
+      })
+    }
+  }
 })

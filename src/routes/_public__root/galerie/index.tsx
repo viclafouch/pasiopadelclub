@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 type GalleryImage = {
@@ -307,14 +308,12 @@ export const Route = createFileRoute('/_public__root/galerie/')({
   component: GaleriePage,
   head: () => {
     return {
-      meta: [
-        { title: 'Galerie | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            "Découvrez la galerie photos de Pasio Padel Club à Anglet : nos courts de padel, événements, tournois et l'ambiance du club."
-        }
-      ]
+      meta: seo({
+        title: 'Galerie',
+        description:
+          "Découvrez la galerie photos de Pasio Padel Club à Anglet : nos courts de padel, événements, tournois et l'ambiance du club.",
+        pathname: '/galerie'
+      })
     }
   }
 })

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { seo } from '@/utils/seo'
 import { SignIn } from '@clerk/tanstack-react-start'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -25,14 +26,12 @@ export const Route = createFileRoute('/_auth/connexion/')({
   component: ConnexionPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Connexion | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            'Connectez-vous à votre compte Pasio Padel Club pour réserver vos créneaux de padel à Anglet.'
-        }
-      ]
+      meta: seo({
+        title: 'Connexion',
+        description:
+          'Connectez-vous à votre compte Pasio Padel Club pour réserver vos créneaux de padel à Anglet.',
+        pathname: '/connexion'
+      })
     }
   }
 })

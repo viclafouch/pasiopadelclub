@@ -1,3 +1,4 @@
+import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 type LegalSectionProps = {
@@ -252,14 +253,12 @@ export const Route = createFileRoute('/_public__root/cgv/')({
   component: CgvPage,
   head: () => {
     return {
-      meta: [
-        { title: 'Conditions Générales de Vente | Pasio Padel Club - Anglet' },
-        {
-          name: 'description',
-          content:
-            "Conditions Générales de Vente de Pasio Padel Club à Anglet. Tarifs, réservation, annulation et règles d'utilisation des courts de padel."
-        }
-      ]
+      meta: seo({
+        title: 'Conditions Générales de Vente',
+        description:
+          "Conditions Générales de Vente de Pasio Padel Club à Anglet. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.",
+        pathname: '/cgv'
+      })
     }
   }
 })
