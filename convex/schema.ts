@@ -4,17 +4,11 @@ import { v } from 'convex/values'
 export default defineSchema({
   users: defineTable({
     clerkId: v.string(),
-    email: v.string(),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
     phone: v.optional(v.string()),
     role: v.union(v.literal('user'), v.literal('admin')),
     isBlocked: v.boolean(),
-    isAnonymized: v.boolean(),
     createdAt: v.number()
-  })
-    .index('by_clerkId', ['clerkId'])
-    .index('by_email', ['email']),
+  }).index('by_clerkId', ['clerkId']),
 
   courts: defineTable({
     name: v.string(),
@@ -29,9 +23,8 @@ export default defineSchema({
   bookings: defineTable({
     userId: v.id('users'),
     courtId: v.id('courts'),
-    date: v.string(),
-    startTime: v.string(),
-    endTime: v.string(),
+    startAt: v.number(),
+    endAt: v.number(),
     price: v.number(),
     polarPaymentId: v.union(v.string(), v.null()),
     paymentType: v.union(v.literal('online'), v.literal('free')),
@@ -44,7 +37,7 @@ export default defineSchema({
     reminderSent: v.boolean(),
     createdAt: v.number()
   })
-    .index('by_date', ['date'])
+    .index('by_startAt', ['startAt'])
     .index('by_userId', ['userId'])
     .index('by_courtId', ['courtId'])
     .index('by_status', ['status'])
@@ -52,13 +45,12 @@ export default defineSchema({
 
   blockedSlots: defineTable({
     courtId: v.union(v.id('courts'), v.null()),
-    date: v.string(),
-    startTime: v.string(),
-    endTime: v.string(),
+    startAt: v.number(),
+    endAt: v.number(),
     reason: v.optional(v.string()),
     createdAt: v.number()
   })
-    .index('by_date', ['date'])
+    .index('by_startAt', ['startAt'])
     .index('by_courtId', ['courtId'])
-    .index('by_courtId_date', ['courtId', 'date'])
+    .index('by_courtId_startAt', ['courtId', 'startAt'])
 })

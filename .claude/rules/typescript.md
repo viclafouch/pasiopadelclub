@@ -16,18 +16,22 @@ paths: "**/*.{ts,tsx}"
 - Prefer `unknown` over `any` when type is truly unknown
 - NEVER recreate types that exist in schemas or libraries
 - **Reuse existing types** from libraries, React, schemas, or internal code for precision and autocompletion
-- **Prefer `satisfies`** over type annotations (`: Type`) to validate while preserving inference
 
-### Type Derivation
-A derived type is a type computed from an existing source (constant, object, array, or another type) rather than manually duplicated.
+### `satisfies` over Type Annotations
+**ALWAYS use `satisfies`** instead of `: Type` for object/array literals to preserve literal types.
 
-**NEVER duplicate types that can be derived:**
-- From Zod schemas: use `z.infer<typeof schema>`
-- From constants: use `keyof typeof`, `typeof`, `ReturnType`, `Parameters`
-- From arrays: use `typeof arr[number]`
-- From existing types: use `Pick`, `Omit`, `Partial`, `Required`
+```typescript
+// ❌ BAD - loses literal types
+const OPTIONS: Intl.DateTimeFormatOptions = { day: '2-digit' }
 
-This ensures type safety and single source of truth.
+// ✅ GOOD - validates AND preserves literal types
+const OPTIONS = { day: '2-digit' } satisfies Intl.DateTimeFormatOptions
+```
+
+**Exceptions** (use `: Type`):
+- Function return types when inference is wrong
+- Variable declarations without initializer
+- Generic type parameters
 
 ### Async/Await
 - Always handle promise rejections

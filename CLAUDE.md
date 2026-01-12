@@ -27,6 +27,10 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - **ALWAYS check documentation via Context7** before fixing bugs or implementing features with external libraries
 - Never guess library APIs - verify the correct approach in docs first
 
+### Rules Files
+- All files in `.claude/rules/` must be written in **English**
+- Keep rules concise and actionable
+
 ### Code Quality
 - After implementing each task, run `code-simplifier` agent to simplify and validate the code
 - The agent verifies compliance with all rules in `.claude/rules/`:

@@ -1,5 +1,15 @@
 import { v } from 'convex/values'
+import type { QueryCtx } from './_generated/server'
 import { mutation, query } from './_generated/server'
+
+const findUserByClerkId = async (db: QueryCtx['db'], clerkId: string) => {
+  return db
+    .query('users')
+    .withIndex('by_clerkId', (indexQuery) => {
+      return indexQuery.eq('clerkId', clerkId)
+    })
+    .first()
+}
 
 export const getCurrent = query({
   args: {},
@@ -10,43 +20,40 @@ export const getCurrent = query({
       return null
     }
 
-    const user = await context.db
-      .query('users')
-      .withIndex('by_clerkId', (indexQuery) => {
-        return indexQuery.eq('clerkId', identity.subject)
-      })
-      .first()
+    const user = await findUserByClerkId(context.db, identity.subject)
 
-    return user
+    // Merge Clerk identity + Convex business data
+    return {
+      _id: user?._id ?? null,
+      clerkId: identity.subject,
+      email: identity.email ?? '',
+      firstName: identity.givenName ?? null,
+      lastName: identity.familyName ?? null,
+      phone: user?.phone ?? null,
+      role: user?.role ?? ('user' as const),
+      isBlocked: user?.isBlocked ?? false
+    }
   }
 })
 
-export const getByEmail = query({
-  args: { email: v.string() },
+export const updatePhone = mutation({
+  args: { phone: v.string() },
   handler: async (context, args) => {
     const identity = await context.auth.getUserIdentity()
 
     if (identity === null) {
-      throw new Error('Unauthorized: Authentication required')
+      throw new Error('Non authentifié')
     }
 
-    const currentUser = await context.db
-      .query('users')
-      .withIndex('by_clerkId', (indexQuery) => {
-        return indexQuery.eq('clerkId', identity.subject)
-      })
-      .first()
+    const user = await findUserByClerkId(context.db, identity.subject)
 
-    if (!currentUser || currentUser.role !== 'admin') {
-      throw new Error('Unauthorized: Admin access required')
+    if (!user) {
+      throw new Error('Utilisateur non trouvé')
     }
 
-    return context.db
-      .query('users')
-      .withIndex('by_email', (indexQuery) => {
-        return indexQuery.eq('email', args.email)
-      })
-      .first()
+    await context.db.patch(user._id, { phone: args.phone })
+
+    return { success: true }
   }
 })
 
@@ -56,70 +63,67 @@ export const getById = query({
     const identity = await context.auth.getUserIdentity()
 
     if (identity === null) {
-      throw new Error('Unauthorized: Authentication required')
+      throw new Error('Non authentifié')
     }
 
-    const currentUser = await context.db
-      .query('users')
-      .withIndex('by_clerkId', (indexQuery) => {
-        return indexQuery.eq('clerkId', identity.subject)
-      })
-      .first()
+    const currentUser = await findUserByClerkId(context.db, identity.subject)
 
     if (!currentUser) {
-      throw new Error('Unauthorized: User not found')
+      throw new Error('Utilisateur non trouvé')
     }
 
     const isOwnProfile = currentUser._id === args.userId
     const isAdmin = currentUser.role === 'admin'
 
     if (!isOwnProfile && !isAdmin) {
-      throw new Error('Unauthorized: Cannot access other user profiles')
+      throw new Error('Accès non autorisé')
     }
 
     return context.db.get(args.userId)
   }
 })
 
-export const createOrUpdate = mutation({
+export const setRole = mutation({
   args: {
-    email: v.string(),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string())
+    userId: v.id('users'),
+    role: v.union(v.literal('user'), v.literal('admin'))
   },
   handler: async (context, args) => {
     const identity = await context.auth.getUserIdentity()
 
     if (identity === null) {
-      throw new Error('Unauthorized: Authentication required')
+      throw new Error('Non authentifié')
     }
 
-    const existingUser = await context.db
-      .query('users')
-      .withIndex('by_clerkId', (indexQuery) => {
-        return indexQuery.eq('clerkId', identity.subject)
-      })
-      .first()
+    const currentUser = await findUserByClerkId(context.db, identity.subject)
 
-    if (existingUser) {
-      await context.db.patch(existingUser._id, {
-        email: args.email,
-        firstName: args.firstName,
-        lastName: args.lastName
-      })
-
-      return existingUser._id
+    if (!currentUser || currentUser.role !== 'admin') {
+      throw new Error('Accès admin requis')
     }
 
-    return context.db.insert('users', {
-      clerkId: identity.subject,
-      email: args.email,
-      firstName: args.firstName,
-      lastName: args.lastName,
-      role: 'user',
-      isBlocked: false,
-      isAnonymized: false,
-      createdAt: Date.now()
-    })
+    await context.db.patch(args.userId, { role: args.role })
+
+    return { success: true }
+  }
+})
+
+export const setBlocked = mutation({
+  args: { userId: v.id('users'), isBlocked: v.boolean() },
+  handler: async (context, args) => {
+    const identity = await context.auth.getUserIdentity()
+
+    if (identity === null) {
+      throw new Error('Non authentifié')
+    }
+
+    const currentUser = await findUserByClerkId(context.db, identity.subject)
+
+    if (!currentUser || currentUser.role !== 'admin') {
+      throw new Error('Accès admin requis')
+    }
+
+    await context.db.patch(args.userId, { isBlocked: args.isBlocked })
+
+    return { success: true }
   }
 })

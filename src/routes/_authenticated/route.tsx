@@ -1,39 +1,7 @@
-import React from 'react'
-import { useConvexAuth } from 'convex/react'
 import { Navbar } from '@/components/navbar'
-import {
-  createFileRoute,
-  Outlet,
-  useLocation,
-  useNavigate
-} from '@tanstack/react-router'
-
-const LoadingState = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-    </div>
-  )
-}
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 const AuthenticatedLayout = () => {
-  const { isLoading, isAuthenticated } = useConvexAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  React.useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate({
-        to: '/connexion',
-        search: { redirect: location.pathname }
-      })
-    }
-  }, [isLoading, isAuthenticated, navigate, location.pathname])
-
-  if (isLoading || !isAuthenticated) {
-    return <LoadingState />
-  }
-
   return (
     <>
       <Navbar variant="solid" />
@@ -45,5 +13,13 @@ const AuthenticatedLayout = () => {
 }
 
 export const Route = createFileRoute('/_authenticated')({
+  beforeLoad: ({ context, location }) => {
+    if (!context.user) {
+      throw redirect({
+        to: '/connexion',
+        search: { redirect: location.pathname }
+      })
+    }
+  },
   component: AuthenticatedLayout
 })

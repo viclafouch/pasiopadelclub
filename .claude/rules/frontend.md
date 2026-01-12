@@ -16,6 +16,11 @@ paths: "**/*.{ts,tsx}"
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
 - Do not update the code in the `src/components/ui` folder, just fix the linter errors.
 
+### TanStack Query
+- **Never destructure** `useQuery`/`useSuspenseQuery` results - use inferred types
+- Name variables with `*Query` suffix: `const currentUserQuery = useSuspenseQuery(...)`
+- Access data via `query.data`, status via `query.isPending`, etc.
+
 ### Forms
 - **TanStack Form** for form state management
 - **Zod** for validation schemas

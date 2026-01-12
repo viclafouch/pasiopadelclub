@@ -454,13 +454,13 @@ Implémenter le flux complet d'inscription et de connexion utilisateur.
 Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses réservations.
 
 ### 4.1 Dashboard Utilisateur
-- [ ] Créer route `/mon-compte/index.tsx`
-- [ ] Créer layout espace utilisateur
-- [ ] Créer navigation espace utilisateur (tabs ou sidebar)
-- [ ] Créer query `bookings.getUpcoming` (réservations à venir)
-- [ ] Afficher liste réservations à venir
-- [ ] Afficher compteur réservations actives (X/2)
-- [ ] Afficher message si aucune réservation
+- [x] Créer route `/mon-compte/index.tsx`
+- [x] Créer layout espace utilisateur
+- [x] Créer navigation espace utilisateur (tabs ou sidebar)
+- [x] Créer query `bookings.getUpcoming` (réservations à venir)
+- [x] Afficher liste réservations à venir
+- [x] Afficher compteur réservations actives (X/2)
+- [x] Afficher message si aucune réservation
 
 ### 4.2 Annulation de Réservation
 - [ ] Créer composant `BookingCard` avec détails

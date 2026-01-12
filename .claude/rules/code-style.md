@@ -70,3 +70,25 @@ Avoid over-simplification that could:
 - `role="alert"` on error messages
 - `aria-busy` on loading buttons
 - `aria-hidden` on decorative icons
+
+### No Mutations
+
+Never mutate objects or arrays. Always return new instances.
+Use `toSorted()`, `toReversed()`, spread operators, etc.
+
+### Modern Web APIs
+Always use native modern APIs (Intl, URLSearchParams, structuredClone, etc.) instead of manual implementations or libraries.
+
+### Helpers vs Utils
+
+All utilities live in `src/` (shared by frontend and backend):
+
+- `src/lib/` - Generic utilities (cn, etc.)
+- `src/helpers/` - Generic pure functions (date formatting, string manipulation)
+- `src/utils/` - Business utilities (booking logic, user logic, etc.)
+
+`convex/` contains only queries, mutations, schema, and Convex-specific code.
+
+**Rules:**
+- Pure functions, no side effects
+- One file per domain
