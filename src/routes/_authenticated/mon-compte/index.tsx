@@ -61,6 +61,7 @@ const MonComptePage = () => {
 
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   loader: async ({ context }) => {
+    // Await only the first visible tab
     await Promise.all([
       context.queryClient.ensureQueryData(
         convexQuery(api.bookings.getUpcoming, {})
@@ -69,6 +70,12 @@ export const Route = createFileRoute('/_authenticated/mon-compte/')({
         convexQuery(api.bookings.getActiveCount, {})
       )
     ])
+
+    // Prefetch other tabs in background (no await)
+    context.queryClient.ensureQueryData(
+      convexQuery(api.bookings.getPast, { limit: 20 })
+    )
+    context.queryClient.ensureQueryData(convexQuery(api.users.getCurrent, {}))
   },
   component: MonComptePage
 })
