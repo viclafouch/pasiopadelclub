@@ -1,4 +1,5 @@
 import React from 'react'
+import type { LucideIcon } from 'lucide-react'
 import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
 import { z } from 'zod'
 import { BookingCardSkeleton } from '@/components/booking-card'
@@ -10,12 +11,6 @@ import { HistoryTab } from './-tabs/history'
 import { ProfileTab } from './-tabs/profile'
 import { UpcomingBookingsTab } from './-tabs/upcoming-bookings'
 
-const TAB_VALUES = ['reservations', 'historique', 'profil'] as const
-
-const searchSchema = z.object({
-  tab: z.enum(TAB_VALUES).optional().catch('reservations')
-})
-
 const BookingsSkeleton = () => {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -25,12 +20,57 @@ const BookingsSkeleton = () => {
   )
 }
 
+type TabConfig = {
+  value: string
+  label: string
+  icon: LucideIcon
+  component: React.ComponentType
+  fallback: React.ReactNode
+}
+
+const TABS = [
+  {
+    value: 'reservations',
+    label: 'Réservations',
+    icon: CalendarIcon,
+    component: UpcomingBookingsTab,
+    fallback: <BookingsSkeleton />
+  },
+  {
+    value: 'historique',
+    label: 'Historique',
+    icon: HistoryIcon,
+    component: HistoryTab,
+    fallback: <BookingsSkeleton />
+  },
+  {
+    value: 'profil',
+    label: 'Profil',
+    icon: UserIcon,
+    component: ProfileTab,
+    fallback: <div>Chargement...</div>
+  }
+] as const satisfies TabConfig[]
+
+const TAB_VALUES = TABS.map((tab) => {
+  return tab.value
+})
+type Tab = (typeof TABS)[number]['value']
+
+const searchSchema = z.object({
+  tab: z.enum(TAB_VALUES).optional().catch('reservations')
+})
+
 const MonComptePage = () => {
   const { tab = 'reservations' } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
 
   const handleTabChange = (value: string) => {
-    navigate({ search: { tab: value as (typeof TAB_VALUES)[number] } })
+    navigate({
+      search: { tab: value as Tab },
+      to: '.',
+      replace: true
+    })
   }
 
   return (
@@ -39,46 +79,33 @@ const MonComptePage = () => {
         <h1 className="text-3xl font-bold mb-8">Mon compte</h1>
         <Tabs value={tab} onValueChange={handleTabChange}>
           <TabsList className="mb-6 w-full justify-start">
-            <TabsTrigger value="reservations" className="gap-2">
-              <CalendarIcon className="size-4" />
-              <span className="hidden sm:inline">Réservations</span>
-            </TabsTrigger>
-            <TabsTrigger value="historique" className="gap-2">
-              <HistoryIcon className="size-4" />
-              <span className="hidden sm:inline">Historique</span>
-            </TabsTrigger>
-            <TabsTrigger value="profil" className="gap-2">
-              <UserIcon className="size-4" />
-              <span className="hidden sm:inline">Profil</span>
-            </TabsTrigger>
+            {TABS.map((tabConfig) => {
+              return (
+                <TabsTrigger
+                  key={tabConfig.value}
+                  value={tabConfig.value}
+                  className="gap-2"
+                >
+                  <tabConfig.icon className="size-4" />
+                  <span className="hidden sm:inline">{tabConfig.label}</span>
+                </TabsTrigger>
+              )
+            })}
           </TabsList>
-          <TabsContent
-            value="reservations"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
-            <React.Suspense fallback={<BookingsSkeleton />}>
-              <UpcomingBookingsTab />
-            </React.Suspense>
-          </TabsContent>
-          <TabsContent
-            value="historique"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
-            <React.Suspense fallback={<BookingsSkeleton />}>
-              <HistoryTab />
-            </React.Suspense>
-          </TabsContent>
-          <TabsContent
-            value="profil"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
-            <React.Suspense fallback={<div>Chargement...</div>}>
-              <ProfileTab />
-            </React.Suspense>
-          </TabsContent>
+          {TABS.map((tabConfig) => {
+            return (
+              <TabsContent
+                key={tabConfig.value}
+                value={tabConfig.value}
+                forceMount
+                className="data-[state=inactive]:hidden"
+              >
+                <React.Suspense fallback={tabConfig.fallback}>
+                  <tabConfig.component />
+                </React.Suspense>
+              </TabsContent>
+            )
+          })}
         </Tabs>
       </div>
     </div>
@@ -88,7 +115,6 @@ const MonComptePage = () => {
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   validateSearch: searchSchema,
   loader: ({ context }) => {
-    // Prefetch all tabs data in background (no await)
     context.queryClient.ensureQueryData(
       convexQuery(api.bookings.getUpcoming, {})
     )
