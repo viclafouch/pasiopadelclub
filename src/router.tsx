@@ -14,7 +14,8 @@ export function getRouter() {
     defaultOptions: {
       queries: {
         queryKeyHashFn: convexQueryClient.hashFn(),
-        queryFn: convexQueryClient.queryFn()
+        queryFn: convexQueryClient.queryFn(),
+        staleTime: Infinity // Convex pushes updates, data is never stale
       }
     }
   })

@@ -26,6 +26,7 @@ Use React state only for:
 - **Background prefetch** for likely next actions (no await)
 - **Never waterfall** - parallel requests when possible
 - **Cache first** - leverage TanStack Query cache
+- **staleTime: Infinity** for Convex queries (data is pushed, never stale)
 
 ### Performance Mindset
 - Measure before optimizing (React DevTools, Lighthouse)
