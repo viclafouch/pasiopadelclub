@@ -59,6 +59,7 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
               </span>
               <Link
                 to="/mon-compte"
+                search={{}}
                 className="text-sm font-medium text-white/80 transition-colors hover:text-white"
               >
                 <User className="h-4 w-4" aria-hidden="true" />

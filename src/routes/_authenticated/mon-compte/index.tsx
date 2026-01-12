@@ -1,13 +1,20 @@
 import React from 'react'
 import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
+import { z } from 'zod'
 import { BookingCardSkeleton } from '@/components/booking-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { api } from '~/convex/_generated/api'
 import { convexQuery } from '@convex-dev/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { HistoryTab } from './-tabs/history'
 import { ProfileTab } from './-tabs/profile'
 import { UpcomingBookingsTab } from './-tabs/upcoming-bookings'
+
+const TAB_VALUES = ['reservations', 'historique', 'profil'] as const
+
+const searchSchema = z.object({
+  tab: z.enum(TAB_VALUES).optional().catch('reservations')
+})
 
 const BookingsSkeleton = () => {
   return (
@@ -19,11 +26,18 @@ const BookingsSkeleton = () => {
 }
 
 const MonComptePage = () => {
+  const { tab = 'reservations' } = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
+
+  const handleTabChange = (value: string) => {
+    navigate({ search: { tab: value as (typeof TAB_VALUES)[number] } })
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Mon compte</h1>
-        <Tabs defaultValue="reservations">
+        <Tabs value={tab} onValueChange={handleTabChange}>
           <TabsList className="mb-6 w-full justify-start">
             <TabsTrigger value="reservations" className="gap-2">
               <CalendarIcon className="size-4" />
@@ -60,18 +74,15 @@ const MonComptePage = () => {
 }
 
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
-  loader: async ({ context }) => {
-    // Await only the first visible tab
-    await Promise.all([
-      context.queryClient.ensureQueryData(
-        convexQuery(api.bookings.getUpcoming, {})
-      ),
-      context.queryClient.ensureQueryData(
-        convexQuery(api.bookings.getActiveCount, {})
-      )
-    ])
-
-    // Prefetch other tabs in background (no await)
+  validateSearch: searchSchema,
+  loader: ({ context }) => {
+    // Prefetch all tabs data in background (no await)
+    context.queryClient.ensureQueryData(
+      convexQuery(api.bookings.getUpcoming, {})
+    )
+    context.queryClient.ensureQueryData(
+      convexQuery(api.bookings.getActiveCount, {})
+    )
     context.queryClient.ensureQueryData(
       convexQuery(api.bookings.getPast, { limit: 20 })
     )
