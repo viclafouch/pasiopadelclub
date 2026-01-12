@@ -52,17 +52,29 @@ const MonComptePage = () => {
               <span className="hidden sm:inline">Profil</span>
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="reservations">
+          <TabsContent
+            value="reservations"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
             <React.Suspense fallback={<BookingsSkeleton />}>
               <UpcomingBookingsTab />
             </React.Suspense>
           </TabsContent>
-          <TabsContent value="historique">
+          <TabsContent
+            value="historique"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
             <React.Suspense fallback={<BookingsSkeleton />}>
               <HistoryTab />
             </React.Suspense>
           </TabsContent>
-          <TabsContent value="profil">
+          <TabsContent
+            value="profil"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
             <React.Suspense fallback={<div>Chargement...</div>}>
               <ProfileTab />
             </React.Suspense>
