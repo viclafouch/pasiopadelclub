@@ -1,4 +1,3 @@
-import React from 'react'
 import { StarRating } from '@/components/star-rating'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
@@ -33,7 +32,7 @@ export const Hero = () => {
           expérience unique de padel dans un cadre exceptionnel.
         </p>
         <Button size="lg" variant="default" asChild>
-          <Link to="/">Réserver un terrain</Link>
+          <Link to="/reservation">Réserver un terrain</Link>
         </Button>
       </div>
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">

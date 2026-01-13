@@ -3,7 +3,7 @@
 import type { ConvexReactClient } from 'convex/react'
 import { ConvexProviderWithClerk } from 'convex/react-clerk'
 import Footer from '@/components/footer'
-import { authStateFn } from '@/server/auth'
+import { authQueryOptions, type AuthState } from '@/server/auth'
 import { frFR } from '@clerk/localizations'
 import { ClerkProvider, useAuth } from '@clerk/tanstack-react-start'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
@@ -24,6 +24,7 @@ type RootRouteContext = {
   queryClient: QueryClient
   convexClient: ConvexReactClient
   convexQueryClient: ConvexQueryClient
+  authState?: AuthState
 }
 
 const NotFoundComponent = () => {
@@ -93,15 +94,18 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
 export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
   beforeLoad: async ({ context }) => {
-    const user = await authStateFn()
+    const authState =
+      await context.queryClient.ensureQueryData(authQueryOptions)
 
-    if (user) {
-      context.convexQueryClient.serverHttpClient?.setAuth(user.token)
+    if (
+      authState.isAuthenticated &&
+      authState.token &&
+      context.convexQueryClient.serverHttpClient
+    ) {
+      context.convexQueryClient.serverHttpClient.setAuth(authState.token)
     }
 
-    return {
-      user
-    }
+    return { authState }
   },
   head: () => {
     return {

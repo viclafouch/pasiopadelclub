@@ -11,7 +11,7 @@ import { DataExportSection } from './data-export-section'
 import { DeleteAccountSection } from './delete-account-section'
 import { EditProfileModal } from './edit-profile-modal'
 
-export const ProfileTabSkeleton = (): React.ReactNode => {
+export const ProfileTabSkeleton = () => {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border p-6 space-y-4">

@@ -14,7 +14,7 @@ const AuthenticatedLayout = () => {
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context, location }) => {
-    if (!context.user) {
+    if (!context.authState?.isAuthenticated) {
       throw redirect({
         to: '/connexion',
         search: { redirect: location.pathname }

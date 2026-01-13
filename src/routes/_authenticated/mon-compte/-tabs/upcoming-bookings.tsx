@@ -12,6 +12,7 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import type { BookingId } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
@@ -20,8 +21,6 @@ import { api } from '~/convex/_generated/api'
 import { convexQuery, useConvexMutation } from '@convex-dev/react-query'
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-
-const MAX_ACTIVE_BOOKINGS = 2
 
 const EmptyBookings = () => {
   return (

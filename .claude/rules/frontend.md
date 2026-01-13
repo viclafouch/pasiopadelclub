@@ -11,6 +11,7 @@ paths: "**/*.{ts,tsx}"
   - Passing callbacks to heavily memoized child components (`React.memo`)
   - Expensive computations that are measurably slow (profile first)
   - Dependencies in `useEffect` that would cause infinite loops without memoization
+- **Conditional rendering in parent** - never render a component that returns null internally; check condition in parent instead
 
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.

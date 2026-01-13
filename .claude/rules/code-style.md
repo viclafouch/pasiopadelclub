@@ -79,6 +79,16 @@ Use `toSorted()`, `toReversed()`, spread operators, etc.
 ### Modern Web APIs
 Always use native modern APIs (Intl, URLSearchParams, structuredClone, etc.) instead of manual implementations or libraries.
 
+### Single Source of Truth
+
+**NEVER duplicate constants, helpers, or types across files.**
+
+- Constants → `src/constants/` (one file per domain: `booking.ts`, `court.ts`)
+- Helpers → `src/helpers/`
+- Types → `src/constants/types.ts`
+
+Before creating a constant or helper, search if it already exists.
+
 ### Helpers vs Utils
 
 All utilities live in `src/` (shared by frontend and backend):
@@ -86,6 +96,7 @@ All utilities live in `src/` (shared by frontend and backend):
 - `src/lib/` - Generic utilities (cn, etc.)
 - `src/helpers/` - Generic pure functions (date formatting, string manipulation)
 - `src/utils/` - Business utilities (booking logic, user logic, etc.)
+- `src/constants/` - All constants, grouped by domain
 
 `convex/` contains only queries, mutations, schema, and Convex-specific code.
 

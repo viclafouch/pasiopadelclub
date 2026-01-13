@@ -1,5 +1,5 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
+import { Link } from '@tanstack/react-router'
 
 export const BookingSection = () => {
   return (
@@ -69,7 +69,9 @@ export const BookingSection = () => {
           </div>
         </div>
         <div className="mt-16 flex justify-center">
-          <Button size="lg">Voir les tarifs</Button>
+          <Button size="lg" asChild>
+            <Link to="/reservation">Réserver maintenant</Link>
+          </Button>
         </div>
       </div>
     </section>

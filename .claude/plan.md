@@ -504,32 +504,40 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 ### Objectif
 Créer l'interface de réservation permettant aux utilisateurs de voir les créneaux disponibles et d'en sélectionner un.
 
-### 5.1 Page de Réservation
-- [ ] Créer route `/reservation/index.tsx`
-- [ ] **URL as State** : persister date, filtres dans l'URL (`?date=&type=&location=`)
-- [ ] Créer composant `DateSelector` (10 prochains jours)
-- [ ] Afficher dates en format JJ/MM
-- [ ] Marquer date sélectionnée
-- [ ] Créer composant `FilterDrawer` (mobile)
-- [ ] Bouton pour ouvrir drawer sur mobile
-- [ ] Filtre par type (double, simple, kids)
-- [ ] Filtre par localisation (indoor, outdoor)
-- [ ] Créer composant `FilterBar` (desktop)
-- [ ] Créer composant `LimitBanner` si 2/2 atteint
-- [ ] Afficher bandeau d'alerte permanent
+### 5.1 Page de Réservation - Structure
+- [x] Créer route `/reservation/index.tsx`
+- [x] **URL as State** : persister date, filtres dans l'URL (`?date=&type=&location=`)
+- [x] Créer composant `DaySelector` (10 prochains jours, scroll centré)
+- [x] Afficher dates en format "JEU. 15 janv." avec "Aujourd'hui"/"Demain"
+- [x] Marquer date sélectionnée (fond vert + indicateur)
+- [x] Scroll automatique vers date sélectionnée (mobile)
+- [x] Gradient fade sur les bords (indique plus de contenu)
+- [x] Créer composant `FilterDrawer` (mobile) avec Shadcn Drawer
+- [x] Bouton "Filtres" avec badge si filtres actifs
+- [x] Créer composant `FilterBar` (desktop) avec Shadcn Select
+- [x] Créer composant `LimitBanner` si 2/2 atteint
+- [x] Support `prefers-reduced-motion` (Framer Motion)
+- [x] Helpers date extraits dans `src/helpers/date.ts`
 
 ### 5.2 Liste des Créneaux
-- [ ] Créer query `slots.getAvailable` (par date)
-- [ ] Générer créneaux 90min pour terrains double
-- [ ] Générer créneaux 60min pour terrains simple/kids
+> **Règle d'affichage** : Tous les créneaux sont TOUJOURS affichés (disponibles ET réservés).
+> Les créneaux réservés sont visibles mais non cliquables, montrant l'occupation complète de la journée.
+>
+> **Objectif UX** : Même si tout est complet, l'utilisateur voit les 6 terrains et tous les créneaux.
+> Cela montre l'activité du club et donne envie de réserver à l'avance.
+
+- [ ] Créer query `slots.getByDate` (TOUS les créneaux, pas juste disponibles)
+- [ ] Générer créneaux 90min pour terrains double (8h-22h)
+- [ ] Générer créneaux 60min pour terrains simple/kids (8h-22h)
+- [ ] Retourner status par créneau : `available`, `booked`, `blocked`, `past`
 - [ ] Créer composant `CourtSection` (groupe par terrain)
 - [ ] Créer composant `SlotCard`
-- [ ] Style "available" (vert, cliquable)
-- [ ] Style "booked" (rouge, non cliquable)
-- [ ] Style "blocked" (gris hachuré)
-- [ ] Style "past" (gris, non cliquable)
-- [ ] Afficher heure début - heure fin
-- [ ] Afficher prix sur chaque créneau
+- [ ] Style "available" : fond clair, bordure verte, cliquable, hover effect
+- [ ] Style "booked" : fond gris clair, non cliquable, affiche "Réservé"
+- [ ] Style "blocked" : fond rayé/hachuré distinct, non cliquable, icône cadenas, affiche "Indisponible"
+- [ ] Style "past" : fond gris très léger, non cliquable, opacité 50%
+- [ ] Afficher heure début → heure fin
+- [ ] Afficher prix sur créneaux disponibles
 - [ ] Ajouter tooltip "Ouvert à tous" sur terrain Kids
 
 ### 5.3 Sélection et Récapitulatif
@@ -546,13 +554,17 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 
 ### 5.4 Logique de Disponibilité (Convex)
 - [ ] Créer `convex/slots.ts`
-- [ ] Fonction génération créneaux 90min
-- [ ] Fonction génération créneaux 60min
-- [ ] Query `slots.getByDate` avec filtres
-- [ ] Exclure réservations existantes (status confirmed)
-- [ ] Exclure blocages admin
-- [ ] Marquer créneaux passés (pour aujourd'hui)
-- [ ] Ajouter index pour performances
+- [ ] Helper `generateSlots90min(date)` - créneaux terrains double
+- [ ] Helper `generateSlots60min(date)` - créneaux terrains simple/kids
+- [ ] Query `slots.getByDate(date, filters?)` retourne TOUS créneaux avec status
+- [ ] Pour chaque créneau, déterminer status :
+  - `available` : pas de réservation ni blocage
+  - `booked` : réservation confirmée existe
+  - `blocked` : blocage admin existe
+  - `past` : heure de début < maintenant (pour aujourd'hui)
+- [ ] Filtrer par type de terrain si filtre actif
+- [ ] Filtrer par localisation si filtre actif
+- [ ] Retourner tous les terrains (6) avec leurs créneaux
 
 ### Livrables
 - Interface de réservation complète
