@@ -7,25 +7,7 @@ export const seedCourts = mutation({
   handler: async (context) => {
     const courtsData = [
       {
-        name: 'Double A',
-        type: 'double' as const,
-        location: 'outdoor' as const,
-        capacity: 4 as const,
-        duration: 90 as const,
-        price: 60,
-        isActive: true
-      },
-      {
-        name: 'Double B',
-        type: 'double' as const,
-        location: 'outdoor' as const,
-        capacity: 4 as const,
-        duration: 90 as const,
-        price: 60,
-        isActive: true
-      },
-      {
-        name: 'Double C',
+        name: 'Court N°1',
         type: 'double' as const,
         location: 'indoor' as const,
         capacity: 4 as const,
@@ -34,7 +16,7 @@ export const seedCourts = mutation({
         isActive: true
       },
       {
-        name: 'Double D',
+        name: 'Court N°2',
         type: 'double' as const,
         location: 'indoor' as const,
         capacity: 4 as const,
@@ -43,7 +25,25 @@ export const seedCourts = mutation({
         isActive: true
       },
       {
-        name: 'Simple',
+        name: 'Court N°3',
+        type: 'double' as const,
+        location: 'outdoor' as const,
+        capacity: 4 as const,
+        duration: 90 as const,
+        price: 60,
+        isActive: true
+      },
+      {
+        name: 'Court N°4',
+        type: 'double' as const,
+        location: 'outdoor' as const,
+        capacity: 4 as const,
+        duration: 90 as const,
+        price: 60,
+        isActive: true
+      },
+      {
+        name: 'Simple N°1',
         type: 'simple' as const,
         location: 'indoor' as const,
         capacity: 2 as const,
@@ -52,7 +52,7 @@ export const seedCourts = mutation({
         isActive: true
       },
       {
-        name: 'Kids',
+        name: 'Court Kids',
         type: 'kids' as const,
         location: 'indoor' as const,
         capacity: 2 as const,
@@ -206,11 +206,6 @@ export const seedTestBookings = mutation({
   }
 })
 
-/**
- * Promote user to admin - INTERNAL USE ONLY
- * Run via Convex Dashboard with userId argument
- * Never expose this to frontend without proper authorization
- */
 export const promoteToAdmin = mutation({
   args: { userId: v.id('users'), adminSecret: v.string() },
   handler: async (context, args) => {

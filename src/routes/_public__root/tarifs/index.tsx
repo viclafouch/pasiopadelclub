@@ -5,14 +5,9 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { LOCATION_LABELS } from '@/constants/court'
 import { seo } from '@/utils/seo'
 import { createFileRoute, Link } from '@tanstack/react-router'
-
-const LOCATION_LABELS = {
-  indoor: 'Intérieur',
-  outdoor: 'Extérieur',
-  both: 'Intérieur & Extérieur'
-} as const
 
 type Location = keyof typeof LOCATION_LABELS
 

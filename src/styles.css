@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --navbar-height: 60px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
   --card: oklch(1 0 0);
@@ -138,5 +139,17 @@
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+.day-selector-sticky {
+  container-type: scroll-state;
+
+  .day-selector-inner {
+    transition: box-shadow 0.2s ease;
+
+    @container scroll-state(stuck: top) {
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
   }
 }

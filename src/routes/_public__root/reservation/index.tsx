@@ -3,29 +3,27 @@ import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
-import type { CourtTypeFilter, LocationFilter } from '@/constants/court'
 import { getTodayDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
 import { api } from '~/convex/_generated/api'
 import { convexQuery } from '@convex-dev/react-query'
-import { useQuery } from '@tanstack/react-query'
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
 import {
   createFileRoute,
   useNavigate,
   useRouteContext
 } from '@tanstack/react-router'
+import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
-import { FilterBar } from './-components/filter-bar'
-import { FilterDrawer } from './-components/filter-drawer'
 import { LimitBanner } from './-components/limit-banner'
 
 const searchSchema = z.object({
-  date: z.string().optional(),
-  type: z.enum(['all', 'double', 'simple', 'kids']).optional(),
-  location: z.enum(['all', 'indoor', 'outdoor']).optional()
+  date: z.string().optional()
 })
-
-type SearchParams = z.infer<typeof searchSchema>
 
 const ReservationPageSkeleton = () => {
   return (
@@ -48,8 +46,9 @@ const ReservationPageSkeleton = () => {
 
 const ReservationContent = () => {
   const { authState } = useRouteContext({ from: '__root__' })
-  const { date, type = 'all', location = 'all' } = Route.useSearch()
+  const { date } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const queryClient = useQueryClient()
 
   const isAuthenticated = authState?.isAuthenticated ?? false
 
@@ -60,61 +59,81 @@ const ReservationContent = () => {
     enabled: isAuthenticated
   })
 
-  const updateSearch = (updates: Partial<SearchParams>) => {
+  const slotsQuery = useSuspenseQuery(
+    convexQuery(api.slots.getByDate, {
+      date: selectedDate
+    })
+  )
+
+  const handleDateChange = (newDate: string) => {
     navigate({
       search: (prev) => {
-        return { ...prev, ...updates }
+        return { ...prev, date: newDate }
       },
-      replace: true
+      replace: true,
+      resetScroll: false
     })
   }
 
-  const handleDateChange = (newDate: string) => {
-    updateSearch({ date: newDate })
-  }
-
-  const handleCourtTypeChange = (newType: CourtTypeFilter) => {
-    updateSearch({ type: newType === 'all' ? undefined : newType })
-  }
-
-  const handleLocationChange = (newLocation: LocationFilter) => {
-    updateSearch({ location: newLocation === 'all' ? undefined : newLocation })
+  const handleDateHover = (dateKey: string) => {
+    queryClient.prefetchQuery(
+      convexQuery(api.slots.getByDate, { date: dateKey })
+    )
   }
 
   const activeCount = activeCountQuery.data ?? 0
   const isAtLimit = isAuthenticated && activeCount >= MAX_ACTIVE_BOOKINGS
+  const courtsWithSlots = slotsQuery.data
+
+  const courtsByType = courtsWithSlots.reduce<
+    Record<string, typeof courtsWithSlots>
+  >((groups, courtWithSlots) => {
+    const courtType = courtWithSlots.court.type
+    const existing = groups[courtType] ?? []
+
+    return { ...groups, [courtType]: [...existing, courtWithSlots] }
+  }, {})
+
+  const typeOrder = ['double', 'simple', 'kids'] as const
 
   return (
     <div className="space-y-6">
       {isAtLimit ? <LimitBanner maxCount={MAX_ACTIVE_BOOKINGS} /> : null}
-      <DaySelector
-        selectedDate={selectedDate}
-        onDateChange={handleDateChange}
-      />
-      <div className="flex items-center gap-4">
-        <FilterBar
-          courtType={type}
-          location={location}
-          onCourtTypeChange={handleCourtTypeChange}
-          onLocationChange={handleLocationChange}
-        />
-        <FilterDrawer
-          courtType={type}
-          location={location}
-          onCourtTypeChange={handleCourtTypeChange}
-          onLocationChange={handleLocationChange}
-        />
+      <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 sm:mx-auto sm:w-fit sm:max-w-full">
+        <div className="day-selector-inner rounded-b-md bg-background py-2">
+          <DaySelector
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+            onDateHover={handleDateHover}
+          />
+        </div>
       </div>
-      <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
-        <CalendarIcon
-          className="mx-auto size-12 text-muted-foreground/50"
-          aria-hidden="true"
-        />
-        <h3 className="mt-4 font-semibold">Créneaux disponibles</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Les créneaux disponibles apparaîtront ici.
-        </p>
-      </div>
+      {courtsWithSlots.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
+          <CalendarIcon
+            className="mx-auto size-12 text-muted-foreground/50"
+            aria-hidden="true"
+          />
+          <h3 className="mt-4 font-semibold">Aucun terrain disponible</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Aucun terrain ne correspond aux filtres sélectionnés.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {typeOrder.map((courtType) => {
+            const groupCourts = courtsByType[courtType]
+
+            return groupCourts ? (
+              <CourtTypeGroup
+                key={courtType}
+                type={courtType}
+                courtsWithSlots={groupCourts}
+              />
+            ) : null
+          })}
+        </div>
+      )}
     </div>
   )
 }

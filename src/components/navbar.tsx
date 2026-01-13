@@ -30,8 +30,8 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
   return (
     <nav
       className={cn(
-        'h-[60px] left-0 right-0 z-50 py-4',
-        isOverlay ? 'sticky top-0' : 'static bg-primary text-primary-foreground'
+        'sticky top-0 h-[var(--navbar-height)] left-0 right-0 z-50 py-4',
+        isOverlay ? '' : 'bg-primary text-primary-foreground'
       )}
     >
       <div className="flex container items-center justify-between">

@@ -12,6 +12,7 @@ import type * as bookings from "../bookings.js";
 import type * as courts from "../courts.js";
 import type * as functions from "../functions.js";
 import type * as seed from "../seed.js";
+import type * as slots from "../slots.js";
 import type * as users from "../users.js";
 
 import type {
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   courts: typeof courts;
   functions: typeof functions;
   seed: typeof seed;
+  slots: typeof slots;
   users: typeof users;
 }>;
 

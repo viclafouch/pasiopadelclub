@@ -33,3 +33,21 @@ export const LOCATION_OPTIONS_EXTENDED = [
   { value: 'indoor', label: 'Intérieur (couvert)' },
   { value: 'outdoor', label: 'Extérieur (semi-couvert)' }
 ] as const satisfies FilterOption<Court['location'] | 'all'>[]
+
+export const LOCATION_LABELS = {
+  indoor: 'Intérieur',
+  outdoor: 'Extérieur',
+  both: 'Intérieur & Extérieur'
+} as const satisfies Record<Court['location'] | 'both', string>
+
+export const COURT_TYPE_LABELS = {
+  double: 'Terrains Double',
+  simple: 'Terrain Simple',
+  kids: 'Terrain Kids'
+} as const satisfies Record<Court['type'], string>
+
+export const COURT_TYPE_DESCRIPTIONS = {
+  double: '4 joueurs • 90 min',
+  simple: '2 joueurs • 60 min',
+  kids: 'Ouvert à tous • 60 min'
+} as const satisfies Record<Court['type'], string>

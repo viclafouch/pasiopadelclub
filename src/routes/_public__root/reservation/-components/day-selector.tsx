@@ -12,13 +12,15 @@ import { cn } from '@/lib/utils'
 type DaySelectorProps = {
   selectedDate: string
   onDateChange: (date: string) => void
+  onDateHover?: (date: string) => void
 }
 
 const dates = generateDates(DAYS_TO_SHOW)
 
 export const DaySelector = ({
   selectedDate,
-  onDateChange
+  onDateChange,
+  onDateHover
 }: DaySelectorProps) => {
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const buttonRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
@@ -68,18 +70,18 @@ export const DaySelector = ({
   }
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent sm:hidden"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent sm:hidden"
         aria-hidden="true"
       />
       <div
         ref={scrollRef}
-        className="scrollbar-hide flex gap-2 overflow-x-auto px-4 py-2 sm:justify-center"
+        className="scrollbar-hide flex gap-2 overflow-x-auto px-4 py-2"
       >
         {dates.map((date) => {
           const dateKey = formatDateKey(date)
@@ -96,6 +98,9 @@ export const DaySelector = ({
               type="button"
               onClick={() => {
                 handleDateClick(dateKey)
+              }}
+              onMouseEnter={() => {
+                onDateHover?.(dateKey)
               }}
               className={cn(
                 'relative flex min-w-[5rem] shrink-0 flex-col items-center gap-0.5 rounded-xl px-4 py-3 transition-colors',

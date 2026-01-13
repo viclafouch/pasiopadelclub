@@ -24,19 +24,19 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 ## Structure des Terrains
 
-### Semi-couverts (extérieur)
-| Terrain | Joueurs | Durée | Prix | Créneaux |
-|---------|---------|-------|------|----------|
-| Double A | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Double B | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-
 ### Couverts (intérieur)
 | Terrain | Joueurs | Durée | Prix | Créneaux |
 |---------|---------|-------|------|----------|
-| Double C | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Double D | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Simple | 2 | 60 min | 30€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
-| Kids | 2 | 60 min | 15€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
+| Court N°1 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Court N°2 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Simple N°1 | 2 | 60 min | 30€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
+| Court Kids | 2 | 60 min | 15€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
+
+### Semi-couverts (extérieur)
+| Terrain | Joueurs | Durée | Prix | Créneaux |
+|---------|---------|-------|------|----------|
+| Court N°3 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
+| Court N°4 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
 
 **Total : 6 terrains**
 - Terrain "Kids" : ouvert à tous (info-bulle explicative dans l'interface)
@@ -506,18 +506,19 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 
 ### 5.1 Page de Réservation - Structure
 - [x] Créer route `/reservation/index.tsx`
-- [x] **URL as State** : persister date, filtres dans l'URL (`?date=&type=&location=`)
+- [x] **URL as State** : persister date dans l'URL (`?date=`)
 - [x] Créer composant `DaySelector` (10 prochains jours, scroll centré)
 - [x] Afficher dates en format "JEU. 15 janv." avec "Aujourd'hui"/"Demain"
 - [x] Marquer date sélectionnée (fond vert + indicateur)
 - [x] Scroll automatique vers date sélectionnée (mobile)
 - [x] Gradient fade sur les bords (indique plus de contenu)
-- [x] Créer composant `FilterDrawer` (mobile) avec Shadcn Drawer
-- [x] Bouton "Filtres" avec badge si filtres actifs
-- [x] Créer composant `FilterBar` (desktop) avec Shadcn Select
+- [x] DaySelector sticky sous navbar avec CSS `scroll-state(stuck)` pour shadow conditionnelle
+- [x] `resetScroll: false` pour conserver scroll position au changement de date
+- [x] Prefetch slots on hover (`queryClient.prefetchQuery`)
 - [x] Créer composant `LimitBanner` si 2/2 atteint
 - [x] Support `prefers-reduced-motion` (Framer Motion)
 - [x] Helpers date extraits dans `src/helpers/date.ts`
+- [x] ~~Filtres supprimés~~ (pas utile pour 6 terrains)
 
 ### 5.2 Liste des Créneaux
 > **Règle d'affichage** : Tous les créneaux sont TOUJOURS affichés (disponibles ET réservés).
@@ -526,19 +527,20 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 > **Objectif UX** : Même si tout est complet, l'utilisateur voit les 6 terrains et tous les créneaux.
 > Cela montre l'activité du club et donne envie de réserver à l'avance.
 
-- [ ] Créer query `slots.getByDate` (TOUS les créneaux, pas juste disponibles)
-- [ ] Générer créneaux 90min pour terrains double (8h-22h)
-- [ ] Générer créneaux 60min pour terrains simple/kids (8h-22h)
-- [ ] Retourner status par créneau : `available`, `booked`, `blocked`, `past`
-- [ ] Créer composant `CourtSection` (groupe par terrain)
-- [ ] Créer composant `SlotCard`
-- [ ] Style "available" : fond clair, bordure verte, cliquable, hover effect
-- [ ] Style "booked" : fond gris clair, non cliquable, affiche "Réservé"
-- [ ] Style "blocked" : fond rayé/hachuré distinct, non cliquable, icône cadenas, affiche "Indisponible"
-- [ ] Style "past" : fond gris très léger, non cliquable, opacité 50%
-- [ ] Afficher heure début → heure fin
-- [ ] Afficher prix sur créneaux disponibles
-- [ ] Ajouter tooltip "Ouvert à tous" sur terrain Kids
+- [x] Créer query `slots.getByDate` (TOUS les créneaux, pas juste disponibles)
+- [x] Générer créneaux 90min pour terrains double (8h-22h)
+- [x] Générer créneaux 60min pour terrains simple/kids (8h-22h)
+- [x] Retourner status par créneau : `available`, `booked`, `blocked`, `past`
+- [x] Créer composant `CourtTypeGroup` (groupe par type de terrain)
+- [x] Créer composant `CourtSection` (groupe par terrain avec badges)
+- [x] Créer composant `SlotCard` avec grid responsive
+- [x] Style "available" : bordure verte, fond vert clair, icône check, prix visible
+- [x] Style "booked" : bordure rouge, fond rouge clair, icône X, "Réservé"
+- [x] Style "blocked" : bordure grise, fond gris, icône cadenas, "Indisponible"
+- [x] Style "past" : bordure grise, fond gris léger, icône horloge, "Passé"
+- [x] Afficher heure début → heure fin
+- [x] Afficher prix sur créneaux disponibles
+- [x] Ajouter tooltip "Ouvert à tous" sur terrain Kids
 
 ### 5.3 Sélection et Récapitulatif
 - [ ] Au clic sur créneau - vérifier si connecté
@@ -553,22 +555,20 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 - [ ] Bouton "Annuler" pour fermer
 
 ### 5.4 Logique de Disponibilité (Convex)
-- [ ] Créer `convex/slots.ts`
-- [ ] Helper `generateSlots90min(date)` - créneaux terrains double
-- [ ] Helper `generateSlots60min(date)` - créneaux terrains simple/kids
-- [ ] Query `slots.getByDate(date, filters?)` retourne TOUS créneaux avec status
-- [ ] Pour chaque créneau, déterminer status :
+- [x] Créer `convex/slots.ts`
+- [x] Helper `generateTimestamps(date, slotTimes, duration)` - créneaux par durée
+- [x] Constantes `SLOTS_90_MIN` et `SLOTS_60_MIN`
+- [x] Query `slots.getByDate(date)` retourne TOUS créneaux avec status
+- [x] Pour chaque créneau, déterminer status :
   - `available` : pas de réservation ni blocage
   - `booked` : réservation confirmée existe
   - `blocked` : blocage admin existe
-  - `past` : heure de début < maintenant (pour aujourd'hui)
-- [ ] Filtrer par type de terrain si filtre actif
-- [ ] Filtrer par localisation si filtre actif
-- [ ] Retourner tous les terrains (6) avec leurs créneaux
+  - `past` : heure de début < maintenant
+- [x] Retourner tous les terrains avec leurs créneaux groupés par type
 
 ### Livrables
-- Interface de réservation complète
-- Filtres fonctionnels (drawer mobile)
+- Interface de réservation complète (sans filtres)
+- DaySelector sticky avec prefetch on hover
 - Logique de disponibilité avec grilles indépendantes
 - Récapitulatif avant paiement
 
