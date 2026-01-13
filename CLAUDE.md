@@ -45,3 +45,7 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - Never assume or guess library behavior - always verify in documentation first
 - Use Context7 MCP server instead of crawling node_modules or build files
 
+### Package Scripts
+- **Only use `npm run` scripts** defined in `package.json`
+- Never use `pnpm`, `tsc`, `eslint` directly - always use `npm run lint`, `npm run build`, etc.
+

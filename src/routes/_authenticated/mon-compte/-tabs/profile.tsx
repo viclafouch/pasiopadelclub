@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyIcon, PencilIcon, Trash2Icon } from 'lucide-react'
+import { DownloadIcon, KeyIcon, PencilIcon, Trash2Icon } from 'lucide-react'
 import { z } from 'zod/v3'
 import { AnimatedNotification } from '@/components/animated-notification'
 import {
@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { downloadJson } from '@/helpers/download'
 import { getErrorMessage } from '@/helpers/error'
 import { api } from '~/convex/_generated/api'
 import { useClerk } from '@clerk/tanstack-react-start'
@@ -159,6 +160,46 @@ const PhoneField = ({ initialPhone, onSuccess }: PhoneFieldProps) => {
   )
 }
 
+const DataExportSection = () => {
+  const exportMutation = useMutation({
+    mutationFn: useConvexMutation(api.users.exportMyData),
+    onSuccess: (data) => {
+      const filename = `pasio-padel-data-${new Date().toISOString().split('T')[0]}.json`
+      downloadJson(data, filename)
+    }
+  })
+
+  return (
+    <div className="rounded-lg border p-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h3 className="font-semibold">Mes données (RGPD)</h3>
+          <p className="text-sm text-muted-foreground">
+            Téléchargez une copie de vos données personnelles au format JSON.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            return exportMutation.mutate({})
+          }}
+          disabled={exportMutation.isPending}
+          aria-busy={exportMutation.isPending}
+          className="shrink-0"
+        >
+          <DownloadIcon className="size-4" aria-hidden="true" />
+          {exportMutation.isPending ? 'Préparation...' : 'Exporter mes données'}
+        </Button>
+      </div>
+      {exportMutation.isError ? (
+        <p role="alert" className="text-sm text-destructive mt-4">
+          {getErrorMessage(exportMutation.error)}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
 const DeleteAccountSection = () => {
   const { signOut } = useClerk()
   const navigate = useNavigate()
@@ -176,18 +217,19 @@ const DeleteAccountSection = () => {
   }
 
   return (
-    <div className="rounded-lg border border-destructive/50 p-6 space-y-4 mt-6">
-      <h3 className="font-semibold text-destructive">Supprimer mon compte</h3>
-      <p className="text-sm text-muted-foreground">
-        Cette action est irréversible. Vos données personnelles seront
-        supprimées, mais votre historique de réservations sera conservé de
-        manière anonyme.
-      </p>
+    <div className="rounded-lg border border-destructive/50 p-6 flex items-center justify-between gap-4">
+      <div>
+        <h3 className="font-semibold text-destructive">Supprimer mon compte</h3>
+        <p className="text-sm text-muted-foreground">
+          Action irréversible. Données personnelles supprimées, historique
+          conservé anonymement.
+        </p>
+      </div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive">
-            <Trash2Icon className="size-4 mr-2" aria-hidden="true" />
-            Supprimer mon compte
+          <Button variant="destructive" className="shrink-0">
+            <Trash2Icon className="size-4" aria-hidden="true" />
+            Supprimer
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -251,7 +293,7 @@ export const ProfileTab = () => {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       <AnimatedNotification show={showSuccess} variant="success">
         Votre numéro de téléphone a été mis à jour.
       </AnimatedNotification>
@@ -278,21 +320,25 @@ export const ProfileTab = () => {
           </div>
         </div>
       </div>
-      <div className="rounded-lg border p-6 space-y-4 mt-6">
-        <h3 className="font-semibold">Sécurité</h3>
-        <p className="text-sm text-muted-foreground">
-          Gérez votre mot de passe et vos paramètres de sécurité.
-        </p>
+      <div className="rounded-lg border p-6 flex items-center justify-between gap-4">
+        <div>
+          <h3 className="font-semibold">Sécurité</h3>
+          <p className="text-sm text-muted-foreground">
+            Gérez votre mot de passe et vos paramètres de sécurité.
+          </p>
+        </div>
         <Button
           variant="outline"
           onClick={() => {
             return openUserProfile()
           }}
+          className="shrink-0"
         >
-          <KeyIcon className="size-4 mr-2" aria-hidden="true" />
+          <KeyIcon className="size-4" aria-hidden="true" />
           Gérer la sécurité
         </Button>
       </div>
+      <DataExportSection />
       <DeleteAccountSection />
     </div>
   )

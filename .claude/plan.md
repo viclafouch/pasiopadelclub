@@ -483,10 +483,10 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - [x] Rediriger vers accueil
 
 ### 4.7 Export de données (RGPD Art. 20)
-- [ ] Créer query `users.exportMyData` (profil + réservations)
-- [ ] Ajouter bouton "Exporter mes données" dans profil
-- [ ] Générer fichier JSON téléchargeable
-- [ ] Inclure : email, nom, téléphone, historique réservations
+- [x] Créer query `users.exportMyData` (profil + réservations)
+- [x] Ajouter bouton "Exporter mes données" dans profil
+- [x] Générer fichier JSON téléchargeable
+- [x] Inclure : email, nom, téléphone, historique réservations
 
 ### Livrables
 - Dashboard utilisateur avec tabs URL-persisted

@@ -139,3 +139,43 @@ export const anonymize = authenticatedMutation({
     return { success: true }
   }
 })
+
+export const exportMyData = authenticatedMutation({
+  args: {},
+  handler: async (context) => {
+    const bookings = await context.db
+      .query('bookings')
+      .withIndex('by_userId', (indexQuery) => {
+        return indexQuery.eq('userId', context.user._id)
+      })
+      .collect()
+
+    const bookingsWithCourts = await Promise.all(
+      bookings.map(async (booking) => {
+        const court = await context.db.get(booking.courtId)
+
+        return {
+          date: new Date(booking.startAt).toISOString(),
+          startAt: new Date(booking.startAt).toISOString(),
+          endAt: new Date(booking.endAt).toISOString(),
+          court: court?.name ?? 'Terrain supprimé',
+          courtType: court?.type ?? null,
+          price: booking.price,
+          status: booking.status,
+          createdAt: new Date(booking.createdAt).toISOString()
+        }
+      })
+    )
+
+    return {
+      profile: {
+        email: context.user.email,
+        firstName: context.user.firstName,
+        lastName: context.user.lastName,
+        phone: context.user.phone
+      },
+      bookings: bookingsWithCourts,
+      exportedAt: new Date().toISOString()
+    }
+  }
+})

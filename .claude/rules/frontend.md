@@ -15,6 +15,7 @@ paths: "**/*.{ts,tsx}"
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
 - Do not update the code in the `src/components/ui` folder, just fix the linter errors.
+- **No margins on icons in buttons** - shadcn Button has built-in `gap` spacing
 
 ### TanStack Query
 - **Never destructure** `useQuery`/`useSuspenseQuery` results - use inferred types
@@ -77,6 +78,7 @@ paths: "**/*.{ts,tsx}"
 - Define custom utilities in global CSS (`app.css`) and reuse them
 - Keep styling consistent: one source of truth for design tokens (fonts, colors, spacing)
 - If a value is used more than once, it should be a utility class or CSS variable
+- **Prefer `gap`/`space-y`/`space-x`** over `mt-*`/`mb-*` for spacing between siblings
 
 ### Animations (Framer Motion)
 - **Use Framer Motion** for all UI animations - no CSS transitions for interactive elements
