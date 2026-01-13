@@ -1,5 +1,4 @@
 import React from 'react'
-import { useMutation } from 'convex/react'
 import { AlertCircleIcon, CalendarIcon } from 'lucide-react'
 import { BookingCard } from '@/components/booking-card'
 import {
@@ -15,10 +14,11 @@ import {
 import { Button } from '@/components/ui/button'
 import type { BookingId } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
+import { getErrorMessage } from '@/helpers/error'
 import { matchCanCancelBooking } from '@/utils/booking'
 import { api } from '~/convex/_generated/api'
-import { convexQuery } from '@convex-dev/react-query'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { convexQuery, useConvexMutation } from '@convex-dev/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 
 const MAX_ACTIVE_BOOKINGS = 2
@@ -45,9 +45,16 @@ export const UpcomingBookingsTab = () => {
   const activeCountQuery = useSuspenseQuery(
     convexQuery(api.bookings.getActiveCount, {})
   )
-  const cancelBooking = useMutation(api.bookings.cancel)
   const [cancelingId, setCancelingId] = React.useState<BookingId | null>(null)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+
+  const cancelBookingMutation = useMutation({
+    mutationFn: useConvexMutation(api.bookings.cancel),
+    onSettled: () => {
+      setIsDialogOpen(false)
+      setCancelingId(null)
+    }
+  })
 
   const upcomingBookings = upcomingBookingsQuery.data
   const activeCount = activeCountQuery.data
@@ -57,19 +64,12 @@ export const UpcomingBookingsTab = () => {
     setIsDialogOpen(true)
   }
 
-  const handleConfirmCancel = async () => {
+  const handleConfirmCancel = () => {
     if (!cancelingId) {
       return
     }
 
-    try {
-      await cancelBooking({ bookingId: cancelingId })
-      setIsDialogOpen(false)
-      setCancelingId(null)
-    } catch {
-      setIsDialogOpen(false)
-      setCancelingId(null)
-    }
+    cancelBookingMutation.mutate({ bookingId: cancelingId })
   }
 
   const bookingToCancel = upcomingBookings.find((booking) => {
@@ -154,12 +154,25 @@ export const UpcomingBookingsTab = () => {
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {cancelBookingMutation.isError ? (
+            <p role="alert" className="text-sm text-destructive">
+              {getErrorMessage(cancelBookingMutation.error)}
+            </p>
+          ) : null}
           <AlertDialogFooter>
             {canCancelBooking ? (
               <>
-                <AlertDialogCancel>Non, garder</AlertDialogCancel>
-                <AlertDialogAction onClick={handleConfirmCancel}>
-                  Oui, annuler
+                <AlertDialogCancel disabled={cancelBookingMutation.isPending}>
+                  Non, garder
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleConfirmCancel}
+                  disabled={cancelBookingMutation.isPending}
+                  aria-busy={cancelBookingMutation.isPending}
+                >
+                  {cancelBookingMutation.isPending
+                    ? 'Annulation...'
+                    : 'Oui, annuler'}
                 </AlertDialogAction>
               </>
             ) : (

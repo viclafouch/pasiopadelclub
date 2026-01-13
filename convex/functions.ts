@@ -44,6 +44,10 @@ export const authenticatedQuery = customQuery(query, {
       throw new Error('Compte bloqué')
     }
 
+    if (dbUser.isAnonymized) {
+      throw new Error('Compte supprimé')
+    }
+
     const user: AuthenticatedUser = {
       _id: dbUser._id,
       clerkId: identity.subject,
@@ -86,6 +90,10 @@ export const authenticatedMutation = customMutation(mutation, {
 
     if (dbUser.isBlocked) {
       throw new Error('Compte bloqué')
+    }
+
+    if (dbUser.isAnonymized) {
+      throw new Error('Compte supprimé')
     }
 
     const user: AuthenticatedUser = {
@@ -131,6 +139,10 @@ export const adminQuery = customQuery(query, {
       throw new Error('Accès admin requis')
     }
 
+    if (dbUser.isAnonymized) {
+      throw new Error('Compte supprimé')
+    }
+
     const user: AuthenticatedUser = {
       _id: dbUser._id,
       clerkId: identity.subject,
@@ -172,6 +184,10 @@ export const adminMutation = customMutation(mutation, {
 
     if (dbUser.role !== 'admin') {
       throw new Error('Accès admin requis')
+    }
+
+    if (dbUser.isAnonymized) {
+      throw new Error('Compte supprimé')
     }
 
     const user: AuthenticatedUser = {

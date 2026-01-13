@@ -1,6 +1,7 @@
 import { v } from 'convex/values'
 import type { QueryCtx } from './_generated/server'
 import { mutation, query } from './_generated/server'
+import { authenticatedMutation } from './functions'
 
 const findUserByClerkId = async (db: QueryCtx['db'], clerkId: string) => {
   return db
@@ -22,7 +23,6 @@ export const getCurrent = query({
 
     const user = await findUserByClerkId(context.db, identity.subject)
 
-    // Merge Clerk identity + Convex business data
     return {
       _id: user?._id ?? null,
       clerkId: identity.subject,
@@ -123,6 +123,18 @@ export const setBlocked = mutation({
     }
 
     await context.db.patch(args.userId, { isBlocked: args.isBlocked })
+
+    return { success: true }
+  }
+})
+
+export const anonymize = authenticatedMutation({
+  args: {},
+  handler: async (context) => {
+    await context.db.patch(context.user._id, {
+      isAnonymized: true,
+      phone: undefined
+    })
 
     return { success: true }
   }

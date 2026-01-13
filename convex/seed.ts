@@ -116,6 +116,7 @@ export const createTestUser = mutation({
       clerkId: identity.subject,
       role: 'user',
       isBlocked: false,
+      isAnonymized: false,
       createdAt: Date.now()
     })
 

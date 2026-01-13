@@ -7,6 +7,7 @@ export default defineSchema({
     phone: v.optional(v.string()),
     role: v.union(v.literal('user'), v.literal('admin')),
     isBlocked: v.boolean(),
+    isAnonymized: v.boolean(),
     createdAt: v.number()
   }).index('by_clerkId', ['clerkId']),
 

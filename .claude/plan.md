@@ -475,12 +475,18 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - [x] Bouton "Gérer la sécurité" ouvrant Clerk UserProfile
 
 ### 4.6 Suppression de compte
-- [ ] Ajouter section "Supprimer mon compte"
-- [ ] Dialog de confirmation avec explication
-- [ ] Créer mutation `users.anonymize`
-- [ ] Anonymiser données personnelles
-- [ ] Déconnexion via Clerk
-- [ ] Rediriger vers accueil
+- [x] Ajouter section "Supprimer mon compte"
+- [x] Dialog de confirmation avec explication
+- [x] Créer mutation `users.anonymize`
+- [x] Anonymiser données personnelles
+- [x] Déconnexion via Clerk
+- [x] Rediriger vers accueil
+
+### 4.7 Export de données (RGPD Art. 20)
+- [ ] Créer query `users.exportMyData` (profil + réservations)
+- [ ] Ajouter bouton "Exporter mes données" dans profil
+- [ ] Générer fichier JSON téléchargeable
+- [ ] Inclure : email, nom, téléphone, historique réservations
 
 ### Livrables
 - Dashboard utilisateur avec tabs URL-persisted
@@ -488,6 +494,7 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - Annulation avec dialog explicatif (pas de boutons disabled)
 - Historique paginé
 - Profil avec modification
+- Export de données RGPD
 
 ---
 
@@ -891,7 +898,55 @@ S'assurer de la fiabilité et sécurité du système.
 
 ---
 
-## Milestone 12 : Déploiement & Production
+## Milestone 12 : Conformité RGPD
+
+### Objectif
+Assurer la conformité RGPD complète avant mise en production.
+
+### 12.1 Politique de confidentialité
+- [ ] Créer route `/politique-confidentialite/index.tsx`
+- [ ] Lister toutes les activités de traitement avec base légale
+- [ ] Documenter durées de conservation (réservations : 10 ans comptabilité)
+- [ ] Lister les sous-traitants (Clerk, Convex, Polar, Resend, Railway)
+- [ ] Mentionner transferts US (sous-traitants) + garanties (EU-US DPF ou SCCs)
+- [ ] Ajouter contact CNIL (3 Place de Fontenoy, 75007 Paris)
+- [ ] Ajouter lien dans footer
+- [ ] Note : utilisateurs FR uniquement, pas de multi-langue nécessaire
+
+### 12.2 Consentement cookies
+- [ ] Auditer tous les cookies (Clerk session, etc.)
+- [ ] Créer composant `CookieConsent` banner
+- [ ] Boutons "Accepter" / "Refuser" de même importance
+- [ ] Stocker consentement (localStorage + champ user optionnel)
+- [ ] Permettre retrait du consentement (lien footer)
+- [ ] Ne charger scripts non-essentiels qu'après consentement
+
+### 12.3 Consentement à l'inscription
+- [ ] Ajouter checkbox CGV + Politique confidentialité obligatoire
+- [ ] Stocker `termsAcceptedAt` timestamp dans users
+- [ ] Checkbox marketing optionnelle (si emails promo prévus)
+
+### 12.4 Procédures internes (documentation)
+- [ ] Documenter procédure violation de données (72h CNIL)
+- [ ] Template notification utilisateurs en cas de breach
+- [ ] Vérifier DPA signés avec tous les sous-traitants
+- [ ] Créer registre des traitements (document interne)
+
+### 12.5 Nettoyage des données
+- [ ] Créer cron `cleanupAnonymizedUsers` (supprimer après 30j)
+- [ ] Définir politique rétention contact form (3 ans)
+- [ ] Respecter obligation 10 ans données comptables
+
+### Livrables
+- Politique de confidentialité complète (FR)
+- Bannière cookies conforme CNIL
+- Consentement à l'inscription
+- Documentation procédures internes
+- Cron nettoyage données
+
+---
+
+## Milestone 13 : Déploiement & Production
 
 ### Objectif
 Déployer le site en production sur Railway.

@@ -1,17 +1,28 @@
 import React from 'react'
-import { useMutation } from 'convex/react'
-import { KeyIcon, PencilIcon } from 'lucide-react'
+import { KeyIcon, PencilIcon, Trash2Icon } from 'lucide-react'
 import { z } from 'zod/v3'
 import { AnimatedNotification } from '@/components/animated-notification'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { getErrorMessage } from '@/helpers/error'
 import { api } from '~/convex/_generated/api'
 import { useClerk } from '@clerk/tanstack-react-start'
-import { convexQuery } from '@convex-dev/react-query'
+import { convexQuery, useConvexMutation } from '@convex-dev/react-query'
 import { useForm } from '@tanstack/react-form'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 
 const phoneSchema = z.object({
   phone: z
@@ -26,8 +37,20 @@ type PhoneFieldProps = {
 }
 
 const PhoneField = ({ initialPhone, onSuccess }: PhoneFieldProps) => {
-  const updatePhone = useMutation(api.users.updatePhone)
   const [isEditing, setIsEditing] = React.useState(false)
+
+  const updatePhoneMutation = useMutation({
+    mutationFn: useConvexMutation(api.users.updatePhone),
+    onSuccess: () => {
+      setIsEditing(false)
+      onSuccess()
+    }
+  })
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    updatePhoneMutation.reset()
+  }
 
   const form = useForm({
     defaultValues: {
@@ -36,17 +59,10 @@ const PhoneField = ({ initialPhone, onSuccess }: PhoneFieldProps) => {
     validators: {
       onSubmit: phoneSchema
     },
-    onSubmit: async ({ value }) => {
-      await updatePhone({ phone: value.phone })
-      setIsEditing(false)
-      onSuccess()
+    onSubmit: ({ value }) => {
+      updatePhoneMutation.mutate({ phone: value.phone })
     }
   })
-
-  const handleCancelEdit = () => {
-    setIsEditing(false)
-    form.reset()
-  }
 
   if (!isEditing) {
     return (
@@ -115,36 +131,98 @@ const PhoneField = ({ initialPhone, onSuccess }: PhoneFieldProps) => {
           )
         }}
       </form.Field>
-      <form.Subscribe
-        selector={(state) => {
-          return state.isSubmitting
-        }}
-      >
-        {(isSubmitting) => {
-          return (
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                size="sm"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-              >
-                {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={handleCancelEdit}
-                disabled={isSubmitting}
-              >
-                Annuler
-              </Button>
-            </div>
-          )
-        }}
-      </form.Subscribe>
+      <div className="flex gap-2">
+        <Button
+          type="submit"
+          size="sm"
+          disabled={updatePhoneMutation.isPending}
+          aria-busy={updatePhoneMutation.isPending}
+        >
+          {updatePhoneMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={handleCancelEdit}
+          disabled={updatePhoneMutation.isPending}
+        >
+          Annuler
+        </Button>
+      </div>
+      {updatePhoneMutation.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {getErrorMessage(updatePhoneMutation.error)}
+        </p>
+      ) : null}
     </form>
+  )
+}
+
+const DeleteAccountSection = () => {
+  const { signOut } = useClerk()
+  const navigate = useNavigate()
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: useConvexMutation(api.users.anonymize),
+    onSuccess: async () => {
+      await signOut()
+      navigate({ to: '/' })
+    }
+  })
+
+  const handleDeleteAccount = () => {
+    deleteAccountMutation.mutate({})
+  }
+
+  return (
+    <div className="rounded-lg border border-destructive/50 p-6 space-y-4 mt-6">
+      <h3 className="font-semibold text-destructive">Supprimer mon compte</h3>
+      <p className="text-sm text-muted-foreground">
+        Cette action est irréversible. Vos données personnelles seront
+        supprimées, mais votre historique de réservations sera conservé de
+        manière anonyme.
+      </p>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive">
+            <Trash2Icon className="size-4 mr-2" aria-hidden="true" />
+            Supprimer mon compte
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer votre compte ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Votre compte sera définitivement
+              supprimé et vous serez déconnecté. Votre historique de
+              réservations sera conservé de manière anonyme pour nos
+              statistiques.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {deleteAccountMutation.isError ? (
+            <p role="alert" className="text-sm text-destructive">
+              {getErrorMessage(deleteAccountMutation.error)}
+            </p>
+          ) : null}
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteAccountMutation.isPending}>
+              Annuler
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={deleteAccountMutation.isPending}
+              aria-busy={deleteAccountMutation.isPending}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {deleteAccountMutation.isPending
+                ? 'Suppression...'
+                : 'Supprimer définitivement'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   )
 }
 
@@ -215,6 +293,7 @@ export const ProfileTab = () => {
           Gérer la sécurité
         </Button>
       </div>
+      <DeleteAccountSection />
     </div>
   )
 }
