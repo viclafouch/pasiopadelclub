@@ -1,18 +1,22 @@
+import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js/min'
 import { z } from 'zod'
+
+const DEFAULT_COUNTRY = 'FR'
 
 export const phoneSchema = z
   .string()
-  .min(10, 'Le numéro doit contenir au moins 10 chiffres')
-  .max(20, 'Le numéro est trop long')
-  .transform((value) => {
-    return value.replace(/[\s-]/g, '')
-  })
+  .min(1, 'Le numéro de téléphone est requis')
   .refine(
     (value) => {
-      return /^\+?[0-9]{10,15}$/.test(value)
+      return isValidPhoneNumber(value, DEFAULT_COUNTRY)
     },
-    { message: 'Format de téléphone invalide' }
+    {
+      message: 'Format de téléphone invalide'
+    }
   )
+  .transform((value) => {
+    return parsePhoneNumber(value, DEFAULT_COUNTRY).format('E.164')
+  })
 
 export const phoneFormSchema = z.object({
   phone: phoneSchema
@@ -20,15 +24,17 @@ export const phoneFormSchema = z.object({
 
 export const optionalPhoneSchema = z
   .string()
-  .transform((value) => {
-    return value.replace(/[\s-]/g, '')
-  })
   .refine(
     (value) => {
-      return value === '' || /^\+?[0-9]{10,15}$/.test(value)
+      return value === '' || isValidPhoneNumber(value, DEFAULT_COUNTRY)
     },
     { message: 'Format de téléphone invalide' }
   )
+  .transform((value) => {
+    return value === ''
+      ? ''
+      : parsePhoneNumber(value, DEFAULT_COUNTRY).format('E.164')
+  })
 
 export const profileFormSchema = z.object({
   firstName: z
