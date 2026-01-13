@@ -470,7 +470,8 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - [x] Tab profil dans `/mon-compte`
 - [x] Afficher email, téléphone, prénom, nom (lecture seule)
 - [x] Créer mutation `users.updatePhone` (phone only, validation backend)
-- [x] Créer formulaire modification téléphone
+- [x] Créer formulaire modification téléphone (modal complète firstName/lastName/phone)
+- [x] Phone validation avec `libphonenumber-js/min` (~80KB) + normalisation E.164
 - [x] Afficher message succès après modification
 - [x] Bouton "Gérer la sécurité" ouvrant Clerk UserProfile
 
