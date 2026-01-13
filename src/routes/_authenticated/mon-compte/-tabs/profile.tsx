@@ -15,7 +15,10 @@ export const ProfileTabSkeleton = (): React.ReactNode => {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border p-6 space-y-4">
-        <Skeleton className="h-5 w-40" />
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-8 w-24" />
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1">
             <Skeleton className="h-4 w-12" />
@@ -49,7 +52,7 @@ export const ProfileTabSkeleton = (): React.ReactNode => {
         </div>
         <Skeleton className="h-9 w-40" />
       </div>
-      <div className="rounded-lg border border-destructive/50 p-6 flex items-center justify-between gap-4">
+      <div className="rounded-lg border p-6 flex items-center justify-between gap-4">
         <div className="space-y-1">
           <Skeleton className="h-5 w-36" />
           <Skeleton className="h-4 w-80" />

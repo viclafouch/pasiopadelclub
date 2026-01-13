@@ -1,67 +1,35 @@
 import React from 'react'
-import type { FunctionReturnType } from 'convex/server'
+import { useConvex } from 'convex/react'
 import { HistoryIcon, LoaderIcon } from 'lucide-react'
 import { BookingCard } from '@/components/booking-card'
 import { Button } from '@/components/ui/button'
 import { api } from '~/convex/_generated/api'
-import { convexQuery } from '@convex-dev/react-query'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
-
-type PastBookingsResult = FunctionReturnType<typeof api.bookings.getPast>
-type BookingWithCourt = PastBookingsResult['bookings'][number]
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
 const PAGE_SIZE = 20
 
 export const HistoryTab = () => {
-  const [loadedBookings, setLoadedBookings] = React.useState<
-    BookingWithCourt[]
-  >([])
-  const [nextCursor, setNextCursor] = React.useState<string | null>(null)
-  const [isLoadingMore, setIsLoadingMore] = React.useState(false)
+  const convex = useConvex()
 
-  const initialQuery = useSuspenseQuery(
-    convexQuery(api.bookings.getPast, { limit: PAGE_SIZE })
-  )
-
-  const loadMoreQuery = useQuery({
-    ...convexQuery(api.bookings.getPast, {
-      limit: PAGE_SIZE,
-      cursor: nextCursor ?? ''
-    }),
-    enabled: isLoadingMore && nextCursor !== null
+  const historyQuery = useSuspenseInfiniteQuery({
+    queryKey: ['bookings', 'past'],
+    queryFn: async ({ pageParam }) => {
+      return convex.query(api.bookings.getPast, {
+        limit: PAGE_SIZE,
+        cursor: pageParam
+      })
+    },
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined
+    }
   })
 
-  React.useEffect(() => {
-    if (loadMoreQuery.data && isLoadingMore) {
-      setLoadedBookings((previous) => {
-        return [...previous, ...loadMoreQuery.data.bookings]
-      })
-      setNextCursor(loadMoreQuery.data.nextCursor)
-      setIsLoadingMore(false)
-    }
-  }, [loadMoreQuery.data, isLoadingMore])
+  const allBookings = historyQuery.data.pages.flatMap((page) => {
+    return page.bookings
+  })
 
-  const displayBookings =
-    loadedBookings.length > 0
-      ? [...initialQuery.data.bookings, ...loadedBookings]
-      : initialQuery.data.bookings
-
-  const hasMoreToLoad =
-    loadedBookings.length > 0
-      ? nextCursor !== null
-      : initialQuery.data.nextCursor !== null
-
-  const handleLoadMore = () => {
-    const cursor =
-      loadedBookings.length > 0 ? nextCursor : initialQuery.data.nextCursor
-
-    if (cursor) {
-      setNextCursor(cursor)
-      setIsLoadingMore(true)
-    }
-  }
-
-  if (displayBookings.length === 0) {
+  if (allBookings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
         <HistoryIcon
@@ -81,7 +49,7 @@ export const HistoryTab = () => {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
-        {displayBookings.map((booking) => {
+        {allBookings.map((booking) => {
           return (
             <BookingCard
               key={booking._id}
@@ -91,15 +59,17 @@ export const HistoryTab = () => {
           )
         })}
       </div>
-      {hasMoreToLoad ? (
+      {historyQuery.hasNextPage ? (
         <div className="flex justify-center">
           <Button
             variant="outline"
-            onClick={handleLoadMore}
-            disabled={loadMoreQuery.isFetching}
-            aria-busy={loadMoreQuery.isFetching}
+            onClick={() => {
+              return historyQuery.fetchNextPage()
+            }}
+            disabled={historyQuery.isFetchingNextPage}
+            aria-busy={historyQuery.isFetchingNextPage}
           >
-            {loadMoreQuery.isFetching ? (
+            {historyQuery.isFetchingNextPage ? (
               <>
                 <LoaderIcon
                   className="size-4 animate-spin"
