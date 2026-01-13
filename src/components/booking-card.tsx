@@ -44,27 +44,30 @@ export const BookingCard = ({
       <CardContent className="space-y-3">
         <div className="grid gap-2 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <CalendarIcon className="size-4" />
+            <CalendarIcon className="size-4" aria-hidden="true" />
             <span>{formatDateFr(new Date(booking.startAt))}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <ClockIcon className="size-4" />
+            <ClockIcon className="size-4" aria-hidden="true" />
             <span>
               {formatTimeFr(new Date(booking.startAt))} -{' '}
               {formatTimeFr(new Date(booking.endAt))}
             </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <MapPinIcon className="size-4" />
+            <MapPinIcon className="size-4" aria-hidden="true" />
             <span>{getLocationLabel(court.location)}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <UsersIcon className="size-4" />
+            <UsersIcon className="size-4" aria-hidden="true" />
             <span>{court.capacity} joueurs</span>
           </div>
         </div>
-        <div className="pt-2 border-t">
+        <div className="flex items-center justify-between pt-2 border-t">
           <p className="font-medium">{booking.price} €</p>
+          <p className="text-xs text-muted-foreground">
+            Réservé le {formatDateFr(new Date(booking.createdAt))}
+          </p>
         </div>
       </CardContent>
       {showCancel ? (

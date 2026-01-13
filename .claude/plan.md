@@ -464,12 +464,12 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
 - [x] Créer query `bookings.getPast` avec pagination (backend ready)
 - [x] Afficher liste réservations passées avec `BookingCard`
 - [x] Afficher message si aucun historique
-- [ ] Implémenter UI "Charger plus" si > 20 réservations
+- [x] Implémenter UI "Charger plus" si > 20 réservations
 
 ### 4.5 Gestion du Profil
 - [x] Tab profil dans `/mon-compte`
 - [x] Afficher email, téléphone, prénom, nom (lecture seule)
-- [x] Créer mutation `users.updatePhone` (phone only)
+- [x] Créer mutation `users.updatePhone` (phone only, validation backend)
 - [x] Créer formulaire modification téléphone
 - [x] Afficher message succès après modification
 - [x] Bouton "Gérer la sécurité" ouvrant Clerk UserProfile

@@ -25,12 +25,17 @@ const MAX_ACTIVE_BOOKINGS = 2
 
 const EmptyBookings = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <CalendarIcon className="size-12 text-muted-foreground mb-4" />
-      <h3 className="font-semibold text-lg mb-2">Aucune réservation</h3>
-      <p className="text-muted-foreground mb-4">
-        Vous n&apos;avez pas de réservation à venir.
-      </p>
+    <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+      <CalendarIcon
+        className="size-12 text-muted-foreground"
+        aria-hidden="true"
+      />
+      <div className="space-y-2">
+        <h3 className="font-semibold text-lg">Aucune réservation</h3>
+        <p className="text-muted-foreground">
+          Vous n&apos;avez pas de réservation à venir.
+        </p>
+      </div>
       <Button asChild>
         <Link to="/reservation">Réserver un terrain</Link>
       </Button>

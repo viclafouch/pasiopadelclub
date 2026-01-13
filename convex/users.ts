@@ -1,4 +1,5 @@
 import { v } from 'convex/values'
+import { phoneSchema } from '../src/constants/validation'
 import type { QueryCtx } from './_generated/server'
 import { mutation, query } from './_generated/server'
 import { authenticatedMutation } from './functions'
@@ -45,13 +46,19 @@ export const updatePhone = mutation({
       throw new Error('Non authentifié')
     }
 
+    const result = phoneSchema.safeParse(args.phone)
+
+    if (!result.success) {
+      throw new Error(result.error.issues[0]?.message ?? 'Téléphone invalide')
+    }
+
     const user = await findUserByClerkId(context.db, identity.subject)
 
     if (!user) {
       throw new Error('Utilisateur non trouvé')
     }
 
-    await context.db.patch(user._id, { phone: args.phone })
+    await context.db.patch(user._id, { phone: result.data })
 
     return { success: true }
   }

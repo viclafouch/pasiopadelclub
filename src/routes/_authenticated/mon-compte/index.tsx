@@ -9,7 +9,7 @@ import { api } from '~/convex/_generated/api'
 import { convexQuery } from '@convex-dev/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { HistoryTab } from './-tabs/history'
-import { ProfileTab } from './-tabs/profile'
+import { ProfileTab, ProfileTabSkeleton } from './-tabs/profile'
 import { UpcomingBookingsTab } from './-tabs/upcoming-bookings'
 
 const BookingsSkeleton = () => {
@@ -49,7 +49,7 @@ const TABS = [
     label: 'Profil',
     icon: UserIcon,
     component: ProfileTab,
-    fallback: <div>Chargement...</div>
+    fallback: <ProfileTabSkeleton />
   }
 ] as const satisfies TabConfig[]
 
@@ -87,7 +87,7 @@ const MonComptePage = () => {
                   value={tabConfig.value}
                   className="gap-2"
                 >
-                  <tabConfig.icon className="size-4" />
+                  <tabConfig.icon className="size-4" aria-hidden="true" />
                   <span className="hidden sm:inline">{tabConfig.label}</span>
                 </TabsTrigger>
               )
