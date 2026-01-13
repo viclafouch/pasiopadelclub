@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { getErrorMessage } from '@/helpers/error'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
@@ -14,18 +15,6 @@ const contactSchema = z.object({
   email: z.string().email('Veuillez entrer une adresse email valide'),
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères')
 })
-
-const getErrorMessage = (error: unknown): string => {
-  if (typeof error === 'string') {
-    return error
-  }
-
-  if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message)
-  }
-
-  return 'Erreur de validation'
-}
 
 const ContactPage = () => {
   const [isSubmitted, setIsSubmitted] = React.useState(false)

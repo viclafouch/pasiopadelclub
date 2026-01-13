@@ -453,26 +453,26 @@ Créer l'espace personnel de l'utilisateur pour gérer son profil et voir ses r�
   - Si > 24h : confirmation avec "Oui, annuler" / "Non, garder"
   - Si < 24h : explication de la règle + bouton "Compris"
 - [x] Créer `matchCanCancelBooking(startAt)` utility
-- [ ] Créer mutation `bookings.cancel`
-- [ ] Vérifier délai 24h côté serveur
+- [x] Créer mutation `bookings.cancel`
+- [x] Vérifier délai 24h côté serveur
+- [x] Mettre à jour status "cancelled"
 - [ ] Appeler action remboursement Polar (M6)
-- [ ] Mettre à jour status "cancelled"
 - [ ] Envoyer email confirmation annulation (M7)
 
 ### 4.4 Historique des Réservations
 - [x] Tab historique dans `/mon-compte`
-- [x] Créer query `bookings.getPast` avec pagination
+- [x] Créer query `bookings.getPast` avec pagination (backend ready)
 - [x] Afficher liste réservations passées avec `BookingCard`
 - [x] Afficher message si aucun historique
-- [ ] Implémenter "Charger plus" si > 20 réservations
+- [ ] Implémenter UI "Charger plus" si > 20 réservations
 
 ### 4.5 Gestion du Profil
 - [x] Tab profil dans `/mon-compte`
 - [x] Afficher email, téléphone, prénom, nom (lecture seule)
-- [ ] Créer formulaire modification prénom/nom/téléphone
-- [ ] Créer mutation `users.updateProfile`
-- [ ] Afficher message succès après modification
-- [ ] Changement mot de passe via Clerk (lien externe)
+- [x] Créer mutation `users.updatePhone` (phone only)
+- [x] Créer formulaire modification téléphone
+- [x] Afficher message succès après modification
+- [x] Bouton "Gérer la sécurité" ouvrant Clerk UserProfile
 
 ### 4.6 Suppression de compte
 - [ ] Ajouter section "Supprimer mon compte"

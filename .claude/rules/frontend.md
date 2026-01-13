@@ -73,3 +73,17 @@ paths: "**/*.{ts,tsx}"
 - Define custom utilities in global CSS (`app.css`) and reuse them
 - Keep styling consistent: one source of truth for design tokens (fonts, colors, spacing)
 - If a value is used more than once, it should be a utility class or CSS variable
+
+### Animations (Framer Motion)
+- **Use Framer Motion** for all UI animations - no CSS transitions for interactive elements
+- **AnimatePresence** for enter/exit animations (notifications, modals, toasts)
+- **layout prop** for smooth layout shifts when elements appear/disappear
+- **Prefer `motion` components** over CSS animations for:
+  - Notifications and alerts (slide in/out)
+  - Modal/dialog transitions
+  - List item additions/removals
+  - Page transitions
+  - Hover/tap interactions
+- **Respect `prefers-reduced-motion`** - use `useReducedMotion()` hook
+- **Standard durations**: 0.2s (fast), 0.3s (normal), 0.5s (slow)
+- **Standard easings**: `[0.4, 0, 0.2, 1]` (ease-out), `[0.4, 0, 1, 1]` (ease-in)
