@@ -597,35 +597,28 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 Intégrer Polar pour le paiement en ligne et la confirmation automatique des réservations.
 
 ### 6.1 Configuration Polar
-- [ ] Créer compte Polar
-- [ ] Configurer clés API dev dans `.env.local`
-- [ ] Créer produit "Court Double" (60€)
-- [ ] Créer produit "Court Simple" (30€)
-- [ ] Créer produit "Court Kids" (15€)
-- [ ] Configurer URL webhook
-- [ ] Configurer URLs retour (success/cancel)
+- [x] Créer compte Polar
+- [x] Configurer clés API dev dans `.env.local`
+- [x] Créer produit "Court Double" (60€)
+- [x] Créer produit "Court Simple" (30€)
+- [x] Créer produit "Court Kids" (15€)
+- [x] Créer `src/lib/polar.ts` - client Polar
+- [x] Créer `src/constants/polar.ts` - product IDs
+- [x] Créer route `/api/checkout.ts`
+- [x] Créer route `/api/webhooks/polar.ts`
+- [ ] Configurer webhook dans Polar dashboard (prod)
 
 ### 6.2 Initiation du Paiement
-- [ ] Créer `src/lib/polar.ts` - client Polar
-- [ ] Créer `convex/payments.ts`
-- [ ] Créer mutation `bookings.initiate`
-- [ ] Créer booking status "pending"
-- [ ] Créer action `payments.createCheckout`
-- [ ] Générer session Polar Checkout
-- [ ] Retourner URL checkout
-- [ ] Rediriger utilisateur vers Polar
+- [ ] Créer mutation `bookings.initiate` (status pending)
+- [ ] Mettre à jour `BookingSummaryModal` pour appeler checkout
+- [ ] Rediriger utilisateur vers Polar Checkout
 
 ### 6.3 Webhooks Polar
-- [ ] Créer route API `/api/webhooks/polar.ts`
-- [ ] Récupérer raw body pour signature
-- [ ] Valider signature webhook
-- [ ] Gérer event `order.created`
-- [ ] Trouver booking par metadata
-- [ ] Mettre à jour status "confirmed"
-- [ ] Stocker `polarPaymentId`
-- [ ] Déclencher email confirmation
-- [ ] Gérer event `checkout.canceled`
-- [ ] Supprimer booking pending
+- [x] Créer route API `/api/webhooks/polar.ts`
+- [ ] Gérer event `order.paid` → confirmer booking
+- [ ] Stocker `polarOrderId`
+- [ ] Déclencher email confirmation (M7)
+- [ ] Gérer event `checkout.updated`
 - [ ] Logger tous les events
 
 ### 6.4 Pages de Retour

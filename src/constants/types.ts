@@ -13,6 +13,8 @@ export type BookingWithCourt = Booking & { court: Court }
 
 export type SlotStatus = 'available' | 'booked' | 'blocked' | 'past'
 
+export type CourtType = 'double' | 'simple' | 'kids'
+
 export type Slot = {
   startAt: number
   endAt: number

@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
+import { Route as ApiCheckoutRouteImport } from './routes/api/checkout'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authe
 import { Route as AuthInscriptionIndexRouteImport } from './routes/_auth/inscription/index'
 import { Route as AuthConnexionIndexRouteImport } from './routes/_auth/connexion/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
+import { Route as ApiWebhooksPolarRouteImport } from './routes/api/webhooks/polar'
 
 const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
   id: '/_public__root',
@@ -45,6 +47,11 @@ const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => Public__rootRouteRoute,
+} as any)
+const ApiCheckoutRoute = ApiCheckoutRouteImport.update({
+  id: '/api/checkout',
+  path: '/api/checkout',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const Public__rootTarifsIndexRoute = Public__rootTarifsIndexRouteImport.update({
   id: '/tarifs/',
@@ -101,9 +108,16 @@ const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const ApiWebhooksPolarRoute = ApiWebhooksPolarRouteImport.update({
+  id: '/api/webhooks/polar',
+  path: '/api/webhooks/polar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/api/checkout': typeof ApiCheckoutRoute
   '/': typeof Public__rootIndexRoute
+  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/admin': typeof AdminAdminIndexRoute
   '/connexion': typeof AuthConnexionIndexRoute
   '/inscription': typeof AuthInscriptionIndexRoute
@@ -116,7 +130,9 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/api/checkout': typeof ApiCheckoutRoute
   '/': typeof Public__rootIndexRoute
+  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/admin': typeof AdminAdminIndexRoute
   '/connexion': typeof AuthConnexionIndexRoute
   '/inscription': typeof AuthInscriptionIndexRoute
@@ -134,7 +150,9 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public__root': typeof Public__rootRouteRouteWithChildren
+  '/api/checkout': typeof ApiCheckoutRoute
   '/_public__root/': typeof Public__rootIndexRoute
+  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_auth/connexion/': typeof AuthConnexionIndexRoute
   '/_auth/inscription/': typeof AuthInscriptionIndexRoute
@@ -149,7 +167,9 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/api/checkout'
     | '/'
+    | '/api/webhooks/polar'
     | '/admin'
     | '/connexion'
     | '/inscription'
@@ -162,7 +182,9 @@ export interface FileRouteTypes {
     | '/tarifs'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/api/checkout'
     | '/'
+    | '/api/webhooks/polar'
     | '/admin'
     | '/connexion'
     | '/inscription'
@@ -179,7 +201,9 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_authenticated'
     | '/_public__root'
+    | '/api/checkout'
     | '/_public__root/'
+    | '/api/webhooks/polar'
     | '/_admin/admin/'
     | '/_auth/connexion/'
     | '/_auth/inscription/'
@@ -197,6 +221,8 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
+  ApiCheckoutRoute: typeof ApiCheckoutRoute
+  ApiWebhooksPolarRoute: typeof ApiWebhooksPolarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -235,6 +261,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
+    }
+    '/api/checkout': {
+      id: '/api/checkout'
+      path: '/api/checkout'
+      fullPath: '/api/checkout'
+      preLoaderRoute: typeof ApiCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_public__root/tarifs/': {
       id: '/_public__root/tarifs/'
@@ -306,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/api/webhooks/polar': {
+      id: '/api/webhooks/polar'
+      path: '/api/webhooks/polar'
+      fullPath: '/api/webhooks/polar'
+      preLoaderRoute: typeof ApiWebhooksPolarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -374,6 +414,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
+  ApiCheckoutRoute: ApiCheckoutRoute,
+  ApiWebhooksPolarRoute: ApiWebhooksPolarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
