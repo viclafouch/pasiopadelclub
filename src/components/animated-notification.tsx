@@ -15,6 +15,7 @@ type AnimatedNotificationProps = {
   variant?: NotificationVariant
   children: ReactNode
   className?: string
+  withSpacing?: boolean
 }
 
 const VARIANT_STYLES = {
@@ -59,14 +60,15 @@ export const AnimatedNotification = ({
   show,
   variant = 'success',
   children,
-  className
+  className,
+  withSpacing = false
 }: AnimatedNotificationProps) => {
   const shouldReduceMotion = useReducedMotion()
   const styles = VARIANT_STYLES[variant]
   const IconComponent = styles.Icon
 
   return (
-    <AnimatePresence mode="sync">
+    <AnimatePresence>
       {show ? (
         <motion.div
           initial={
@@ -82,8 +84,9 @@ export const AnimatedNotification = ({
           <div
             role="status"
             className={cn(
-              'flex items-center gap-3 rounded-lg border p-4 mb-6',
+              'flex items-center gap-3 rounded-lg border p-4',
               styles.container,
+              withSpacing && 'mb-6',
               className
             )}
           >
