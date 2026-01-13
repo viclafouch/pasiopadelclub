@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 import { CheckCircleIcon, ClockIcon, LockIcon, XCircleIcon } from 'lucide-react'
 import type { SlotStatus } from '@/constants/types'
 import { formatTimeFr } from '@/helpers/date'
+import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
 
 type StatusConfig = {
@@ -83,7 +84,7 @@ export const SlotCard = ({
         )}
       >
         <Icon className="size-4" aria-hidden="true" />
-        {status === 'available' ? `${price}€` : config.label}
+        {status === 'available' ? formatCentsToEuros(price) : config.label}
       </span>
     </button>
   )

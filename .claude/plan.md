@@ -58,6 +58,23 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 ---
 
+## Conventions de Données
+
+### Prix en centimes
+**Tous les prix sont stockés en centimes** dans la base de données et formatés en euros à l'affichage via les helpers de `src/helpers/number.ts`.
+
+| Type | Stockage | Affichage |
+|------|----------|-----------|
+| Double | 6000 | 60 € |
+| Simple | 3000 | 30 € |
+| Kids | 1500 | 15 € |
+
+### Langue
+- Site en français uniquement
+- Config i18n dans `src/i18n/config.ts` (préparé pour multi-langue futur)
+
+---
+
 ## Spécifications UX/UI
 
 ### Inscription & Authentification
@@ -172,7 +189,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
   location: "indoor" | "outdoor",
   capacity: 2 | 4,
   duration: 60 | 90,
-  price: number,
+  price: number,        // en centimes (6000 = 60€)
   isActive: boolean
 }
 ```
@@ -186,7 +203,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
   date: string,
   startTime: string,
   endTime: string,
-  price: number,
+  price: number,        // en centimes
   polarPaymentId: string | null,
   paymentType: "online" | "free",
   status: "pending" | "confirmed" | "completed" | "cancelled",
@@ -543,16 +560,16 @@ Créer l'interface de réservation permettant aux utilisateurs de voir les crén
 - [x] Ajouter tooltip "Ouvert à tous" sur terrain Kids
 
 ### 5.3 Sélection et Récapitulatif
-- [ ] Au clic sur créneau - vérifier si connecté
-- [ ] Rediriger vers connexion si non connecté
-- [ ] Stocker URL retour pour après connexion
-- [ ] Vérifier limite 2 réservations actives
-- [ ] Afficher erreur si limite atteinte
-- [ ] Créer composant `BookingSummaryModal`
-- [ ] Afficher terrain, date, heure, durée
-- [ ] Afficher prix à payer
-- [ ] Bouton "Payer" pour continuer
-- [ ] Bouton "Annuler" pour fermer
+- [x] Au clic sur créneau - vérifier si connecté
+- [x] Rediriger vers connexion si non connecté
+- [x] Stocker URL retour pour après connexion
+- [x] Vérifier limite 2 réservations actives
+- [x] Afficher erreur si limite atteinte
+- [x] Créer composant `BookingSummaryModal`
+- [x] Afficher terrain, date, heure, durée
+- [x] Afficher prix à payer
+- [x] Bouton "Payer" pour continuer
+- [x] Bouton "Annuler" pour fermer
 
 ### 5.4 Logique de Disponibilité (Convex)
 - [x] Créer `convex/slots.ts`

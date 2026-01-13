@@ -23,3 +23,9 @@ export type CourtWithSlots = {
   court: Court
   slots: Slot[]
 }
+
+export type SelectedSlot = {
+  court: Court
+  slot: Slot
+  dateKey: string
+}

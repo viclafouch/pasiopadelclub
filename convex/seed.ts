@@ -12,7 +12,7 @@ export const seedCourts = mutation({
         location: 'indoor' as const,
         capacity: 4 as const,
         duration: 90 as const,
-        price: 60,
+        price: 6000,
         isActive: true
       },
       {
@@ -21,7 +21,7 @@ export const seedCourts = mutation({
         location: 'indoor' as const,
         capacity: 4 as const,
         duration: 90 as const,
-        price: 60,
+        price: 6000,
         isActive: true
       },
       {
@@ -30,7 +30,7 @@ export const seedCourts = mutation({
         location: 'outdoor' as const,
         capacity: 4 as const,
         duration: 90 as const,
-        price: 60,
+        price: 6000,
         isActive: true
       },
       {
@@ -39,7 +39,7 @@ export const seedCourts = mutation({
         location: 'outdoor' as const,
         capacity: 4 as const,
         duration: 90 as const,
-        price: 60,
+        price: 6000,
         isActive: true
       },
       {
@@ -48,7 +48,7 @@ export const seedCourts = mutation({
         location: 'indoor' as const,
         capacity: 2 as const,
         duration: 60 as const,
-        price: 30,
+        price: 3000,
         isActive: true
       },
       {
@@ -57,7 +57,7 @@ export const seedCourts = mutation({
         location: 'indoor' as const,
         capacity: 2 as const,
         duration: 60 as const,
-        price: 15,
+        price: 1500,
         isActive: true
       }
     ]

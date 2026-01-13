@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { BookingId, BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
+import { formatCentsToEuros } from '@/helpers/number'
 import { getBookingStatusBadge } from '@/utils/booking'
 import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 
@@ -64,7 +65,7 @@ export const BookingCard = ({
           </div>
         </div>
         <div className="flex items-center justify-between pt-2 border-t">
-          <p className="font-medium">{booking.price} €</p>
+          <p className="font-medium">{formatCentsToEuros(booking.price)}</p>
           <p className="text-xs text-muted-foreground">
             Réservé le {formatDateFr(new Date(booking.createdAt))}
           </p>

@@ -2,17 +2,19 @@ import { CheckCircleIcon, UsersIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { COURT_TYPE_DESCRIPTIONS, COURT_TYPE_LABELS } from '@/constants/court'
-import type { Court, CourtWithSlots } from '@/constants/types'
+import type { Court, CourtWithSlots, Slot } from '@/constants/types'
 import { CourtSection } from './court-section'
 
 type CourtTypeGroupProps = {
   type: Court['type']
   courtsWithSlots: CourtWithSlots[]
+  onSlotSelect?: (court: Court, slot: Slot) => void
 }
 
 export const CourtTypeGroup = ({
   type,
-  courtsWithSlots
+  courtsWithSlots,
+  onSlotSelect
 }: CourtTypeGroupProps) => {
   const availableCount = courtsWithSlots.reduce((count, courtWithSlots) => {
     const hasAvailable = courtWithSlots.slots.some((slot) => {
@@ -49,6 +51,13 @@ export const CourtTypeGroup = ({
               <CourtSection
                 court={courtWithSlots.court}
                 slots={courtWithSlots.slots}
+                onSlotSelect={
+                  onSlotSelect
+                    ? (slot) => {
+                        return onSlotSelect(courtWithSlots.court, slot)
+                      }
+                    : undefined
+                }
               />
             </div>
           )

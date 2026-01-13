@@ -6,6 +6,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { LOCATION_LABELS } from '@/constants/court'
+import { formatCentsToEuros } from '@/helpers/number'
 import { seo } from '@/utils/seo'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
@@ -156,7 +157,7 @@ const PricingCard = ({
             <span
               className={`font-display text-5xl font-bold tracking-tight ${getFeaturedClass(isFeatured, 'text-white', 'text-foreground')}`}
             >
-              {price}€
+              {formatCentsToEuros(price)}
             </span>
             <span
               className={`text-lg ${getFeaturedClass(isFeatured, 'text-white/70', 'text-muted-foreground')}`}
@@ -229,7 +230,7 @@ const TarifsPage = () => {
           <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-3 lg:items-center">
             <PricingCard
               title="Simple"
-              price={30}
+              price={3000}
               duration={60}
               players={2}
               courts={['Simple']}
@@ -237,7 +238,7 @@ const TarifsPage = () => {
             />
             <PricingCard
               title="Double"
-              price={60}
+              price={6000}
               duration={90}
               players={4}
               courts={['Double A', 'Double B', 'Double C', 'Double D']}
@@ -246,7 +247,7 @@ const TarifsPage = () => {
             />
             <PricingCard
               title="Kids"
-              price={15}
+              price={1500}
               duration={60}
               players={2}
               courts={['Kids']}

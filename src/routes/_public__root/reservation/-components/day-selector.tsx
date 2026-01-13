@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { DAYS_TO_SHOW } from '@/constants/booking'
 import {
   formatDateKey,
@@ -8,6 +9,8 @@ import {
   generateDates
 } from '@/helpers/date'
 import { cn } from '@/lib/utils'
+
+const SCROLL_AMOUNT = 200
 
 type DaySelectorProps = {
   selectedDate: string
@@ -26,6 +29,10 @@ export const DaySelector = ({
   const buttonRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
   const isUserScrollRef = React.useRef(false)
   const prefersReducedMotion = useReducedMotion()
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false)
+  const [canScrollRight, setCanScrollRight] = React.useState(false)
+  const startSentinelRef = React.useRef<HTMLDivElement>(null)
+  const endSentinelRef = React.useRef<HTMLDivElement>(null)
 
   const scrollToDate = (dateKey: string, smooth: boolean) => {
     const button = buttonRefs.current.get(dateKey)
@@ -63,26 +70,97 @@ export const DaySelector = ({
     }
   }, [selectedDate])
 
+  React.useEffect(() => {
+    const container = scrollRef.current
+    const startSentinel = startSentinelRef.current
+    const endSentinel = endSentinelRef.current
+
+    if (!container || !startSentinel || !endSentinel) {
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === startSentinel) {
+            setCanScrollLeft(!entry.isIntersecting)
+          } else if (entry.target === endSentinel) {
+            setCanScrollRight(!entry.isIntersecting)
+          }
+        })
+      },
+      { root: container, threshold: 0.1 }
+    )
+
+    observer.observe(startSentinel)
+    observer.observe(endSentinel)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
   const handleDateClick = (dateKey: string) => {
     isUserScrollRef.current = true
     onDateChange(dateKey)
     scrollToDate(dateKey, true)
   }
 
+  const handleScrollLeft = () => {
+    const container = scrollRef.current
+
+    if (!container) {
+      return
+    }
+
+    container.scrollBy({
+      left: -SCROLL_AMOUNT,
+      behavior: prefersReducedMotion ? 'instant' : 'smooth'
+    })
+  }
+
+  const handleScrollRight = () => {
+    const container = scrollRef.current
+
+    if (!container) {
+      return
+    }
+
+    container.scrollBy({
+      left: SCROLL_AMOUNT,
+      behavior: prefersReducedMotion ? 'instant' : 'smooth'
+    })
+  }
+
   return (
     <div className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-background to-transparent sm:hidden"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-background to-transparent sm:hidden"
-        aria-hidden="true"
-      />
+      <button
+        type="button"
+        onClick={handleScrollLeft}
+        className={cn(
+          'absolute inset-y-0 left-0 z-10 flex w-10 items-center justify-start bg-gradient-to-r from-background via-background/80 to-transparent pl-1 transition-opacity duration-200',
+          canScrollLeft ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+        aria-label="Dates précédentes"
+      >
+        <ChevronLeftIcon className="size-5 text-muted-foreground" />
+      </button>
+      <button
+        type="button"
+        onClick={handleScrollRight}
+        className={cn(
+          'absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-end bg-gradient-to-l from-background via-background/80 to-transparent pr-1 transition-opacity duration-200',
+          canScrollRight ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+        aria-label="Dates suivantes"
+      >
+        <ChevronRightIcon className="size-5 text-muted-foreground" />
+      </button>
       <div
         ref={scrollRef}
-        className="scrollbar-hide flex gap-2 overflow-x-auto px-4 py-2"
+        className="scrollbar-hide flex gap-2 overflow-x-auto py-2"
       >
+        <div ref={startSentinelRef} className="shrink-0" aria-hidden="true" />
         {dates.map((date) => {
           const dateKey = formatDateKey(date)
           const isSelected = dateKey === selectedDate
@@ -130,6 +208,7 @@ export const DaySelector = ({
             </motion.button>
           )
         })}
+        <div ref={endSentinelRef} className="shrink-0" aria-hidden="true" />
       </div>
     </div>
   )
