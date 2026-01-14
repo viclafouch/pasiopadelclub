@@ -2,7 +2,6 @@ import React from 'react'
 import { useConvexAuth } from 'convex/react'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
-import { Skeleton } from '@/components/ui/skeleton'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
 import { getTodayDateKey } from '@/helpers/date'
@@ -20,29 +19,11 @@ import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
 import { LimitBanner } from './-components/limit-banner'
 import { LimitReachedDialog } from './-components/limit-reached-dialog'
+import { ReservationPageSkeleton } from './-components/skeletons'
 
 const searchSchema = z.object({
   date: z.string().optional()
 })
-
-const ReservationPageSkeleton = () => {
-  return (
-    <div className="space-y-6">
-      <div className="flex gap-2 overflow-hidden py-2">
-        {Array.from({ length: 7 }).map((_, index) => {
-          return (
-            <Skeleton key={index} className="h-16 w-20 shrink-0 rounded-xl" />
-          )
-        })}
-      </div>
-      <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, index) => {
-          return <Skeleton key={index} className="h-32 rounded-lg" />
-        })}
-      </div>
-    </div>
-  )
-}
 
 const ReservationContent = () => {
   const { isAuthenticated } = useConvexAuth()
