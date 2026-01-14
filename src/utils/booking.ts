@@ -17,7 +17,8 @@ const STATUS_BADGES = {
   pending: { label: 'En attente', variant: 'secondary' },
   confirmed: { label: 'Confirmée', variant: 'default' },
   completed: { label: 'Terminée', variant: 'outline' },
-  cancelled: { label: 'Annulée', variant: 'destructive' }
+  cancelled: { label: 'Annulée', variant: 'destructive' },
+  expired: { label: 'Expirée', variant: 'outline' }
 } satisfies Record<Booking['status'], { label: string; variant: BadgeVariant }>
 
 export const getBookingStatusBadge = (status: Booking['status']) => {

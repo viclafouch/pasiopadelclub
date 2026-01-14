@@ -33,7 +33,8 @@ export default defineSchema({
       v.literal('pending'),
       v.literal('confirmed'),
       v.literal('completed'),
-      v.literal('cancelled')
+      v.literal('cancelled'),
+      v.literal('expired')
     ),
     reminderSent: v.boolean(),
     createdAt: v.number()

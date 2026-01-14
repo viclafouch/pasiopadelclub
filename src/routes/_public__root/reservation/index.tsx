@@ -1,4 +1,5 @@
 import React from 'react'
+import { useConvexAuth } from 'convex/react'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,11 +14,7 @@ import {
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import {
-  createFileRoute,
-  useNavigate,
-  useRouteContext
-} from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { BookingSummaryModal } from './-components/booking-summary-modal'
 import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
@@ -48,12 +45,10 @@ const ReservationPageSkeleton = () => {
 }
 
 const ReservationContent = () => {
-  const { authState } = useRouteContext({ from: '__root__' })
+  const { isAuthenticated } = useConvexAuth()
   const { date } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const queryClient = useQueryClient()
-
-  const isAuthenticated = authState?.isAuthenticated ?? false
 
   const selectedDate = date ?? getTodayDateKey()
 
@@ -92,7 +87,7 @@ const ReservationContent = () => {
   const handleSlotSelect = (court: Court, slot: Slot) => {
     if (!isAuthenticated) {
       const returnUrl = `/reservation?date=${selectedDate}`
-      navigate({ to: '/connexion', search: { redirect: returnUrl } })
+      navigate({ to: '/connexion/$', search: { redirect: returnUrl } })
 
       return
     }

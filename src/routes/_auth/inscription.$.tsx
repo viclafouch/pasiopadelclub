@@ -11,7 +11,7 @@ const InscriptionPage = () => {
   )
 }
 
-export const Route = createFileRoute('/_auth/inscription/')({
+export const Route = createFileRoute('/_auth/inscription/$')({
   component: InscriptionPage,
   head: () => {
     return {

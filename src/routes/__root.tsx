@@ -3,7 +3,7 @@
 import type { ConvexReactClient } from 'convex/react'
 import { ConvexProviderWithClerk } from 'convex/react-clerk'
 import Footer from '@/components/footer'
-import { authQueryOptions, type AuthState } from '@/server/auth'
+import { authStateFn } from '@/server/auth'
 import { frFR } from '@clerk/localizations'
 import { ClerkProvider, useAuth } from '@clerk/tanstack-react-start'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
@@ -24,7 +24,6 @@ type RootRouteContext = {
   queryClient: QueryClient
   convexClient: ConvexReactClient
   convexQueryClient: ConvexQueryClient
-  authState?: AuthState
 }
 
 const NotFoundComponent = () => {
@@ -94,18 +93,15 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
 export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
   beforeLoad: async ({ context }) => {
-    const authState =
-      await context.queryClient.ensureQueryData(authQueryOptions)
+    if (context.convexQueryClient.serverHttpClient) {
+      const { token } = await authStateFn()
 
-    if (
-      authState.isAuthenticated &&
-      authState.token &&
-      context.convexQueryClient.serverHttpClient
-    ) {
-      context.convexQueryClient.serverHttpClient.setAuth(authState.token)
+      // During SSR only (the only time serverHttpClient exists),
+      // set the Clerk auth token to make HTTP queries with.
+      if (token) {
+        context.convexQueryClient.serverHttpClient.setAuth(token)
+      }
     }
-
-    return { authState }
   },
   head: () => {
     return {

@@ -22,10 +22,12 @@ import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__
 import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
-import { Route as AuthInscriptionIndexRouteImport } from './routes/_auth/inscription/index'
-import { Route as AuthConnexionIndexRouteImport } from './routes/_auth/connexion/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as ApiWebhooksPolarRouteImport } from './routes/api/webhooks/polar'
+import { Route as Public__rootReservationSuccessRouteImport } from './routes/_public__root/reservation/success'
+import { Route as Public__rootReservationEchecRouteImport } from './routes/_public__root/reservation/echec'
+import { Route as AuthInscriptionSplatRouteImport } from './routes/_auth/inscription.$'
+import { Route as AuthConnexionSplatRouteImport } from './routes/_auth/connexion.$'
 
 const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
   id: '/_public__root',
@@ -93,16 +95,6 @@ const AuthenticatedMonCompteIndexRoute =
     path: '/mon-compte/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthInscriptionIndexRoute = AuthInscriptionIndexRouteImport.update({
-  id: '/inscription/',
-  path: '/inscription/',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthConnexionIndexRoute = AuthConnexionIndexRouteImport.update({
-  id: '/connexion/',
-  path: '/connexion/',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -113,14 +105,38 @@ const ApiWebhooksPolarRoute = ApiWebhooksPolarRouteImport.update({
   path: '/api/webhooks/polar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Public__rootReservationSuccessRoute =
+  Public__rootReservationSuccessRouteImport.update({
+    id: '/reservation/success',
+    path: '/reservation/success',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootReservationEchecRoute =
+  Public__rootReservationEchecRouteImport.update({
+    id: '/reservation/echec',
+    path: '/reservation/echec',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const AuthInscriptionSplatRoute = AuthInscriptionSplatRouteImport.update({
+  id: '/inscription/$',
+  path: '/inscription/$',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthConnexionSplatRoute = AuthConnexionSplatRouteImport.update({
+  id: '/connexion/$',
+  path: '/connexion/$',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/api/checkout': typeof ApiCheckoutRoute
   '/': typeof Public__rootIndexRoute
+  '/connexion/$': typeof AuthConnexionSplatRoute
+  '/inscription/$': typeof AuthInscriptionSplatRoute
+  '/reservation/echec': typeof Public__rootReservationEchecRoute
+  '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/admin': typeof AdminAdminIndexRoute
-  '/connexion': typeof AuthConnexionIndexRoute
-  '/inscription': typeof AuthInscriptionIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
@@ -132,10 +148,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/api/checkout': typeof ApiCheckoutRoute
   '/': typeof Public__rootIndexRoute
+  '/connexion/$': typeof AuthConnexionSplatRoute
+  '/inscription/$': typeof AuthInscriptionSplatRoute
+  '/reservation/echec': typeof Public__rootReservationEchecRoute
+  '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/admin': typeof AdminAdminIndexRoute
-  '/connexion': typeof AuthConnexionIndexRoute
-  '/inscription': typeof AuthInscriptionIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
@@ -152,10 +170,12 @@ export interface FileRoutesById {
   '/_public__root': typeof Public__rootRouteRouteWithChildren
   '/api/checkout': typeof ApiCheckoutRoute
   '/_public__root/': typeof Public__rootIndexRoute
+  '/_auth/connexion/$': typeof AuthConnexionSplatRoute
+  '/_auth/inscription/$': typeof AuthInscriptionSplatRoute
+  '/_public__root/reservation/echec': typeof Public__rootReservationEchecRoute
+  '/_public__root/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
-  '/_auth/connexion/': typeof AuthConnexionIndexRoute
-  '/_auth/inscription/': typeof AuthInscriptionIndexRoute
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
   '/_public__root/contact/': typeof Public__rootContactIndexRoute
@@ -169,10 +189,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/api/checkout'
     | '/'
+    | '/connexion/$'
+    | '/inscription/$'
+    | '/reservation/echec'
+    | '/reservation/success'
     | '/api/webhooks/polar'
     | '/admin'
-    | '/connexion'
-    | '/inscription'
     | '/mon-compte'
     | '/cgv'
     | '/contact'
@@ -184,10 +206,12 @@ export interface FileRouteTypes {
   to:
     | '/api/checkout'
     | '/'
+    | '/connexion/$'
+    | '/inscription/$'
+    | '/reservation/echec'
+    | '/reservation/success'
     | '/api/webhooks/polar'
     | '/admin'
-    | '/connexion'
-    | '/inscription'
     | '/mon-compte'
     | '/cgv'
     | '/contact'
@@ -203,10 +227,12 @@ export interface FileRouteTypes {
     | '/_public__root'
     | '/api/checkout'
     | '/_public__root/'
+    | '/_auth/connexion/$'
+    | '/_auth/inscription/$'
+    | '/_public__root/reservation/echec'
+    | '/_public__root/reservation/success'
     | '/api/webhooks/polar'
     | '/_admin/admin/'
-    | '/_auth/connexion/'
-    | '/_auth/inscription/'
     | '/_authenticated/mon-compte/'
     | '/_public__root/cgv/'
     | '/_public__root/contact/'
@@ -318,20 +344,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMonCompteIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_auth/inscription/': {
-      id: '/_auth/inscription/'
-      path: '/inscription'
-      fullPath: '/inscription'
-      preLoaderRoute: typeof AuthInscriptionIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/connexion/': {
-      id: '/_auth/connexion/'
-      path: '/connexion'
-      fullPath: '/connexion'
-      preLoaderRoute: typeof AuthConnexionIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/_admin/admin/': {
       id: '/_admin/admin/'
       path: '/admin'
@@ -345,6 +357,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/webhooks/polar'
       preLoaderRoute: typeof ApiWebhooksPolarRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_public__root/reservation/success': {
+      id: '/_public__root/reservation/success'
+      path: '/reservation/success'
+      fullPath: '/reservation/success'
+      preLoaderRoute: typeof Public__rootReservationSuccessRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/reservation/echec': {
+      id: '/_public__root/reservation/echec'
+      path: '/reservation/echec'
+      fullPath: '/reservation/echec'
+      preLoaderRoute: typeof Public__rootReservationEchecRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_auth/inscription/$': {
+      id: '/_auth/inscription/$'
+      path: '/inscription/$'
+      fullPath: '/inscription/$'
+      preLoaderRoute: typeof AuthInscriptionSplatRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/connexion/$': {
+      id: '/_auth/connexion/$'
+      path: '/connexion/$'
+      fullPath: '/connexion/$'
+      preLoaderRoute: typeof AuthConnexionSplatRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
   }
 }
@@ -362,13 +402,13 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface AuthRouteRouteChildren {
-  AuthConnexionIndexRoute: typeof AuthConnexionIndexRoute
-  AuthInscriptionIndexRoute: typeof AuthInscriptionIndexRoute
+  AuthConnexionSplatRoute: typeof AuthConnexionSplatRoute
+  AuthInscriptionSplatRoute: typeof AuthInscriptionSplatRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthConnexionIndexRoute: AuthConnexionIndexRoute,
-  AuthInscriptionIndexRoute: AuthInscriptionIndexRoute,
+  AuthConnexionSplatRoute: AuthConnexionSplatRoute,
+  AuthInscriptionSplatRoute: AuthInscriptionSplatRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
@@ -388,6 +428,8 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface Public__rootRouteRouteChildren {
   Public__rootIndexRoute: typeof Public__rootIndexRoute
+  Public__rootReservationEchecRoute: typeof Public__rootReservationEchecRoute
+  Public__rootReservationSuccessRoute: typeof Public__rootReservationSuccessRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
   Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
@@ -398,6 +440,8 @@ interface Public__rootRouteRouteChildren {
 
 const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootIndexRoute: Public__rootIndexRoute,
+  Public__rootReservationEchecRoute: Public__rootReservationEchecRoute,
+  Public__rootReservationSuccessRoute: Public__rootReservationSuccessRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
   Public__rootContactIndexRoute: Public__rootContactIndexRoute,
   Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,

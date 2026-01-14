@@ -1,7 +1,9 @@
 import {
+  AlertCircleIcon,
   CalendarIcon,
   ClockIcon,
   InfoIcon,
+  LoaderIcon,
   MapPinIcon,
   UsersIcon
 } from 'lucide-react'
@@ -14,9 +16,13 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { LOCATION_LABELS } from '@/constants/court'
-import type { SelectedSlot } from '@/constants/types'
+import { POLAR_PRODUCT_IDS } from '@/constants/polar'
+import type { CourtType, SelectedSlot } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
+import { api } from '~/convex/_generated/api'
+import { useConvexMutation } from '@convex-dev/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 type BookingSummaryModalProps = {
   isOpen: boolean
@@ -29,6 +35,10 @@ export const BookingSummaryModal = ({
   onClose,
   selectedSlot
 }: BookingSummaryModalProps) => {
+  const initiateMutation = useMutation({
+    mutationFn: useConvexMutation(api.bookings.initiate)
+  })
+
   if (!selectedSlot) {
     return null
   }
@@ -37,11 +47,23 @@ export const BookingSummaryModal = ({
   const startDate = new Date(slot.startAt)
   const endDate = new Date(slot.endAt)
 
-  const handlePayClick = () => {
-    // TODO: M6 - Initiate payment flow
-    // eslint-disable-next-line no-console
-    console.log('Payment will be implemented in M6')
+  const handlePayClick = async () => {
+    const result = await initiateMutation.mutateAsync({
+      courtId: court._id,
+      startAt: slot.startAt,
+      endAt: slot.endAt
+    })
+
+    const productId = POLAR_PRODUCT_IDS[court.type as CourtType]
+    const metadata = encodeURIComponent(
+      JSON.stringify({ bookingId: result.bookingId })
+    )
+    const checkoutUrl = `/api/checkout?products=${productId}&metadata=${metadata}`
+
+    window.location.href = checkoutUrl
   }
+
+  const errorMessage = initiateMutation.error?.message
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -93,12 +115,31 @@ export const BookingSummaryModal = ({
             />
             <p>Annulation gratuite jusqu&apos;à 24h avant le créneau.</p>
           </div>
+          {errorMessage ? (
+            <div
+              role="alert"
+              className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+            >
+              <AlertCircleIcon
+                className="mt-0.5 size-4 shrink-0"
+                aria-hidden="true"
+              />
+              <p>{errorMessage}</p>
+            </div>
+          ) : null}
         </div>
         <DialogFooter className="border-t bg-muted/30 px-6 py-4">
           <Button type="button" variant="outline" onClick={onClose}>
             Annuler
           </Button>
-          <Button type="button" onClick={handlePayClick}>
+          <Button
+            type="button"
+            onClick={handlePayClick}
+            disabled={initiateMutation.isPending}
+          >
+            {initiateMutation.isPending ? (
+              <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
+            ) : null}
             Payer{' '}
             {formatCentsToEuros(court.price, { minimumFractionDigits: 2 })}
           </Button>

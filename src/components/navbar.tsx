@@ -16,7 +16,7 @@ type NavbarProps = {
 }
 
 export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
-  const { user } = useUser()
+  const { user, isLoaded } = useUser()
   const { signOut } = useAuth()
   const queryClient = useQueryClient()
 
@@ -71,52 +71,56 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
           >
             <Link to="/reservation">Réserver</Link>
           </Button>
-          {user ? (
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-white">
-                {user.firstName}
-              </span>
-              <Link
-                to="/mon-compte"
-                search={{}}
-                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                <User className="size-4" aria-hidden="true" />
-                <span className="sr-only">Mon compte</span>
-              </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSignOut}
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-              >
-                <LogOut className="size-4" aria-hidden="true" />
-                <span className="sr-only">Déconnexion</span>
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-              >
-                <Link to="/connexion">
-                  <LogIn className="size-4" aria-hidden="true" />
-                  Connexion
-                </Link>
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                asChild
-                className="bg-white text-primary hover:bg-white/90"
-              >
-                <Link to="/inscription">Inscription</Link>
-              </Button>
-            </div>
-          )}
+          {isLoaded ? (
+            <>
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-white">
+                    {user.firstName}
+                  </span>
+                  <Link
+                    to="/mon-compte"
+                    search={{}}
+                    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+                  >
+                    <User className="size-4" aria-hidden="true" />
+                    <span className="sr-only">Mon compte</span>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSignOut}
+                    className="text-white/80 hover:bg-white/10 hover:text-white"
+                  >
+                    <LogOut className="size-4" aria-hidden="true" />
+                    <span className="sr-only">Déconnexion</span>
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="text-white/80 hover:bg-white/10 hover:text-white"
+                  >
+                    <Link to="/connexion/$">
+                      <LogIn className="size-4" aria-hidden="true" />
+                      Connexion
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    asChild
+                    className="bg-white text-primary hover:bg-white/90"
+                  >
+                    <Link to="/inscription/$">Inscription</Link>
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : null}
         </div>
       </div>
     </nav>

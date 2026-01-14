@@ -5,8 +5,6 @@ import { z } from 'zod'
 import { BookingCardSkeleton } from '@/components/booking-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { seo } from '@/utils/seo'
-import { api } from '~/convex/_generated/api'
-import { convexQuery } from '@convex-dev/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { HistoryTab } from './-tabs/history'
 import { ProfileTab, ProfileTabSkeleton } from './-tabs/profile'
@@ -115,18 +113,6 @@ const MonComptePage = () => {
 
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   validateSearch: searchSchema,
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(
-      convexQuery(api.bookings.getUpcoming, {})
-    )
-    context.queryClient.ensureQueryData(
-      convexQuery(api.bookings.getActiveCount, {})
-    )
-    context.queryClient.ensureQueryData(
-      convexQuery(api.bookings.getPast, { limit: 20 })
-    )
-    context.queryClient.ensureQueryData(convexQuery(api.users.getCurrent, {}))
-  },
   component: MonComptePage,
   head: () => {
     return {

@@ -2,7 +2,7 @@ import { v } from 'convex/values'
 import { phoneSchema } from '../src/constants/validation'
 import type { QueryCtx } from './_generated/server'
 import { mutation, query } from './_generated/server'
-import { authenticatedMutation } from './functions'
+import { authenticatedMutation, authenticatedQuery } from './functions'
 
 const findUserByClerkId = async (db: QueryCtx['db'], clerkId: string) => {
   return db
@@ -13,23 +13,17 @@ const findUserByClerkId = async (db: QueryCtx['db'], clerkId: string) => {
     .first()
 }
 
-export const getCurrent = query({
+export const getCurrent = authenticatedQuery({
   args: {},
   handler: async (context) => {
-    const identity = await context.auth.getUserIdentity()
-
-    if (identity === null) {
-      return null
-    }
-
-    const user = await findUserByClerkId(context.db, identity.subject)
+    const { user } = context
 
     return {
       _id: user?._id ?? null,
-      clerkId: identity.subject,
-      email: identity.email ?? '',
-      firstName: identity.givenName ?? null,
-      lastName: identity.familyName ?? null,
+      clerkId: user.clerkId,
+      email: user.email ?? '',
+      firstName: user.firstName ?? null,
+      lastName: user.lastName ?? null,
       phone: user?.phone ?? null,
       role: user?.role ?? ('user' as const),
       isBlocked: user?.isBlocked ?? false

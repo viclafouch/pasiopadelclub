@@ -97,17 +97,6 @@ export const UpcomingBookingsTab = () => {
             </p>
           </div>
         ) : null}
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">
-            Réservations actives :{' '}
-            <span className="font-medium text-foreground">
-              {activeCount}/{MAX_ACTIVE_BOOKINGS}
-            </span>
-          </p>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/reservation">Nouvelle réservation</Link>
-          </Button>
-        </div>
         {upcomingBookings.length === 0 ? (
           <EmptyBookings />
         ) : (

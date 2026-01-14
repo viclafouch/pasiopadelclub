@@ -1,9 +1,13 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
-
-const AuthLayout = () => {
-  return <Outlet />
-}
+import { authStateFn } from '@/server/auth'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({
-  component: AuthLayout
+  beforeLoad: async () => {
+    const { isAuthenticated } = await authStateFn()
+
+    if (isAuthenticated) {
+      throw redirect({ to: '/', replace: true })
+    }
+  },
+  component: Outlet
 })

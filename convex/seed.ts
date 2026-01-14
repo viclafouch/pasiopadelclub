@@ -206,6 +206,24 @@ export const seedTestBookings = mutation({
   }
 })
 
+export const clearPendingBookings = mutation({
+  args: {},
+  handler: async (context) => {
+    const pendingBookings = await context.db
+      .query('bookings')
+      .filter((booking) => {
+        return booking.eq(booking.field('status'), 'pending')
+      })
+      .collect()
+
+    for (const booking of pendingBookings) {
+      await context.db.delete(booking._id)
+    }
+
+    return { deleted: pendingBookings.length }
+  }
+})
+
 export const promoteToAdmin = mutation({
   args: { userId: v.id('users'), adminSecret: v.string() },
   handler: async (context, args) => {

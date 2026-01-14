@@ -8,11 +8,13 @@ const searchSchema = z.object({
 })
 
 const ConnexionPage = () => {
-  const { redirect } = Route.useSearch()
+  const { redirect: redirectQuery } = Route.useSearch()
 
   const isValidInternalPath =
-    redirect && redirect.startsWith('/') && !redirect.startsWith('//')
-  const safeRedirect = isValidInternalPath ? redirect : '/'
+    redirectQuery &&
+    redirectQuery.startsWith('/') &&
+    !redirectQuery.startsWith('//')
+  const safeRedirect = isValidInternalPath ? redirectQuery : '/'
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -21,7 +23,7 @@ const ConnexionPage = () => {
   )
 }
 
-export const Route = createFileRoute('/_auth/connexion/')({
+export const Route = createFileRoute('/_auth/connexion/$')({
   validateSearch: searchSchema,
   component: ConnexionPage,
   head: () => {

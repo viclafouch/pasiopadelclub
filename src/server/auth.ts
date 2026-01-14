@@ -4,12 +4,12 @@ import { createServerFn } from '@tanstack/react-start'
 
 export const authStateFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const { userId, getToken } = await auth()
+    const { isAuthenticated, userId, getToken } = await auth()
     const token = await getToken({ template: 'convex' })
 
     return {
-      isAuthenticated: Boolean(userId && token),
       userId,
+      isAuthenticated,
       token
     }
   }
