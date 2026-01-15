@@ -87,6 +87,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 - **Mobile** : Grille de créneaux en plein écran
 - **Créneaux passés** : Affichés grisés pour voir l'occupation de la journée complète
 - **Limite atteinte (2/2)** : Affichage complet avec bandeau d'alerte permanent rappelant la limite
+- **Mes réservations** : Créneaux réservés par l'utilisateur connecté en bleu (couleur `info`) avec texte "Réservé par vous"
 
 ### Gestion des erreurs
 - **Polar indisponible** : Message simple "Paiement temporairement indisponible, réessayez plus tard"
@@ -305,6 +306,15 @@ Voir détails dans les commits précédents. Toutes les fonctionnalités de base
 - [x] BookingSummaryModal avec récapitulatif
 - [x] Vérification limite 2 réservations actives
 - [x] Redirection connexion si non authentifié
+
+### 5.5 "Réservé par vous" (UX improvement)
+Afficher les créneaux réservés par l'utilisateur connecté en bleu info.
+
+- [ ] Ajouter couleur `--info` dans CSS (bleu ciel oklch)
+- [ ] Ajouter status `booked_by_user` dans SlotStatus type
+- [ ] Modifier query slots pour inclure `userId` du booking
+- [ ] Comparer `booking.userId` avec `user.id` connecté
+- [ ] SlotCard : style bleu info + texte "Réservé par vous"
 
 ---
 
