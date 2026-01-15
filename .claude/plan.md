@@ -72,8 +72,8 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 | Kids | 1500 | 15 € |
 
 ### Langue
-- Site en français uniquement
-- Config i18n dans `src/i18n/config.ts` (préparé pour multi-langue futur)
+- Site en français uniquement (anglais prévu plus tard)
+- Toutes les erreurs doivent s'afficher en français
 
 ---
 
@@ -386,6 +386,54 @@ Implémenter les emails de confirmation et de rappel via Resend.
 - [ ] Créer cron toutes les 15 minutes
 - [ ] Query réservations à rappeler (24h avant)
 - [ ] Envoyer email rappel
+
+---
+
+## Milestone 7.5 : Internationalisation (i18n) - Français
+
+### Objectif
+S'assurer que toutes les erreurs et messages s'affichent en français. Préparation pour l'anglais futur.
+
+### Sources d'erreurs potentiellement en anglais
+
+| Source | Type d'erreurs | Solution |
+|--------|---------------|----------|
+| **Better Auth** | Auth (credentials, email exists, etc.) | Mapper via `$ERROR_CODES` |
+| **Polar** | Paiement (card declined, etc.) | Mapper via types d'erreur SDK |
+| **Zod** | Validation | ✅ Déjà FR |
+| **Server functions** | Custom | ✅ Déjà FR |
+
+### 7.5.1 Better Auth
+- **Doc :** https://www.better-auth.com/docs/concepts/client#error-codes-and-localization
+- **Typage :** `authClient.$ERROR_CODES` expose tous les codes possibles
+- **Accès :** `error.code` retourné par les méthodes auth
+- [ ] Lister tous les codes via `$ERROR_CODES`
+- [ ] Créer helper `src/helpers/auth-errors.ts` avec mapping FR
+- [ ] Intégrer dans connexion/inscription
+
+### 7.5.2 Polar
+- **Doc :** https://github.com/polarsource/polar-js
+- **Types d'erreur SDK :** `PaymentError`, `ExpiredCheckoutError`, `NotOpenCheckout`, `AlreadyActiveSubscriptionError`, etc.
+- **Paiement refusé :** champs `declineReason` (code) et `declineMessage` (message EN)
+- [ ] Lister les erreurs possibles depuis le SDK Polar
+- [ ] Créer helper `src/helpers/polar-errors.ts` avec mapping FR
+- [ ] Intégrer dans les pages paiement (success/echec)
+
+### 7.5.3 Zod - Audit
+- [x] `inscription.tsx` ✅
+- [x] `connexion.tsx` ✅
+- [x] `contact/index.tsx` ✅
+- [ ] `schemas.ts` - Ajouter messages FR manquants
+
+### 7.5.4 (Futur) Multi-langue EN
+- [ ] Structure `src/i18n/` pour FR/EN
+- [ ] Extraire strings UI vers fichiers de traduction
+- [ ] Lib i18n légère (react-i18next ou alternative)
+
+### Livrables
+- Toutes les erreurs user-facing en français
+- Helpers centralisés par source (auth, polar)
+- Architecture prête pour l'anglais
 
 ---
 
