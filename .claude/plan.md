@@ -2,9 +2,9 @@
 
 ## Vue d'ensemble
 
-Site de réservation de terrains de padel pour le club Pasio Padel Club situé à **Anglet** (20 rue Alfred de Vigny, 64600 Anglet). L'objectif est de permettre aux utilisateurs de réserver et payer un créneau en ligne, avec un SEO optimisé pour la visibilité locale.
+Site de réservation de terrains de padel à **Anglet** (20 rue Alfred de Vigny, 64600 Anglet).
 
-**Domaine de production :** pasiopadelclub.fr
+**Domaine :** pasiopadelclub.fr
 
 ---
 
@@ -12,481 +12,161 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 | Couche | Technologie |
 |--------|-------------|
-| Frontend | React 19, TanStack Start avec Tanstack Router (SSR), Tailwind CSS 4, Shadcn, Vite |
+| Frontend | React 19, TanStack Start (SSR), Tailwind CSS 4, Shadcn |
 | Backend | Drizzle ORM + Neon (Postgres serverless) |
-| Authentification | Better Auth (avec plugin Polar) |
-| Paiement | Polar (intégré via Better Auth) |
-| Emails transactionnels | Resend (templates React Email brandés) |
+| Auth | Better Auth (plugin Polar) |
+| Paiement | Polar |
+| Emails | Resend + React Email |
 | Hébergement | Railway |
-| Tests | Vitest (unitaires + intégration), pas de E2E |
 
 ---
 
-## Structure des Terrains
+## Terrains
 
-### Couverts (intérieur)
-| Terrain | Joueurs | Durée | Prix | Créneaux |
-|---------|---------|-------|------|----------|
-| Court N°1 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Court N°2 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Simple N°1 | 2 | 60 min | 30€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
-| Court Kids | 2 | 60 min | 15€ | 8h, 9h, 10h, 11h, 12h, 13h, 14h, 15h, 16h, 17h, 18h, 19h, 20h, 21h |
+| Terrain | Joueurs | Durée | Prix |
+|---------|---------|-------|------|
+| Court N°1, N°2, N°3, N°4 | 4 | 90 min | 60€ |
+| Simple N°1 | 2 | 60 min | 30€ |
+| Court Kids | 2 | 60 min | 15€ |
 
-### Semi-couverts (extérieur)
-| Terrain | Joueurs | Durée | Prix | Créneaux |
-|---------|---------|-------|------|----------|
-| Court N°3 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-| Court N°4 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
-
-**Total : 6 terrains**
-- Terrain "Kids" : ouvert à tous (info-bulle explicative dans l'interface)
-- Grilles horaires indépendantes par durée (90 min vs 60 min)
+- Courts N°1-2 : intérieur / Courts N°3-4 : extérieur
+- Kids : ouvert à tous (info-bulle)
+- Horaires : 8h-22h tous les jours
 
 ---
 
-## Règles de Réservation
+## Règles Métier
 
-- **Type** : Location de terrain uniquement (pas de cours avec coach)
-- **Paiement** : Immédiat et obligatoire via Polar
-- **Création booking** : Uniquement après confirmation paiement (webhook Polar `order.paid`)
-- **Pas de blocage préventif** : Le créneau reste disponible jusqu'au paiement confirmé
-- **Double-booking** : Très rare (~20 users), si ça arrive → remboursement manuel
-- **Annulation** : Autorisée uniquement si effectuée au moins 24 heures avant le créneau réservé (remboursement intégral)
-- **Limite par utilisateur** : Maximum 2 réservations actives simultanément
-- **Anticipation** : Réservation possible jusqu'à 10 jours à l'avance
-- **Horaires** : 8h - 22h tous les jours
-- **Tarification** : Prix fixes
-- **Format dates/heures** : Format français court (15/01/2025 - 14:30)
+### Réservation
+- Paiement immédiat obligatoire via Polar
+- Booking créé uniquement après paiement confirmé (webhook `order.paid`)
+- Pas de blocage préventif du créneau
+- Annulation : possible jusqu'à 24h avant (remboursement intégral)
+- Limite : 2 réservations actives max par utilisateur
+- Anticipation : jusqu'à 10 jours à l'avance
 
----
+### Admin
+- Blocage user → annulation auto + remboursement de ses réservations futures
+- Blocage créneau → annulation auto + remboursement + email d'excuse
+- Réservation manuelle gratuite uniquement
 
-## Conventions de Données
-
-### Prix en centimes
-**Tous les prix sont stockés en centimes** dans la base de données et formatés en euros à l'affichage via les helpers de `src/helpers/number.ts`.
-
-| Type | Stockage | Affichage |
-|------|----------|-----------|
-| Double | 6000 | 60 € |
-| Simple | 3000 | 30 € |
-| Kids | 1500 | 15 € |
-
-### Langue
-- Site en français uniquement (anglais prévu plus tard)
-- Toutes les erreurs doivent s'afficher en français
-
----
-
-## Spécifications UX/UI
-
-### Inscription & Authentification
-- **Better Auth email/password** : Inscription classique
-- **Téléphone optionnel** : Champ non requis à l'inscription
-
-### Page de Réservation
-- **Mobile** : Grille de créneaux en plein écran
-- **Créneaux passés** : Affichés grisés pour voir l'occupation de la journée complète
-- **Limite atteinte (2/2)** : Affichage complet avec bandeau d'alerte permanent rappelant la limite
-- **Mes réservations** : Créneaux réservés par l'utilisateur connecté en bleu (couleur `info`) avec texte "Réservé par vous"
-
-### Gestion des erreurs
-- **Polar indisponible** : Message simple "Paiement temporairement indisponible, réessayez plus tard"
-- **Échec email** : Retry automatique 3x avec délai croissant (1min, 5min, 15min). Après 3 échecs, log l'erreur
-
----
-
-## Règles Admin
-
-### Blocage utilisateur
-- Quand un utilisateur est bloqué (`isBlocked: true`), toutes ses réservations futures sont **automatiquement annulées avec remboursement intégral**
-
-### Blocage de créneaux
-- Si l'admin bloque une plage horaire qui chevauche des réservations existantes, celles-ci sont **automatiquement annulées avec remboursement** et email d'excuse envoyé aux utilisateurs concernés
-
-### Réservation manuelle admin
-- L'admin peut créer une réservation **gratuite uniquement** (cas exceptionnels, blocage pour un client sans paiement)
-
-### Statistiques
-- Niveau basique : revenus du jour, semaine, mois. Pas de détail par terrain ou graphiques avancés
-
----
-
-## Formulaire de Contact
-- Accessible **sans connexion** (public)
-- Pas de CAPTCHA (risque de spam accepté pour maximum d'accessibilité)
-
----
-
-## Galerie Photos
-- **Images statiques** stockées dans `public/`
-- Mises à jour uniquement par un développeur
-- Pas d'upload admin
-
----
-
-## Compte Utilisateur
-
-### Suppression de compte
-- L'utilisateur peut demander la suppression de son compte
-- **Anonymisation** : Le compte est désactivé, les données personnelles sont anonymisées mais l'historique des réservations reste (obligations comptables)
+### Conventions
+- Prix stockés en centimes (6000 = 60€)
+- Site français uniquement, erreurs en FR
+- Format dates : 15/01/2025 - 14:30
 
 ---
 
 ## Emails Transactionnels
 
-### Design
-- **Template brandé basique** : Logo, couleurs du club, mise en page propre avec React Email
-
-### Email de rappel
-- Envoyé **exactement 24h avant** l'heure du créneau (même si c'est à 3h du matin)
-
-### Types d'emails
 1. Confirmation de réservation
-2. Rappel 24h avant
+2. Rappel 24h avant (cron toutes les 15min)
 3. Confirmation d'annulation
-4. Réinitialisation de mot de passe
-5. Vérification d'email à l'inscription
-6. Formulaire de contact (vers admin)
+4. Réinitialisation mot de passe
+5. Vérification email
+6. Formulaire contact → admin
 
 ---
 
-## SEO
+## Modèle de Données
 
-- **Google My Business** : Fiche existante, vérifier la cohérence NAP (Name, Address, Phone)
-- Schema.org LocalBusiness et SportsActivityLocation
+**users** : id, email, firstName, lastName, phone?, role, isBlocked, isAnonymized
 
----
+**courts** : id, name, type (double/simple/kids), location (indoor/outdoor), capacity, duration, price
 
-## Déploiement
+**bookings** : id, userId, courtId, startAt, endAt, price, polarPaymentId, paymentType (online/free), status (confirmed/cancelled)
 
-- **Stratégie** : Déploiement direct (push sur main = déploiement immédiat)
-- **Maintenance** : Zero downtime géré par Railway, pas de page maintenance
-- **Domaine** : pasiopadelclub.fr avec HTTPS automatique
-
----
-
-## Modèle de Données (Drizzle/Postgres)
-
-### users (Better Auth + champs custom)
-```typescript
-{
-  id: uuid (PK),
-  email: string,
-  emailVerified: boolean,
-  name: string,           // Better Auth requis
-  firstName: string,
-  lastName: string,
-  phone: string | null,
-  role: "user" | "admin",
-  isBlocked: boolean,
-  isAnonymized: boolean,
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
-```
-
-### courts
-```typescript
-{
-  id: uuid (PK),
-  name: string,
-  type: "double" | "simple" | "kids",
-  location: "indoor" | "outdoor",
-  capacity: 2 | 4,
-  duration: 60 | 90,
-  price: number,        // en centimes (6000 = 60€)
-  isActive: boolean,
-  createdAt: timestamp
-}
-```
-
-### bookings
-```typescript
-{
-  id: uuid (PK),
-  userId: uuid (FK users),
-  courtId: uuid (FK courts),
-  startAt: timestamp,
-  endAt: timestamp,
-  price: number,              // en centimes
-  polarPaymentId: string | null,
-  paymentType: "online" | "free",
-  status: "confirmed" | "cancelled",  // PAS de "pending"
-  createdAt: timestamp
-}
-```
-
-### blockedSlots
-```typescript
-{
-  id: uuid (PK),
-  courtId: uuid (FK courts) | null,  // null = tous les terrains
-  startAt: timestamp,
-  endAt: timestamp,
-  reason: string | null,
-  createdAt: timestamp
-}
-```
+**blockedSlots** : id, courtId (null = tous), startAt, endAt, reason?
 
 ---
 
 # Workflow
 
-> **IMPORTANT - Workflow obligatoire pour chaque tâche :**
->
-> 1. **Implémenter** la tâche
-> 2. **Lancer `code-simplifier`** pour simplifier et valider le code (obligatoire)
-> 3. **Lancer `npm run lint`** et corriger toutes les erreurs restantes
-> 4. **Une fois tout validé**, cocher la tâche `[x]`
-> 5. **NE COMMIT JAMAIS LES CHANGEMENTS TANT QUE L'UTILISATEUR N'A PAS ACCEPTÉ**
-> 6. **Attendre la demande explicite de l'utilisateur pour passer à la milestone suivante**
+> 1. Implémenter → 2. `code-simplifier` → 3. `npm run lint` → 4. Cocher [x]
+> **NE JAMAIS COMMIT SANS ACCORD USER**
 
 ---
 
-## Milestone 0 : Migration Neon + Drizzle + Better Auth ✅ COMPLÉTÉ
+## M0 : Migration Neon + Drizzle + Better Auth ✅
 
-### Objectif
-Migrer de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pour un SSR propre sans loading states.
-
-### 0.1 Setup Drizzle + Neon ✅
-- [x] Créer compte Neon + projet "pasio-padel"
-- [x] Ajouter `DATABASE_URL` dans `.env`
-- [x] Installer `drizzle-orm` + `@neondatabase/serverless`
-- [x] Installer `drizzle-kit` (dev)
-- [x] Créer `drizzle.config.ts`
-- [x] Créer `src/db/index.ts` - client Drizzle
-- [x] Créer `src/db/schema.ts` - tables (users, courts, bookings, blockedSlots)
-- [x] Première migration `npm run db:migrate`
-- [x] Seed des terrains
-
-### 0.2 Setup Better Auth ✅
-- [x] Installer `better-auth`
-- [x] Créer `src/lib/auth.ts` - config Better Auth + Drizzle adapter
-- [x] Créer `src/lib/auth-client.ts` - client auth avec `polarClient()` plugin
-- [x] Créer route API `/api/auth/$.ts` - handler auth
-- [x] Configurer middleware TanStack Start pour sessions
-- [x] Tables auth créées par Better Auth (user, session, account, verification)
-- [x] Champs additionnels : firstName, lastName, phone, role, isBlocked, isAnonymized
-
-### 0.3 Migration des routes ✅
-- [x] Remplacer hooks Clerk par Better Auth hooks
-- [x] Remplacer queries Convex par queries Drizzle
-- [x] Migrer `_authenticated/route.tsx` - session serveur via beforeLoad
-- [x] Migrer `_admin/route.tsx` - vérification rôle serveur
-- [x] Migrer `_auth/route.tsx` - redirect si connecté
-- [x] Migrer page réservation - queries Drizzle
-- [x] Migrer page mon-compte - queries Drizzle
-
-### 0.4 Cleanup ✅
-- [x] Supprimer dossier `convex/`
-- [x] Désinstaller packages Convex
-- [x] Désinstaller packages Clerk
-- [x] Supprimer providers Convex/Clerk de `__root.tsx`
-- [x] Nettoyer env variables
-- [x] Mettre à jour `src/env/server.ts` et `src/env/client.ts`
+- [x] Setup Drizzle + Neon (schema, migrations, seed)
+- [x] Setup Better Auth (config, client, middleware, champs additionnels)
+- [x] Migration routes (Clerk→Better Auth, Convex→Drizzle)
+- [x] Cleanup (suppr convex/, clerk, providers)
 
 ---
 
-## Milestones 1-4 : Pages Publiques, Auth, Espace Utilisateur ✅ COMPLÉTÉS
+## M1-4 : Pages Publiques, Auth, Espace Utilisateur ✅
 
-Voir détails dans les commits précédents. Toutes les fonctionnalités de base sont implémentées :
-- Pages publiques (Galerie, Contact, Tarifs, Mentions légales, CGV)
-- Authentification Better Auth (inscription, connexion)
-- Espace utilisateur (profil, réservations, historique, annulation, export RGPD)
-
----
-
-## Milestone 5 : Système de Réservation (Frontend) ✅ COMPLÉTÉ
-
-### 5.1-5.4 Interface de réservation ✅
-- [x] Page `/reservation` avec URL state (date)
-- [x] DaySelector sticky avec 10 jours, prefetch on hover
-- [x] Groupes par type de terrain (double, simple, kids)
-- [x] SlotCard avec status (available, booked, blocked, past)
-- [x] BookingSummaryModal avec récapitulatif
-- [x] Vérification limite 2 réservations actives
-- [x] Redirection connexion si non authentifié
-
-### 5.5 "Réservé par vous" (UX improvement)
-Afficher les créneaux réservés par l'utilisateur connecté en bleu info.
-
-- [ ] Ajouter couleur `--info` dans CSS (bleu ciel oklch)
-- [ ] Ajouter status `booked_by_user` dans SlotStatus type
-- [ ] Modifier query slots pour inclure `userId` du booking
-- [ ] Comparer `booking.userId` avec `user.id` connecté
-- [ ] SlotCard : style bleu info + texte "Réservé par vous"
+- [x] Pages publiques (Galerie, Contact, Tarifs, Mentions légales, CGV)
+- [x] Auth Better Auth (inscription, connexion)
+- [x] Espace utilisateur (profil, réservations, historique, annulation, export RGPD)
 
 ---
 
-## Milestone 6 : Intégration Paiement Polar 🔄 EN COURS
+## M5 : Système de Réservation (Frontend) ✅
 
-### Objectif
-Intégrer Polar pour le paiement en ligne via Better Auth plugin.
-
-### 6.1 Configuration Polar ✅
-- [x] Créer compte Polar (sandbox)
-- [x] Configurer clés API dans `.env`
-- [x] Créer produits Polar (double 60€, simple 30€, kids 15€)
-- [x] Créer `src/constants/polar.ts` - product IDs
-- [x] Configurer plugin `polar()` dans `src/lib/auth.ts`
-- [x] Configurer plugin `polarClient()` dans `src/lib/auth-client.ts`
-- [ ] Configurer webhook dans Polar dashboard (prod)
-
-### 6.2 Flux de paiement (simplifié) ✅
-> **Approche choisie** : Pas de booking "pending". Le booking est créé uniquement à la confirmation de paiement.
-
-- [x] `BookingSummaryModal` utilise `authClient.checkout({ slug, referenceId })`
-- [x] Le `referenceId` contient les infos du slot (courtId, startAt, endAt) encodées
-- [x] Redirection automatique vers Polar Checkout
-- [x] Email pré-rempli grâce à `createCustomerOnSignUp: true`
-
-### 6.3 Webhook Polar ✅
-- [x] Route `/api/webhooks/polar.ts` créée
-- [x] Gérer event `order.paid` :
-  - [x] Décoder `metadata.referenceId` (courtId, startAt, endAt)
-  - [x] Vérifier que le créneau est toujours disponible
-  - [x] Créer le booking avec status "confirmed"
-  - [x] Stocker `polarPaymentId` (unique constraint)
-  - [ ] Déclencher email confirmation (M7)
-- [x] Gérer conflit : log + alerte admin pour remboursement manuel
-- [x] Idempotence : vérification paiement déjà traité
-- [x] PII masqué dans les logs (emails, IDs)
-
-### 6.4 Pages de Retour
-- [x] Route `/reservation/success.tsx` créée
-- [ ] Afficher récapitulatif réservation (fetch via checkout_id)
-- [x] Route `/reservation/echec.tsx` créée
-- [x] Afficher message erreur + boutons retry/accueil
-
-### 6.5 Remboursements
-- [ ] Créer fonction `refundBooking` via API Polar
-- [ ] Utiliser dans annulation utilisateur (> 24h)
-- [ ] Utiliser dans blocage admin
-- [ ] Utiliser dans blocage utilisateur
-
-### Livrables attendus
-- Paiement Polar via Better Auth plugin
-- Booking créé uniquement après paiement confirmé
-- Pas de gestion de status "pending"
-- Email pré-rempli au checkout
+- [x] Page `/reservation` avec URL state date, DaySelector sticky 10 jours
+- [x] Grille créneaux par type (double, simple, kids) avec status (available, booked, blocked, past)
+- [x] BookingSummaryModal + vérification limite 2 réservations
+- [ ] **M5.5** : Créneaux "Réservé par vous" en bleu info (status `booked_by_user`)
 
 ---
 
-## Milestone 7 : Emails Transactionnels
+## M6 : Intégration Paiement Polar 🔄
 
-### Objectif
-Implémenter les emails de confirmation et de rappel via Resend.
-
-### 7.1 Configuration Resend
-- [ ] Créer compte Resend
-- [ ] Ajouter domaine pasiopadelclub.fr
-- [ ] Vérifier DNS domaine
-- [ ] Configurer clé API dans `.env`
-- [ ] Créer `src/lib/resend.ts` - client
-- [ ] Installer React Email
-- [ ] Créer dossier `src/emails/`
-
-### 7.2 Templates emails
-- [ ] Créer template `BookingConfirmation.tsx`
-- [ ] Créer template `BookingReminder.tsx`
-- [ ] Créer template `BookingCancelled.tsx`
-- [ ] Créer template `ContactForm.tsx`
-
-### 7.3 Système de rappel
-- [ ] Créer cron toutes les 15 minutes
-- [ ] Query réservations à rappeler (24h avant)
-- [ ] Envoyer email rappel
+- [x] **6.1** : Config Polar sandbox (clés API, produits, plugins auth)
+- [ ] **6.1** : Configurer webhook URL dans Polar dashboard (prod)
+- [x] **6.2** : Flux paiement (`authClient.checkout` → redirect Polar → email pré-rempli)
+- [x] **6.3** : Webhook `order.paid` (decode referenceId, vérifie dispo, crée booking, idempotence, PII masqué)
+- [x] **6.4** : Pages success.tsx et echec.tsx créées
+- [ ] **6.4** : Afficher récapitulatif réservation sur success (fetch via checkout_id)
+- [ ] **6.5** : Remboursements via API Polar (annulation user, blocage admin/user)
 
 ---
 
-## Milestone 7.5 : Internationalisation (i18n) - Français
+## M7 : Emails Transactionnels
 
-### Objectif
-S'assurer que toutes les erreurs et messages s'affichent en français. Préparation pour l'anglais futur.
-
-### Sources d'erreurs potentiellement en anglais
-
-| Source | Type d'erreurs | Solution |
-|--------|---------------|----------|
-| **Better Auth** | Auth (credentials, email exists, etc.) | Mapper via `$ERROR_CODES` |
-| **Polar** | Paiement (card declined, etc.) | Mapper via types d'erreur SDK |
-| **Zod** | Validation | ✅ Déjà FR |
-| **Server functions** | Custom | ✅ Déjà FR |
-
-### 7.5.1 Better Auth ✅
-- **Doc :** https://www.better-auth.com/docs/concepts/client#error-codes-and-localization
-- **Typage :** `authClient.$ERROR_CODES` expose tous les codes possibles
-- **Accès :** `error.code` retourné par les méthodes auth
-- [x] Lister tous les codes via `$ERROR_CODES`
-- [x] Créer helper `src/helpers/auth-errors.ts` avec mapping FR
-- [x] Intégrer dans connexion/inscription (Alert component shadcn)
-
-### 7.5.2 Polar
-- **Doc :** https://github.com/polarsource/polar-js
-- **Types d'erreur SDK :** `PaymentError`, `ExpiredCheckoutError`, `NotOpenCheckout`, `AlreadyActiveSubscriptionError`, etc.
-- **Paiement refusé :** champs `declineReason` (code) et `declineMessage` (message EN)
-- [ ] Lister les erreurs possibles depuis le SDK Polar
-- [ ] Créer helper `src/helpers/polar-errors.ts` avec mapping FR
-- [ ] Intégrer dans les pages paiement (success/echec)
-
-### 7.5.3 Zod - Audit
-- [x] `inscription.tsx` ✅
-- [x] `connexion.tsx` ✅
-- [x] `contact/index.tsx` ✅
-- [x] `validation.ts` (profileFormSchema) ✅
-- [x] `schemas.ts` ✅ (server-side only, pas de messages user-facing)
-
-### 7.5.4 (Futur) Multi-langue EN
-- [ ] Structure `src/i18n/` pour FR/EN
-- [ ] Extraire strings UI vers fichiers de traduction
-- [ ] Lib i18n légère (react-i18next ou alternative)
-
-### Livrables
-- Toutes les erreurs user-facing en français
-- Helpers centralisés par source (auth, polar)
-- Architecture prête pour l'anglais
+- [ ] **7.1** : Setup Resend (compte, domaine DNS, React Email)
+- [ ] **7.2** : Templates (BookingConfirmation, BookingReminder, BookingCancelled, ContactForm)
+- [ ] **7.3** : Cron rappel 24h avant
 
 ---
 
-## Milestones 8-13 : Admin, SEO, Tests, RGPD, Déploiement
+## M7.5 : i18n Français
 
-Ces milestones restent à implémenter après la finalisation du système de réservation et paiement.
-
-Voir le plan détaillé dans les sections précédentes.
+- [x] **7.5.1** : Better Auth errors FR (`src/helpers/auth-errors.ts` + Alert component)
+- [ ] **7.5.2** : Polar errors FR (`src/helpers/polar-errors.ts`)
+- [x] **7.5.3** : Zod validations FR (tous les formulaires)
 
 ---
 
-## État actuel du projet
+## M8-13 : À venir
+
+- **M8-9** : Dashboard admin (users, bookings, blocages, stats basiques)
+- **M10** : SEO (Schema.org, Google My Business)
+- **M11** : Tests Vitest
+- **M12** : RGPD (suppression compte → anonymisation)
+- **M13** : Déploiement Railway
+
+---
+
+## État actuel
 
 ### Complété ✅
-- Infrastructure Neon + Drizzle (migration appliquée)
-- Better Auth avec champs additionnels (firstName, lastName, phone, role)
-- Plugin Polar Better Auth (serveur + client)
-- Pages publiques et authentification
-- Espace utilisateur complet
-- Interface de réservation (M5.1-5.4)
-- Modal récapitulatif avec checkout Better Auth + useMutation + error handling
-- Flux paiement Polar complet (M6.2)
-- Webhook Polar `order.paid` avec idempotence et logs sécurisés (M6.3)
-- Pages success/echec créées (M6.4 partiel)
-- Vérification `isBlocked` sur annulation booking
-- Contrainte unique sur `polarPaymentId` (schéma mis à jour)
-- Routes auth (connexion/inscription) avec invalidation cache/router
-- i18n Better Auth (M7.5.1) - erreurs FR
-- i18n Zod (M7.5.3) - tous les formulaires validés FR
+- Infrastructure complète (Neon, Drizzle, Better Auth, Polar)
+- Pages publiques + Auth + Espace utilisateur
+- Interface réservation + Modal paiement
+- Webhook Polar fonctionnel
+- i18n Better Auth + Zod
 
 ### En cours 🔄
-- **M6.1** : Configurer webhook URL dans Polar dashboard (prod)
-- **M6.4** : Afficher récapitulatif réservation sur success.tsx (fetch via checkout_id)
-- **M6.5** : Remboursements via API Polar
-- Tester le flux complet de paiement end-to-end
+- Configurer webhook Polar prod
+- Page success.tsx : afficher récapitulatif
+- Remboursements API Polar
 
 ### À faire
-- M5.5 : "Réservé par vous" (créneaux user en bleu info)
-- M7 : Emails transactionnels
-- M7.5.2 : Traduction erreurs Polar
-- M8-9 : Dashboard admin
-- M10 : SEO & optimisation
-- M11 : Tests & sécurité
-- M12 : RGPD
-- M13 : Déploiement
+- M5.5 : "Réservé par vous"
+- M7 : Emails
+- M7.5.2 : Erreurs Polar FR
+- M8-13 : Admin, SEO, Tests, RGPD, Deploy
