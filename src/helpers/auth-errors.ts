@@ -29,7 +29,7 @@ const AUTH_ERRORS_FR = {
   CROSS_SITE_NAVIGATION_LOGIN_BLOCKED: 'Requête bloquée pour raison de sécurité'
 } as const satisfies Partial<Record<AuthErrorCode, string>>
 
-export function getAuthErrorMessage(code: string): string {
+export function getAuthErrorMessage(code: string) {
   const message = AUTH_ERRORS_FR[code as keyof typeof AUTH_ERRORS_FR]
 
   if (message) {

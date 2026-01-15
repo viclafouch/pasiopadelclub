@@ -6,7 +6,7 @@ import {
   OPENING_HOUR
 } from '@/constants/booking'
 import { getSlotsByDateSchema } from '@/constants/schemas'
-import type { CourtWithSlots, Slot, SlotStatus } from '@/constants/types'
+import type { CourtWithSlots } from '@/constants/types'
 import { db } from '@/db'
 import { blockedSlot, booking, court } from '@/db/schema'
 import { parseDateKey } from '@/helpers/date'
@@ -30,20 +30,20 @@ const computeSlotStatus = (
   now: number,
   bookings: TimeRange[],
   blockedSlots: TimeRange[]
-): SlotStatus => {
+) => {
   if (startAt < now) {
-    return 'past'
+    return 'past' as const
   }
 
   if (matchIsOverlapping(startAt, endAt, bookings)) {
-    return 'booked'
+    return 'booked' as const
   }
 
   if (matchIsOverlapping(startAt, endAt, blockedSlots)) {
-    return 'blocked'
+    return 'blocked' as const
   }
 
-  return 'available'
+  return 'available' as const
 }
 
 const generateSlotsForCourt = (
@@ -51,7 +51,7 @@ const generateSlotsForCourt = (
   baseDate: Date,
   existingBookings: TimeRange[],
   existingBlockedSlots: TimeRange[]
-): Slot[] => {
+) => {
   const now = Date.now()
   const durationMinutes = courtData.duration
 

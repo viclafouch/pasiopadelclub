@@ -1,4 +1,4 @@
-export function getErrorMessage(error: unknown): string {
+export function getErrorMessage(error: unknown) {
   if (typeof error === 'string') {
     return error
   }
