@@ -20,7 +20,9 @@ const ReservationSuccessPage = () => {
           />
         </div>
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Réservation confirmée !</h1>
+          <h1 className="font-display text-3xl font-bold">
+            Réservation confirmée !
+          </h1>
           <p className="max-w-md text-muted-foreground">
             Votre paiement a été accepté et votre créneau est réservé. Vous
             recevrez un email de confirmation avec tous les détails.

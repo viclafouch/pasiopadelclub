@@ -14,7 +14,7 @@ const ReservationEchecPage = () => {
           />
         </div>
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">Paiement échoué</h1>
+          <h1 className="font-display text-3xl font-bold">Paiement échoué</h1>
           <p className="max-w-md text-muted-foreground">
             Une erreur est survenue lors du paiement. Votre réservation n&apos;a
             pas été confirmée. Vous pouvez réessayer ou revenir plus tard.

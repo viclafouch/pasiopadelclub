@@ -20,7 +20,7 @@ export const DataExportSection = () => {
     <div className="rounded-lg border p-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h3 className="font-semibold">Mes données (RGPD)</h3>
+          <h3 className="font-display font-semibold">Mes données (RGPD)</h3>
           <p className="text-sm text-muted-foreground">
             Téléchargez une copie de vos données personnelles au format JSON.
           </p>

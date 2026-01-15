@@ -1,6 +1,20 @@
-import { LogIn, LogOut, User } from 'lucide-react'
+import {
+  CalendarDays,
+  LogOut,
+  User as UserIcon,
+  UserCircle
+} from 'lucide-react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { getAuthUserQueryOpts } from '@/constants/queries'
+import type { User } from '@/constants/types'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
@@ -8,6 +22,7 @@ import type { LinkOptions } from '@tanstack/react-router'
 import { Link, useRouteContext, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
+  { linkOptions: { to: '/' }, label: 'Accueil' },
   { linkOptions: { to: '/tarifs' }, label: 'Tarifs' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
@@ -28,95 +43,106 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
     await router.invalidate()
   }
 
+  const getInitials = (
+    firstName: User['firstName'],
+    lastName: User['lastName']
+  ) => {
+    const first = firstName.charAt(0).toUpperCase() ?? ''
+    const last = lastName.charAt(0).toUpperCase() ?? ''
+
+    return first + last || 'U'
+  }
+
   return (
     <nav
       className={cn(
-        'sticky top-0 h-[var(--navbar-height)] left-0 right-0 z-50 py-4',
+        'absolute top-0 left-0 right-0 z-50 py-5',
         isOverlay ? '' : 'bg-primary text-primary-foreground'
       )}
     >
-      <div className="flex container items-center justify-between">
-        <Link to="/" className="text-xl font-bold tracking-tight text-white">
-          PASIO PADEL
-        </Link>
-        <div className="flex items-center gap-6">
-          <ul className="hidden items-center gap-6 sm:flex">
+      <div className="container flex items-center justify-between">
+        <div className="flex items-center gap-10">
+          <Link
+            to="/"
+            className="text-base font-display font-semibold tracking-widest text-white uppercase"
+          >
+            Pasio Padel
+          </Link>
+          <ul className="hidden items-center gap-8 md:flex">
             {NAV_LINKS.map((link) => {
               return (
                 <li key={link.label}>
                   <Link
                     {...link.linkOptions}
-                    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+                    className="text-sm text-white transition-colors hover:text-white/80"
                   >
                     {link.label}
                   </Link>
                 </li>
               )
             })}
-            <li>
-              <Button
-                variant="secondary"
-                size="sm"
-                asChild
-                className="bg-white text-primary hover:bg-white/90"
-              >
-                <Link to="/reservation">Réserver</Link>
-              </Button>
-            </li>
           </ul>
-          <Button
-            variant="secondary"
-            size="sm"
-            asChild
-            className="bg-white text-primary hover:bg-white/90 sm:hidden"
-          >
+        </div>
+        <div className="flex items-center gap-4">
+          <Button size="lg" variant="outline" asChild>
             <Link to="/reservation">Réserver</Link>
           </Button>
           {user ? (
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-white">
-                {user.firstName}
-              </span>
-              <Link
-                to="/mon-compte"
-                search={{}}
-                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-              >
-                <User className="size-4" aria-hidden="true" />
-                <span className="sr-only">Mon compte</span>
-              </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSignOut}
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-              >
-                <LogOut className="size-4" aria-hidden="true" />
-                <span className="sr-only">Déconnexion</span>
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-9 rounded-full bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                >
+                  <Avatar className="size-9">
+                    <AvatarFallback className="bg-transparent text-sm font-medium text-white">
+                      {getInitials(user.firstName, user.lastName)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/mon-compte"
+                    search={{ tab: 'reservations' }}
+                    className="cursor-pointer"
+                  >
+                    <CalendarDays className="size-4" />
+                    Mes réservations
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/mon-compte" search={{}} className="cursor-pointer">
+                    <UserCircle className="size-4" />
+                    Mon compte
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="cursor-pointer text-destructive focus:text-destructive"
+                >
+                  <LogOut className="size-4" />
+                  Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-white/80 hover:bg-white/10 hover:text-white"
-              >
-                <Link to="/connexion">
-                  <LogIn className="size-4" aria-hidden="true" />
-                  Connexion
-                </Link>
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                asChild
-                className="bg-white text-primary hover:bg-white/90"
-              >
-                <Link to="/inscription">Inscription</Link>
-              </Button>
-            </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/connexion">
+                <UserIcon className="size-4" />
+                Connexion
+              </Link>
+            </Button>
           )}
         </div>
       </div>

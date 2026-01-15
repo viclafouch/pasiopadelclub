@@ -44,7 +44,9 @@ export const DeleteAccountSection = () => {
   return (
     <div className="flex items-center justify-between gap-4 rounded-lg border border-destructive/50 p-6">
       <div>
-        <h3 className="font-semibold text-destructive">Supprimer mon compte</h3>
+        <h3 className="font-display font-semibold text-destructive">
+          Supprimer mon compte
+        </h3>
         <p className="text-sm text-muted-foreground">
           Action irréversible. Données personnelles supprimées, historique
           conservé anonymement.
@@ -67,7 +69,9 @@ export const DeleteAccountSection = () => {
                 />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Compte supprimé</h3>
+                <h3 className="font-display text-lg font-semibold">
+                  Compte supprimé
+                </h3>
                 <p className="text-muted-foreground">
                   Votre compte a été supprimé. Redirection...
                 </p>

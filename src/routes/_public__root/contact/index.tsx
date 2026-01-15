@@ -74,7 +74,7 @@ const ContactPage = () => {
                         aria-hidden="true"
                       />
                     </div>
-                    <h3 className="mb-2 text-xl font-semibold text-foreground">
+                    <h3 className="mb-2 font-display text-xl font-semibold text-foreground">
                       Message envoyé !
                     </h3>
                     <p className="text-muted-foreground">

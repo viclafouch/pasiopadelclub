@@ -5,7 +5,7 @@ export const BookingSection = () => {
   return (
     <section className="py-20">
       <div className="container">
-        <h2 className="mb-12 text-center font-bold text-4xl md:text-5xl lg:text-6xl">
+        <h2 className="mb-12 font-display text-center font-bold text-4xl md:text-5xl lg:text-6xl">
           Réservez Votre Terrain de Padel
         </h2>
         <div className="grid items-center gap-12 lg:grid-cols-2">

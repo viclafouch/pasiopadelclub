@@ -53,7 +53,7 @@ const MonComptePage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-3xl font-bold">Mon compte</h1>
+        <h1 className="mb-8 font-display text-3xl font-bold">Mon compte</h1>
         <Tabs value={tab} onValueChange={handleTabChange}>
           <TabsList className="mb-6 w-full justify-start">
             {TABS.map((tabConfig) => {

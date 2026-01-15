@@ -23,8 +23,10 @@ type RootRouteContext = {
 const NotFoundComponent = () => {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-      <h1 className="mb-4 text-6xl font-bold text-primary">404</h1>
-      <h2 className="mb-4 text-2xl font-semibold">Page non trouvée</h2>
+      <h1 className="mb-4 font-display text-6xl font-bold text-primary">404</h1>
+      <h2 className="mb-4 font-display text-2xl font-semibold">
+        Page non trouvée
+      </h2>
       <p className="mb-8 text-muted-foreground">
         La page que vous recherchez n&apos;existe pas ou a été déplacée.
       </p>
@@ -42,16 +44,19 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="fr">
       <head>
-        <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
+          rel="preload"
+          href="/fonts/pasio-body.woff2"
+          as="font"
+          type="font/woff2"
           crossOrigin=""
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          href="/fonts/pasio.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
         />
         <HeadContent />
       </head>

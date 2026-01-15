@@ -61,7 +61,9 @@ const EmptyBookings = () => {
         aria-hidden="true"
       />
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">Aucune réservation</h3>
+        <h3 className="font-display text-lg font-semibold">
+          Aucune réservation
+        </h3>
         <p className="text-muted-foreground">
           Vous n&apos;avez pas de réservation à venir.
         </p>

@@ -137,7 +137,9 @@ const ReservationContent = () => {
               className="mx-auto size-12 text-muted-foreground/50"
               aria-hidden="true"
             />
-            <h3 className="mt-4 font-semibold">Aucun terrain disponible</h3>
+            <h3 className="mt-4 font-display font-semibold">
+              Aucun terrain disponible
+            </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Aucun terrain ne correspond aux filtres sélectionnés.
             </p>

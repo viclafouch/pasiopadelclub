@@ -16,7 +16,9 @@ export const HistoryTab = () => {
           aria-hidden="true"
         />
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Aucun historique</h3>
+          <h3 className="font-display text-lg font-semibold">
+            Aucun historique
+          </h3>
           <p className="text-muted-foreground">
             Vos réservations passées apparaîtront ici.
           </p>

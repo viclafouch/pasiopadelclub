@@ -7,7 +7,7 @@ import { Hero } from './-components/hero'
 
 const RouteComponent = () => {
   return (
-    <main className="-top-[60px] relative">
+    <main>
       <Hero />
       <BookingSection />
       <Faq />

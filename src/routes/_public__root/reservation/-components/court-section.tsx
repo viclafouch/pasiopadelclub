@@ -24,7 +24,7 @@ export const CourtSection = ({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="font-semibold">{court.name}</h3>
+        <h3 className="font-display font-semibold">{court.name}</h3>
         <Badge variant="outline" className="gap-1.5">
           <UsersIcon className="size-3.5" aria-hidden="true" />
           {court.capacity} joueurs

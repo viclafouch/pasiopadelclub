@@ -4,7 +4,7 @@ export const LocationSection = () => {
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           <div className="flex flex-col justify-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-foreground mb-2">
               Pasio Padel Club
             </h2>
             <p className="text-xl lg:text-2xl font-semibold text-foreground mb-6">

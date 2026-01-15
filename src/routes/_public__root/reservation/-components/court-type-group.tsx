@@ -28,7 +28,9 @@ export const CourtTypeGroup = ({
     <Card>
       <CardHeader className="pb-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-lg font-semibold">{COURT_TYPE_LABELS[type]}</h2>
+          <h2 className="font-display text-lg font-semibold">
+            {COURT_TYPE_LABELS[type]}
+          </h2>
           {availableCount > 0 ? (
             <Badge className="gap-1.5 bg-primary/15 text-primary hover:bg-primary/15">
               <CheckCircleIcon className="size-3.5" aria-hidden="true" />
