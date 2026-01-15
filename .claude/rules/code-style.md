@@ -98,7 +98,8 @@ All utilities live in `src/` (shared by frontend and backend):
 - `src/utils/` - Business utilities (booking logic, user logic, etc.)
 - `src/constants/` - All constants, grouped by domain
 
-`convex/` contains only queries, mutations, schema, and Convex-specific code.
+`src/db/` contains Drizzle schema and database client.
+`src/server/` contains server functions (TanStack Start).
 
 **Rules:**
 - Pure functions, no side effects

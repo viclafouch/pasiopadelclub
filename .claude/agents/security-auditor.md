@@ -133,9 +133,10 @@ find . -name "*.ts" -o -name "*.tsx" | xargs grep -l "auth\|login\|password\|ses
 ## Tech Stack Awareness
 
 This project uses:
-- **Frontend:** React, TanStack Router, TanStack Form
-- **Backend:** Convex (serverless)
-- **Auth:** Convex Auth with Password provider
+- **Frontend:** React, TanStack Start (SSR), TanStack Router, TanStack Form
+- **Backend:** Drizzle ORM + Neon (Postgres serverless)
+- **Auth:** Better Auth with Polar plugin
+- **Payments:** Polar
 - **Validation:** Zod schemas
 - **Email:** Resend
 

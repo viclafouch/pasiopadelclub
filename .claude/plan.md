@@ -400,7 +400,7 @@ Voir le plan détaillé dans les sections précédentes.
 ## État actuel du projet
 
 ### Complété ✅
-- Infrastructure Neon + Drizzle
+- Infrastructure Neon + Drizzle (migration appliquée)
 - Better Auth avec champs additionnels (firstName, lastName, phone, role)
 - Plugin Polar Better Auth (serveur + client)
 - Pages publiques et authentification
@@ -410,6 +410,7 @@ Voir le plan détaillé dans les sections précédentes.
 - Webhook Polar `order.paid` avec idempotence et logs sécurisés
 - Vérification `isBlocked` sur annulation booking
 - Contrainte unique sur `polarPaymentId` (schéma mis à jour)
+- Routes auth (connexion/inscription) avec invalidation cache/router
 
 ### En cours 🔄
 - **Milestone 6** : Configurer webhook URL dans Polar dashboard (prod)
@@ -417,7 +418,6 @@ Voir le plan détaillé dans les sections précédentes.
 - Pages success/echec à finaliser
 
 ### À faire
-- Appliquer migration DB (`npm run db:generate` interactif)
 - Emails transactionnels (M7)
 - Dashboard admin (M8-9)
 - SEO & optimisation (M10)

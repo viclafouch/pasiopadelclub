@@ -23,8 +23,8 @@ paths: "**/*.{ts,tsx}"
 - Name variables with `*Query` suffix: `const currentUserQuery = useSuspenseQuery(...)`
 - Access data via `query.data`, status via `query.isPending`, etc.
 
-### Convex Mutations
-- Use `useMutation` (TanStack Query) + `useConvexMutation` - never `useMutation` from `convex/react`
+### Server Functions (TanStack Start)
+- Use `useMutation` (TanStack Query) for async operations
 - Use `mutation.isPending`, `mutation.isError`, `mutation.error` - never `useState` for loading/error
 - Always display `mutation.error` with `getErrorMessage()` helper
 - Name: `*Mutation` suffix

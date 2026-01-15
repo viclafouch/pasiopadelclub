@@ -38,7 +38,7 @@ Audit the codebase for GDPR compliance, identifying gaps and providing actionabl
 ### MEDIUM (Best practice)
 - **Retention Periods** - Defined and enforced data retention
 - **Anonymization** - Proper anonymization when data no longer needed
-- **Third-party Processors** - DPA with all processors (Clerk, Convex, Polar, Resend)
+- **Third-party Processors** - DPA with all processors (Neon, Polar, Resend, Railway)
 - **Records of Processing** - Documentation of processing activities
 
 ### LOW (Recommended)
@@ -164,8 +164,8 @@ After reviewing the codebase, provide:
 ## Tech Stack Awareness
 
 This project uses:
-- **Auth Provider:** Clerk (processor, needs DPA)
-- **Database:** Convex (processor, needs DPA)
+- **Auth:** Better Auth (self-hosted, no external processor)
+- **Database:** Neon Postgres (processor, needs DPA)
 - **Payments:** Polar (processor, needs DPA)
 - **Emails:** Resend (processor, needs DPA)
 - **Hosting:** Railway (processor, needs DPA)
