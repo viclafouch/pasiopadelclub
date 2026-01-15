@@ -403,13 +403,13 @@ S'assurer que toutes les erreurs et messages s'affichent en français. Préparat
 | **Zod** | Validation | ✅ Déjà FR |
 | **Server functions** | Custom | ✅ Déjà FR |
 
-### 7.5.1 Better Auth
+### 7.5.1 Better Auth ✅
 - **Doc :** https://www.better-auth.com/docs/concepts/client#error-codes-and-localization
 - **Typage :** `authClient.$ERROR_CODES` expose tous les codes possibles
 - **Accès :** `error.code` retourné par les méthodes auth
-- [ ] Lister tous les codes via `$ERROR_CODES`
-- [ ] Créer helper `src/helpers/auth-errors.ts` avec mapping FR
-- [ ] Intégrer dans connexion/inscription
+- [x] Lister tous les codes via `$ERROR_CODES`
+- [x] Créer helper `src/helpers/auth-errors.ts` avec mapping FR
+- [x] Intégrer dans connexion/inscription (Alert component shadcn)
 
 ### 7.5.2 Polar
 - **Doc :** https://github.com/polarsource/polar-js

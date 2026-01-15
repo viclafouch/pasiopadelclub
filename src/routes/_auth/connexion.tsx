@@ -1,4 +1,6 @@
+import { AlertCircle } from 'lucide-react'
 import { z } from 'zod'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { getAuthUserQueryOpts } from '@/constants/queries'
-import { getErrorMessage } from '@/helpers/error'
+import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -52,7 +54,7 @@ const ConnexionPage = () => {
       })
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.code)
       }
     },
     onSuccess: async () => {
@@ -162,9 +164,12 @@ const ConnexionPage = () => {
               }}
             </form.Field>
             {signInMutation.error ? (
-              <p className="text-sm text-destructive" role="alert">
-                {getErrorMessage(signInMutation.error)}
-              </p>
+              <Alert variant="destructive">
+                <AlertCircle className="size-4" aria-hidden="true" />
+                <AlertDescription>
+                  {getAuthErrorMessage(signInMutation.error.message)}
+                </AlertDescription>
+              </Alert>
             ) : null}
           </CardContent>
           <CardFooter className="flex flex-col gap-4 pt-6">
