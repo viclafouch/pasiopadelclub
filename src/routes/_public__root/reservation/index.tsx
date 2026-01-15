@@ -1,7 +1,11 @@
 import React from 'react'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
-import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
+import {
+  CLOSING_HOUR,
+  MAX_ACTIVE_BOOKINGS,
+  MIN_SESSION_MINUTES
+} from '@/constants/booking'
 import {
   getActiveBookingCountQueryOpts,
   getSlotsByDateQueryOpts
@@ -12,7 +16,7 @@ import type {
   SelectedSlot,
   Slot
 } from '@/constants/types'
-import { getTodayDateKey } from '@/helpers/date'
+import { getDefaultBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
 import {
   useQuery,
@@ -42,7 +46,8 @@ const ReservationContent = () => {
   const queryClient = useQueryClient()
 
   const isAuthenticated = Boolean(user)
-  const selectedDate = date ?? getTodayDateKey()
+  const selectedDate =
+    date ?? getDefaultBookingDateKey(CLOSING_HOUR, MIN_SESSION_MINUTES)
 
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
     null

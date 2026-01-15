@@ -61,6 +61,29 @@ export const getTodayDateKey = () => {
   return formatDateKey(new Date())
 }
 
+export const getTomorrowDateKey = () => {
+  const today = new Date()
+  const tomorrow = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1
+  )
+
+  return formatDateKey(tomorrow)
+}
+
+export const getDefaultBookingDateKey = (
+  closingHour: number,
+  minSessionMinutes: number
+) => {
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  const lastSlotStartMinutes = closingHour * 60 - minSessionMinutes
+  const hasRemainingSlots = currentMinutes < lastSlotStartMinutes
+
+  return hasRemainingSlots ? getTodayDateKey() : getTomorrowDateKey()
+}
+
 export const getToday = () => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)

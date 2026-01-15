@@ -66,19 +66,23 @@ const courtsData = [
 ]
 
 const main = async () => {
+  // eslint-disable-next-line no-console
   console.log('Seeding courts...')
 
   const inserted = await db.insert(court).values(courtsData).returning()
 
+  // eslint-disable-next-line no-console
   console.log(`Inserted ${inserted.length} courts`)
 }
 
 main()
   .then(() => {
+    // eslint-disable-next-line no-console
     console.log('Seed completed')
     process.exit(0)
   })
   .catch((error) => {
+    // eslint-disable-next-line no-console
     console.error('Seed failed:', error)
     process.exit(1)
   })
