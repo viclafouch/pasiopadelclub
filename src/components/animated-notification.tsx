@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   AlertCircleIcon,
   CheckCircle2Icon,
   InfoIcon,
   XCircleIcon
 } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 type NotificationVariant = 'success' | 'error' | 'warning' | 'info'

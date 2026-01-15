@@ -167,6 +167,23 @@
   }
 }
 
+.navbar-scroll-fade {
+  @supports (animation-timeline: scroll()) {
+    animation: navbar-fade-to-solid linear both;
+    animation-timeline: scroll();
+    animation-range: 0px 300px;
+  }
+}
+
+@keyframes navbar-fade-to-solid {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: var(--primary);
+  }
+}
+
 .day-selector-sticky {
   container-type: scroll-state;
 

@@ -4,6 +4,7 @@ import {
   User as UserIcon,
   UserCircle
 } from 'lucide-react'
+import { motion } from 'motion/react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import type { User } from '@/constants/types'
+import { useScrollFade } from '@/hooks/use-scroll-fade'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 import { useQueryClient } from '@tanstack/react-query'
@@ -36,6 +38,7 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
   const queryClient = useQueryClient()
 
   const isOverlay = variant === 'overlay'
+  const { needsFallback, opacity } = useScrollFade({ enabled: isOverlay })
 
   const handleSignOut = async () => {
     await authClient.signOut()
@@ -47,8 +50,8 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
     firstName: User['firstName'],
     lastName: User['lastName']
   ) => {
-    const first = firstName.charAt(0).toUpperCase() ?? ''
-    const last = lastName.charAt(0).toUpperCase() ?? ''
+    const first = firstName.charAt(0).toUpperCase()
+    const last = lastName.charAt(0).toUpperCase()
 
     return first + last || 'U'
   }
@@ -57,10 +60,16 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50 h-[var(--navbar-height)]',
-        isOverlay ? '' : 'bg-primary text-primary-foreground'
+        isOverlay ? 'navbar-scroll-fade' : 'bg-primary text-primary-foreground'
       )}
     >
-      <div className="container flex h-full items-center justify-between">
+      {needsFallback && opacity ? (
+        <motion.div
+          className="absolute inset-0 bg-primary"
+          style={{ opacity }}
+        />
+      ) : null}
+      <div className="container relative flex h-full items-center justify-between">
         <div className="flex items-center gap-10">
           <Link
             to="/"
@@ -84,7 +93,11 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
           </ul>
         </div>
         <div className="flex items-center gap-4">
-          <Button size="lg" variant="outline" asChild>
+          <Button
+            size="lg"
+            className="rounded-full bg-white text-slate-900 hover:bg-white/90"
+            asChild
+          >
             <Link to="/reservation">Réserver</Link>
           </Button>
           {user ? (

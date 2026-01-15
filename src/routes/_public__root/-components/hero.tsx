@@ -12,7 +12,7 @@ export const Hero = () => {
         fetchPriority="high"
         decoding="async"
       />
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 pt-24 lg:container">
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 pt-24 pb-32 lg:container">
         <div className="max-w-2xl">
           <div className="mb-6 flex items-center gap-2 text-sm text-white">
             <Star className="size-4 fill-white" />
@@ -34,14 +34,6 @@ export const Hero = () => {
               asChild
             >
               <Link to="/reservation">Réserver un terrain</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="ghost"
-              className="liquid-glass h-12 rounded-full px-8 text-base text-white"
-              asChild
-            >
-              <Link to="/tarifs">Voir nos tarifs</Link>
             </Button>
           </div>
         </div>

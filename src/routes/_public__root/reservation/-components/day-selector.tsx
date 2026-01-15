@@ -1,6 +1,6 @@
 import React from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { motion, useReducedMotion } from 'motion/react'
 import { DAYS_TO_SHOW } from '@/constants/booking'
 import {
   formatDateKey,
