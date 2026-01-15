@@ -332,13 +332,13 @@ Intégrer Polar pour le paiement en ligne via Better Auth plugin.
 - [x] Configurer plugin `polarClient()` dans `src/lib/auth-client.ts`
 - [ ] Configurer webhook dans Polar dashboard (prod)
 
-### 6.2 Flux de paiement (simplifié) 🔄
+### 6.2 Flux de paiement (simplifié) ✅
 > **Approche choisie** : Pas de booking "pending". Le booking est créé uniquement à la confirmation de paiement.
 
 - [x] `BookingSummaryModal` utilise `authClient.checkout({ slug, referenceId })`
 - [x] Le `referenceId` contient les infos du slot (courtId, startAt, endAt) encodées
-- [ ] Redirection automatique vers Polar Checkout
-- [ ] Email pré-rempli grâce à `createCustomerOnSignUp: true`
+- [x] Redirection automatique vers Polar Checkout
+- [x] Email pré-rempli grâce à `createCustomerOnSignUp: true`
 
 ### 6.3 Webhook Polar ✅
 - [x] Route `/api/webhooks/polar.ts` créée
@@ -356,7 +356,7 @@ Intégrer Polar pour le paiement en ligne via Better Auth plugin.
 - [x] Route `/reservation/success.tsx` créée
 - [ ] Afficher récapitulatif réservation (fetch via checkout_id)
 - [x] Route `/reservation/echec.tsx` créée
-- [ ] Afficher message erreur + boutons retry/accueil
+- [x] Afficher message erreur + boutons retry/accueil
 
 ### 6.5 Remboursements
 - [ ] Créer fonction `refundBooking` via API Polar
@@ -433,7 +433,8 @@ S'assurer que toutes les erreurs et messages s'affichent en français. Préparat
 - [x] `inscription.tsx` ✅
 - [x] `connexion.tsx` ✅
 - [x] `contact/index.tsx` ✅
-- [ ] `schemas.ts` - Ajouter messages FR manquants
+- [x] `validation.ts` (profileFormSchema) ✅
+- [x] `schemas.ts` ✅ (server-side only, pas de messages user-facing)
 
 ### 7.5.4 (Futur) Multi-langue EN
 - [ ] Structure `src/i18n/` pour FR/EN
@@ -463,22 +464,29 @@ Voir le plan détaillé dans les sections précédentes.
 - Plugin Polar Better Auth (serveur + client)
 - Pages publiques et authentification
 - Espace utilisateur complet
-- Interface de réservation
+- Interface de réservation (M5.1-5.4)
 - Modal récapitulatif avec checkout Better Auth + useMutation + error handling
-- Webhook Polar `order.paid` avec idempotence et logs sécurisés
+- Flux paiement Polar complet (M6.2)
+- Webhook Polar `order.paid` avec idempotence et logs sécurisés (M6.3)
+- Pages success/echec créées (M6.4 partiel)
 - Vérification `isBlocked` sur annulation booking
 - Contrainte unique sur `polarPaymentId` (schéma mis à jour)
 - Routes auth (connexion/inscription) avec invalidation cache/router
+- i18n Better Auth (M7.5.1) - erreurs FR
+- i18n Zod (M7.5.3) - tous les formulaires validés FR
 
 ### En cours 🔄
-- **Milestone 6** : Configurer webhook URL dans Polar dashboard (prod)
+- **M6.1** : Configurer webhook URL dans Polar dashboard (prod)
+- **M6.4** : Afficher récapitulatif réservation sur success.tsx (fetch via checkout_id)
+- **M6.5** : Remboursements via API Polar
 - Tester le flux complet de paiement end-to-end
-- Pages success/echec à finaliser
 
 ### À faire
-- Emails transactionnels (M7)
-- Dashboard admin (M8-9)
-- SEO & optimisation (M10)
-- Tests & sécurité (M11)
-- RGPD (M12)
-- Déploiement (M13)
+- M5.5 : "Réservé par vous" (créneaux user en bleu info)
+- M7 : Emails transactionnels
+- M7.5.2 : Traduction erreurs Polar
+- M8-9 : Dashboard admin
+- M10 : SEO & optimisation
+- M11 : Tests & sécurité
+- M12 : RGPD
+- M13 : Déploiement
