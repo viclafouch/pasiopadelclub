@@ -1,11 +1,14 @@
 import React from 'react'
-import type { LucideIcon } from 'lucide-react'
 import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
 import { z } from 'zod'
 import { BookingCardSkeleton } from '@/components/booking-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { seo } from '@/utils/seo'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  useNavigate,
+  useRouteContext
+} from '@tanstack/react-router'
 import { HistoryTab } from './-tabs/history'
 import { ProfileTab, ProfileTabSkeleton } from './-tabs/profile'
 import { UpcomingBookingsTab } from './-tabs/upcoming-bookings'
@@ -19,37 +22,11 @@ const BookingsSkeleton = () => {
   )
 }
 
-type TabConfig = {
-  value: string
-  label: string
-  icon: LucideIcon
-  component: React.ComponentType
-  fallback: React.ReactNode
-}
-
 const TABS = [
-  {
-    value: 'reservations',
-    label: 'Réservations',
-    icon: CalendarIcon,
-    component: UpcomingBookingsTab,
-    fallback: <BookingsSkeleton />
-  },
-  {
-    value: 'historique',
-    label: 'Historique',
-    icon: HistoryIcon,
-    component: HistoryTab,
-    fallback: <BookingsSkeleton />
-  },
-  {
-    value: 'profil',
-    label: 'Profil',
-    icon: UserIcon,
-    component: ProfileTab,
-    fallback: <ProfileTabSkeleton />
-  }
-] as const satisfies TabConfig[]
+  { value: 'reservations', label: 'Réservations', icon: CalendarIcon },
+  { value: 'historique', label: 'Historique', icon: HistoryIcon },
+  { value: 'profil', label: 'Profil', icon: UserIcon }
+] as const
 
 const TAB_VALUES = TABS.map((tab) => {
   return tab.value
@@ -61,6 +38,7 @@ const searchSchema = z.object({
 })
 
 const MonComptePage = () => {
+  const { user } = useRouteContext({ from: '__root__' })
   const { tab = 'reservations' } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
 
@@ -74,8 +52,8 @@ const MonComptePage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Mon compte</h1>
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-8 text-3xl font-bold">Mon compte</h1>
         <Tabs value={tab} onValueChange={handleTabChange}>
           <TabsList className="mb-6 w-full justify-start">
             {TABS.map((tabConfig) => {
@@ -91,20 +69,33 @@ const MonComptePage = () => {
               )
             })}
           </TabsList>
-          {TABS.map((tabConfig) => {
-            return (
-              <TabsContent
-                key={tabConfig.value}
-                value={tabConfig.value}
-                forceMount
-                className="data-[state=inactive]:hidden"
-              >
-                <React.Suspense fallback={tabConfig.fallback}>
-                  <tabConfig.component />
-                </React.Suspense>
-              </TabsContent>
-            )
-          })}
+          <TabsContent
+            value="reservations"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
+            <React.Suspense fallback={<BookingsSkeleton />}>
+              <UpcomingBookingsTab />
+            </React.Suspense>
+          </TabsContent>
+          <TabsContent
+            value="historique"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
+            <React.Suspense fallback={<BookingsSkeleton />}>
+              <HistoryTab />
+            </React.Suspense>
+          </TabsContent>
+          <TabsContent
+            value="profil"
+            forceMount
+            className="data-[state=inactive]:hidden"
+          >
+            <React.Suspense fallback={<ProfileTabSkeleton />}>
+              {user ? <ProfileTab user={user} /> : null}
+            </React.Suspense>
+          </TabsContent>
         </Tabs>
       </div>
     </div>

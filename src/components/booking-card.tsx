@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { BookingId, BookingWithCourt } from '@/constants/types'
+import type { Booking, BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { getBookingStatusBadge } from '@/utils/booking'
@@ -11,7 +11,7 @@ import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 
 type BookingCardProps = {
   booking: BookingWithCourt
-  onCancel?: (bookingId: BookingId) => void
+  onCancel?: (bookingId: Booking['id']) => void
   showCancelButton?: boolean
 }
 
@@ -26,7 +26,7 @@ export const BookingCard = ({
   const showCancel = showCancelButton && isConfirmed
 
   const handleCancel = () => {
-    onCancel?.(booking._id)
+    onCancel?.(booking.id)
   }
 
   return (

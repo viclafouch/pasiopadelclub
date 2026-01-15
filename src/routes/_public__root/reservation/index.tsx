@@ -1,19 +1,29 @@
 import React from 'react'
-import { useConvexAuth } from 'convex/react'
 import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
-import type { Court, SelectedSlot, Slot } from '@/constants/types'
+import {
+  getActiveBookingCountQueryOpts,
+  getSlotsByDateQueryOpts
+} from '@/constants/queries'
+import type {
+  Court,
+  CourtWithSlots,
+  SelectedSlot,
+  Slot
+} from '@/constants/types'
 import { getTodayDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
-import { api } from '~/convex/_generated/api'
-import { convexQuery } from '@convex-dev/react-query'
 import {
   useQuery,
   useQueryClient,
   useSuspenseQuery
 } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  useNavigate,
+  useRouteContext
+} from '@tanstack/react-router'
 import { BookingSummaryModal } from './-components/booking-summary-modal'
 import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
@@ -26,11 +36,12 @@ const searchSchema = z.object({
 })
 
 const ReservationContent = () => {
-  const { isAuthenticated } = useConvexAuth()
+  const { user } = useRouteContext({ from: '__root__' })
   const { date } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const queryClient = useQueryClient()
 
+  const isAuthenticated = Boolean(user)
   const selectedDate = date ?? getTodayDateKey()
 
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
@@ -39,15 +50,11 @@ const ReservationContent = () => {
   const [isLimitDialogOpen, setIsLimitDialogOpen] = React.useState(false)
 
   const activeCountQuery = useQuery({
-    ...convexQuery(api.bookings.getActiveCount, {}),
+    ...getActiveBookingCountQueryOpts(),
     enabled: isAuthenticated
   })
 
-  const slotsQuery = useSuspenseQuery(
-    convexQuery(api.slots.getByDate, {
-      date: selectedDate
-    })
-  )
+  const slotsQuery = useSuspenseQuery(getSlotsByDateQueryOpts(selectedDate))
 
   const handleDateChange = (newDate: string) => {
     navigate({
@@ -60,15 +67,13 @@ const ReservationContent = () => {
   }
 
   const handleDateHover = (dateKey: string) => {
-    queryClient.prefetchQuery(
-      convexQuery(api.slots.getByDate, { date: dateKey })
-    )
+    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
   }
 
   const handleSlotSelect = (court: Court, slot: Slot) => {
     if (!isAuthenticated) {
       const returnUrl = `/reservation?date=${selectedDate}`
-      navigate({ to: '/connexion/$', search: { redirect: returnUrl } })
+      navigate({ to: '/connexion', search: { redirect: returnUrl } })
 
       return
     }
@@ -96,14 +101,18 @@ const ReservationContent = () => {
   const isAtLimit = isAuthenticated && activeCount >= MAX_ACTIVE_BOOKINGS
   const courtsWithSlots = slotsQuery.data
 
-  const courtsByType = courtsWithSlots.reduce<
-    Record<string, typeof courtsWithSlots>
-  >((groups, courtWithSlots) => {
-    const courtType = courtWithSlots.court.type
-    const existing = groups[courtType] ?? []
+  const courtsByType = courtsWithSlots.reduce<Record<string, CourtWithSlots[]>>(
+    (
+      groups: Record<string, CourtWithSlots[]>,
+      courtWithSlots: CourtWithSlots
+    ) => {
+      const courtType = courtWithSlots.court.type
+      const existing = groups[courtType] ?? []
 
-    return { ...groups, [courtType]: [...existing, courtWithSlots] }
-  }, {})
+      return { ...groups, [courtType]: [...existing, courtWithSlots] }
+    },
+    {}
+  )
 
   const typeOrder = ['double', 'simple', 'kids'] as const
 

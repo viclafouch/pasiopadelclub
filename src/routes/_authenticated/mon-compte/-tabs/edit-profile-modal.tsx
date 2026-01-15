@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,13 +9,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { getAuthUserQueryOpts } from '@/constants/queries'
 import { profileFormSchema } from '@/constants/validation'
 import { getErrorMessage } from '@/helpers/error'
-import { api } from '~/convex/_generated/api'
-import { useUser } from '@clerk/tanstack-react-start'
-import { convexQuery, useConvexMutation } from '@convex-dev/react-query'
+import { updateProfileFn } from '@/server/users'
 import { useForm } from '@tanstack/react-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
 
 type EditProfileModalProps = {
   isOpen: boolean
@@ -24,8 +23,8 @@ type EditProfileModalProps = {
   onSuccess: () => void
   defaultValues: {
     email: string
-    firstName: string | null
-    lastName: string | null
+    firstName: string
+    lastName: string
     phone: string | null
   }
 }
@@ -36,52 +35,20 @@ export const EditProfileModal = ({
   onSuccess,
   defaultValues
 }: EditProfileModalProps) => {
-  const { user: clerkUser } = useUser()
+  const router = useRouter()
   const queryClient = useQueryClient()
 
-  const updatePhoneMutation = useMutation({
-    mutationFn: useConvexMutation(api.users.updatePhone)
-  })
-
   const updateProfileMutation = useMutation({
-    mutationFn: async (values: {
+    mutationFn: (values: {
       firstName: string
       lastName: string
       phone: string
     }) => {
-      const updates: Promise<unknown>[] = []
-      let clerkUpdated = false
-
-      const firstNameChanged =
-        values.firstName !== (defaultValues.firstName ?? '')
-      const lastNameChanged = values.lastName !== (defaultValues.lastName ?? '')
-
-      if (clerkUser && (firstNameChanged || lastNameChanged)) {
-        updates.push(
-          clerkUser.update({
-            firstName: values.firstName,
-            lastName: values.lastName
-          })
-        )
-        clerkUpdated = true
-      }
-
-      const phoneChanged = values.phone !== (defaultValues.phone ?? '')
-
-      if (phoneChanged && values.phone.trim() !== '') {
-        updates.push(updatePhoneMutation.mutateAsync({ phone: values.phone }))
-      }
-
-      await Promise.all(updates)
-
-      return { clerkUpdated }
+      return updateProfileFn({ data: values })
     },
-    onSuccess: async (data) => {
-      if (data.clerkUpdated) {
-        const { queryKey } = convexQuery(api.users.getCurrent, {})
-        await queryClient.invalidateQueries({ queryKey })
-      }
-
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(getAuthUserQueryOpts())
+      await router.invalidate()
       onSuccess()
       onClose()
     }
@@ -138,76 +105,78 @@ export const EditProfileModal = ({
               L&apos;email ne peut pas être modifié ici.
             </p>
           </div>
-          <form.Field name="firstName">
-            {(field) => {
-              const hasError = field.state.meta.errors.length > 0
-              const errorId = `${field.name}-error`
+          <div className="grid grid-cols-2 gap-4">
+            <form.Field name="firstName">
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0
+                const errorId = `${field.name}-error`
 
-              return (
-                <div className="space-y-2">
-                  <Label htmlFor={field.name}>Prénom</Label>
-                  <Input
-                    type="text"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => {
-                      return field.handleChange(event.target.value)
-                    }}
-                    autoComplete="given-name"
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? errorId : undefined}
-                    placeholder="Votre prénom"
-                  />
-                  {hasError ? (
-                    <p
-                      id={errorId}
-                      role="alert"
-                      className="text-sm text-destructive"
-                    >
-                      {getErrorMessage(field.state.meta.errors[0])}
-                    </p>
-                  ) : null}
-                </div>
-              )
-            }}
-          </form.Field>
-          <form.Field name="lastName">
-            {(field) => {
-              const hasError = field.state.meta.errors.length > 0
-              const errorId = `${field.name}-error`
+                return (
+                  <div className="space-y-2">
+                    <Label htmlFor={field.name}>Prénom</Label>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => {
+                        return field.handleChange(event.target.value)
+                      }}
+                      autoComplete="given-name"
+                      aria-invalid={hasError}
+                      aria-describedby={hasError ? errorId : undefined}
+                      placeholder="Prénom"
+                    />
+                    {hasError ? (
+                      <p
+                        id={errorId}
+                        role="alert"
+                        className="text-sm text-destructive"
+                      >
+                        {getErrorMessage(field.state.meta.errors[0])}
+                      </p>
+                    ) : null}
+                  </div>
+                )
+              }}
+            </form.Field>
+            <form.Field name="lastName">
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0
+                const errorId = `${field.name}-error`
 
-              return (
-                <div className="space-y-2">
-                  <Label htmlFor={field.name}>Nom</Label>
-                  <Input
-                    type="text"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => {
-                      return field.handleChange(event.target.value)
-                    }}
-                    autoComplete="family-name"
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? errorId : undefined}
-                    placeholder="Votre nom"
-                  />
-                  {hasError ? (
-                    <p
-                      id={errorId}
-                      role="alert"
-                      className="text-sm text-destructive"
-                    >
-                      {getErrorMessage(field.state.meta.errors[0])}
-                    </p>
-                  ) : null}
-                </div>
-              )
-            }}
-          </form.Field>
+                return (
+                  <div className="space-y-2">
+                    <Label htmlFor={field.name}>Nom</Label>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => {
+                        return field.handleChange(event.target.value)
+                      }}
+                      autoComplete="family-name"
+                      aria-invalid={hasError}
+                      aria-describedby={hasError ? errorId : undefined}
+                      placeholder="Nom"
+                    />
+                    {hasError ? (
+                      <p
+                        id={errorId}
+                        role="alert"
+                        className="text-sm text-destructive"
+                      >
+                        {getErrorMessage(field.state.meta.errors[0])}
+                      </p>
+                    ) : null}
+                  </div>
+                )
+              }}
+            </form.Field>
+          </div>
           <form.Field name="phone">
             {(field) => {
               const hasError = field.state.meta.errors.length > 0

@@ -102,3 +102,13 @@ export const formatDayNumber = (date: Date) => {
     month: 'short'
   })
 }
+
+export const parseDateKey = (dateKey: string) => {
+  const [year, month, day] = dateKey.split('-').map(Number) as [
+    number,
+    number,
+    number
+  ]
+
+  return new Date(year, month - 1, day)
+}

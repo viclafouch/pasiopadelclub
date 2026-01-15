@@ -1,11 +1,11 @@
 import { LogIn, LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getAuthUserQueryOpts } from '@/constants/queries'
+import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
-import { authQueryOptions } from '@/server/auth'
-import { useAuth, useUser } from '@clerk/tanstack-react-start'
 import { useQueryClient } from '@tanstack/react-query'
 import type { LinkOptions } from '@tanstack/react-router'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouteContext, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
   { linkOptions: { to: '/tarifs' }, label: 'Tarifs' }
@@ -16,15 +16,16 @@ type NavbarProps = {
 }
 
 export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
-  const { user, isLoaded } = useUser()
-  const { signOut } = useAuth()
+  const { user } = useRouteContext({ from: '__root__' })
+  const router = useRouter()
   const queryClient = useQueryClient()
 
   const isOverlay = variant === 'overlay'
 
   const handleSignOut = async () => {
-    await signOut()
-    queryClient.invalidateQueries({ queryKey: authQueryOptions.queryKey })
+    await authClient.signOut()
+    queryClient.removeQueries(getAuthUserQueryOpts())
+    await router.invalidate()
   }
 
   return (
@@ -71,56 +72,52 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
           >
             <Link to="/reservation">Réserver</Link>
           </Button>
-          {isLoaded ? (
-            <>
-              {user ? (
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-white">
-                    {user.firstName}
-                  </span>
-                  <Link
-                    to="/mon-compte"
-                    search={{}}
-                    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-                  >
-                    <User className="size-4" aria-hidden="true" />
-                    <span className="sr-only">Mon compte</span>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleSignOut}
-                    className="text-white/80 hover:bg-white/10 hover:text-white"
-                  >
-                    <LogOut className="size-4" aria-hidden="true" />
-                    <span className="sr-only">Déconnexion</span>
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    asChild
-                    className="text-white/80 hover:bg-white/10 hover:text-white"
-                  >
-                    <Link to="/connexion/$">
-                      <LogIn className="size-4" aria-hidden="true" />
-                      Connexion
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    asChild
-                    className="bg-white text-primary hover:bg-white/90"
-                  >
-                    <Link to="/inscription/$">Inscription</Link>
-                  </Button>
-                </div>
-              )}
-            </>
-          ) : null}
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-white">
+                {user.firstName}
+              </span>
+              <Link
+                to="/mon-compte"
+                search={{}}
+                className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+              >
+                <User className="size-4" aria-hidden="true" />
+                <span className="sr-only">Mon compte</span>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+                className="text-white/80 hover:bg-white/10 hover:text-white"
+              >
+                <LogOut className="size-4" aria-hidden="true" />
+                <span className="sr-only">Déconnexion</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-white/80 hover:bg-white/10 hover:text-white"
+              >
+                <Link to="/connexion">
+                  <LogIn className="size-4" aria-hidden="true" />
+                  Connexion
+                </Link>
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                asChild
+                className="bg-white text-primary hover:bg-white/90"
+              >
+                <Link to="/inscription">Inscription</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

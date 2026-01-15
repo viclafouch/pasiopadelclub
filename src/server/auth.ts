@@ -1,26 +1,29 @@
-import { auth } from '@clerk/tanstack-react-start/server'
-import { queryOptions } from '@tanstack/react-query'
+import { eq } from 'drizzle-orm'
+import { db } from '@/db'
+import { user } from '@/db/schema'
+import { auth } from '@/lib/auth'
 import { createServerFn } from '@tanstack/react-start'
+import { getRequestHeaders } from '@tanstack/react-start/server'
 
-export const authStateFn = createServerFn({ method: 'GET' }).handler(
+export const getCurrentUserFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const { isAuthenticated, userId, getToken } = await auth()
-    const token = await getToken({ template: 'convex' })
+    const headers = getRequestHeaders()
+    const session = await auth.api.getSession({ headers })
 
-    return {
-      userId,
-      isAuthenticated,
-      token
+    if (!session) {
+      return null
     }
+
+    const [currentUser] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, session.user.id))
+      .limit(1)
+
+    return currentUser ?? null
   }
 )
 
-export type AuthState = Awaited<ReturnType<typeof authStateFn>>
-
-export const authQueryOptions = queryOptions({
-  queryKey: ['auth'],
-  queryFn: () => {
-    return authStateFn()
-  },
-  staleTime: Infinity
-})
+export type CurrentUser = NonNullable<
+  Awaited<ReturnType<typeof getCurrentUserFn>>
+>

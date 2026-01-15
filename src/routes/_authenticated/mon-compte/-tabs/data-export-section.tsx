@@ -2,13 +2,14 @@ import { DownloadIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { downloadJson } from '@/helpers/download'
 import { getErrorMessage } from '@/helpers/error'
-import { api } from '~/convex/_generated/api'
-import { useConvexMutation } from '@convex-dev/react-query'
+import { exportMyDataFn } from '@/server/users'
 import { useMutation } from '@tanstack/react-query'
 
 export const DataExportSection = () => {
   const exportMutation = useMutation({
-    mutationFn: useConvexMutation(api.users.exportMyData),
+    mutationFn: () => {
+      return exportMyDataFn()
+    },
     onSuccess: (data) => {
       const filename = `pasio-padel-data-${new Date().toISOString().split('T')[0]}.json`
       downloadJson(data, filename)
@@ -27,7 +28,7 @@ export const DataExportSection = () => {
         <Button
           variant="outline"
           onClick={() => {
-            return exportMutation.mutate({})
+            return exportMutation.mutate()
           }}
           disabled={exportMutation.isPending}
           aria-busy={exportMutation.isPending}
@@ -38,7 +39,7 @@ export const DataExportSection = () => {
         </Button>
       </div>
       {exportMutation.isError ? (
-        <p role="alert" className="text-sm text-destructive pt-4">
+        <p role="alert" className="pt-4 text-sm text-destructive">
           {getErrorMessage(exportMutation.error)}
         </p>
       ) : null}

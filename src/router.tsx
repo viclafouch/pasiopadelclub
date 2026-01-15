@@ -1,43 +1,29 @@
-import { ConvexProvider, ConvexReactClient } from 'convex/react'
-import { ConvexQueryClient } from '@convex-dev/react-query'
 import { QueryClient } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
-import { clientEnv } from './env/client'
 import { routeTree } from './routeTree.gen'
 
 export function getRouter() {
-  const convexClient = new ConvexReactClient(clientEnv.VITE_CONVEX_URL)
-  const convexQueryClient = new ConvexQueryClient(convexClient)
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        queryKeyHashFn: convexQueryClient.hashFn(),
-        queryFn: convexQueryClient.queryFn(),
-        staleTime: Infinity // Convex pushes updates, data is never stale
+        refetchOnWindowFocus: process.env.NODE_ENV === 'production',
+        staleTime: 1000 * 60 * 2 // 2min
+      },
+      mutations: {
+        retry: false
       }
     }
   })
-
-  convexQueryClient.connect(queryClient)
 
   const router = createRouter({
     routeTree,
     context: {
       queryClient,
-      convexQueryClient,
-      convexClient
+      user: null
     },
     scrollRestoration: true,
-    defaultPreloadStaleTime: 0,
-    Wrap: ({ children }) => {
-      return (
-        <ConvexProvider client={convexQueryClient.convexClient}>
-          {children}
-        </ConvexProvider>
-      )
-    }
+    defaultPreloadStaleTime: 0
   })
 
   setupRouterSsrQueryIntegration({

@@ -44,7 +44,7 @@ export const CourtTypeGroup = ({
       <CardContent className="space-y-6">
         {courtsWithSlots.map((courtWithSlots, index) => {
           return (
-            <div key={courtWithSlots.court._id}>
+            <div key={courtWithSlots.court.id}>
               {index > 0 ? (
                 <hr className="mb-6 border-border/50" aria-hidden="true" />
               ) : null}

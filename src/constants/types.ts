@@ -1,19 +1,22 @@
-import type { Doc, Id } from '~/convex/_generated/dataModel'
+import type { InferSelectModel } from 'drizzle-orm'
+import type { blockedSlot, booking, court, user } from '@/db/schema'
 
-export type BlockedSlot = Doc<'blockedSlots'>
-export type Booking = Doc<'bookings'>
-export type Court = Doc<'courts'>
-export type User = Doc<'users'>
+// Base entity types from Drizzle schema
+export type BlockedSlot = InferSelectModel<typeof blockedSlot>
+export type Booking = InferSelectModel<typeof booking>
+export type Court = InferSelectModel<typeof court>
+export type User = InferSelectModel<typeof user>
 
-export type BookingId = Id<'bookings'>
-export type CourtId = Id<'courts'>
-export type UserId = Id<'users'>
+// Derived types - use Entity['field'] pattern instead of separate aliases
+export type CourtType = Court['type']
+export type CourtLocation = Court['location']
+export type BookingStatus = Booking['status']
 
+// Composite types
 export type BookingWithCourt = Booking & { court: Court }
 
+// Slot types (client-side with timestamps in ms)
 export type SlotStatus = 'available' | 'booked' | 'blocked' | 'past'
-
-export type CourtType = 'double' | 'simple' | 'kids'
 
 export type Slot = {
   startAt: number

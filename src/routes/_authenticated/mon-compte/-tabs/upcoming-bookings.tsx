@@ -13,24 +13,55 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
-import type { BookingId } from '@/constants/types'
+import {
+  getActiveBookingCountQueryOpts,
+  getUpcomingBookingsQueryOpts
+} from '@/constants/queries'
+import type { Booking } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
+import { cancelBookingFn } from '@/server/bookings'
 import { matchCanCancelBooking } from '@/utils/booking'
-import { api } from '~/convex/_generated/api'
-import { convexQuery, useConvexMutation } from '@convex-dev/react-query'
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+
+type CancelDescriptionProps = {
+  booking: (Booking & { court: { name: string; duration: number } }) | undefined
+}
+
+const CancelDescription = ({ booking }: CancelDescriptionProps) => {
+  if (!booking) {
+    return <>Voulez-vous vraiment annuler cette réservation ?</>
+  }
+
+  return (
+    <>
+      Voulez-vous vraiment annuler votre réservation du{' '}
+      <span className="font-medium">
+        {formatDateFr(new Date(booking.startAt))}
+      </span>{' '}
+      à{' '}
+      <span className="font-medium">
+        {formatTimeFr(new Date(booking.startAt))}
+      </span>{' '}
+      ? Vous serez remboursé intégralement.
+    </>
+  )
+}
 
 const EmptyBookings = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+    <div className="flex flex-col items-center justify-center space-y-4 py-12 text-center">
       <CalendarIcon
         className="size-12 text-muted-foreground"
         aria-hidden="true"
       />
       <div className="space-y-2">
-        <h3 className="font-semibold text-lg">Aucune réservation</h3>
+        <h3 className="text-lg font-semibold">Aucune réservation</h3>
         <p className="text-muted-foreground">
           Vous n&apos;avez pas de réservation à venir.
         </p>
@@ -43,17 +74,22 @@ const EmptyBookings = () => {
 }
 
 export const UpcomingBookingsTab = () => {
-  const upcomingBookingsQuery = useSuspenseQuery(
-    convexQuery(api.bookings.getUpcoming, {})
+  const queryClient = useQueryClient()
+  const upcomingBookingsQuery = useSuspenseQuery(getUpcomingBookingsQueryOpts())
+  const activeCountQuery = useSuspenseQuery(getActiveBookingCountQueryOpts())
+  const [cancelingId, setCancelingId] = React.useState<Booking['id'] | null>(
+    null
   )
-  const activeCountQuery = useSuspenseQuery(
-    convexQuery(api.bookings.getActiveCount, {})
-  )
-  const [cancelingId, setCancelingId] = React.useState<BookingId | null>(null)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
   const cancelBookingMutation = useMutation({
-    mutationFn: useConvexMutation(api.bookings.cancel),
+    mutationFn: (bookingId: string) => {
+      return cancelBookingFn({ data: { bookingId } })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
+      queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
+    },
     onSettled: () => {
       setIsDialogOpen(false)
       setCancelingId(null)
@@ -63,7 +99,7 @@ export const UpcomingBookingsTab = () => {
   const upcomingBookings = upcomingBookingsQuery.data
   const activeCount = activeCountQuery.data
 
-  const handleCancelClick = (bookingId: BookingId) => {
+  const handleCancelClick = (bookingId: Booking['id']) => {
     setCancelingId(bookingId)
     setIsDialogOpen(true)
   }
@@ -73,11 +109,11 @@ export const UpcomingBookingsTab = () => {
       return
     }
 
-    cancelBookingMutation.mutate({ bookingId: cancelingId })
+    cancelBookingMutation.mutate(cancelingId)
   }
 
   const bookingToCancel = upcomingBookings.find((booking) => {
-    return booking._id === cancelingId
+    return booking.id === cancelingId
   })
   const canCancelBooking = bookingToCancel
     ? matchCanCancelBooking(bookingToCancel.startAt)
@@ -90,7 +126,10 @@ export const UpcomingBookingsTab = () => {
       <div className="space-y-6">
         {isLimitReached ? (
           <div className="flex items-center gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
-            <AlertCircleIcon className="size-5 text-amber-600 shrink-0" />
+            <AlertCircleIcon
+              className="size-5 shrink-0 text-amber-600"
+              aria-hidden="true"
+            />
             <p className="text-sm text-amber-700">
               Vous avez atteint la limite de {MAX_ACTIVE_BOOKINGS} réservations
               actives. Annulez une réservation pour en effectuer une nouvelle.
@@ -104,7 +143,7 @@ export const UpcomingBookingsTab = () => {
             {upcomingBookings.map((booking) => {
               return (
                 <BookingCard
-                  key={booking._id}
+                  key={booking.id}
                   booking={booking}
                   onCancel={handleCancelClick}
                 />
@@ -123,21 +162,7 @@ export const UpcomingBookingsTab = () => {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {canCancelBooking ? (
-                bookingToCancel ? (
-                  <>
-                    Voulez-vous vraiment annuler votre réservation du{' '}
-                    <span className="font-medium">
-                      {formatDateFr(new Date(bookingToCancel.startAt))}
-                    </span>{' '}
-                    à{' '}
-                    <span className="font-medium">
-                      {formatTimeFr(new Date(bookingToCancel.startAt))}
-                    </span>{' '}
-                    ? Vous serez remboursé intégralement.
-                  </>
-                ) : (
-                  'Voulez-vous vraiment annuler cette réservation ?'
-                )
+                <CancelDescription booking={bookingToCancel} />
               ) : (
                 <>
                   Les réservations ne peuvent être annulées moins de 24 heures

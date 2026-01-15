@@ -13,24 +13,24 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { getErrorMessage } from '@/helpers/error'
-import { api } from '~/convex/_generated/api'
-import { useClerk } from '@clerk/tanstack-react-start'
-import { useConvexMutation } from '@convex-dev/react-query'
+import { authClient } from '@/lib/auth-client'
+import { anonymizeAccountFn } from '@/server/users'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
 const REDIRECT_DELAY_MS = 1500
 
 export const DeleteAccountSection = () => {
-  const { signOut } = useClerk()
   const navigate = useNavigate()
   const [showSuccess, setShowSuccess] = React.useState(false)
 
   const deleteAccountMutation = useMutation({
-    mutationFn: useConvexMutation(api.users.anonymize),
+    mutationFn: () => {
+      return anonymizeAccountFn()
+    },
     onSuccess: async () => {
       setShowSuccess(true)
-      await signOut()
+      await authClient.signOut()
       setTimeout(() => {
         navigate({ to: '/' })
       }, REDIRECT_DELAY_MS)
@@ -38,11 +38,11 @@ export const DeleteAccountSection = () => {
   })
 
   const handleDeleteAccount = () => {
-    deleteAccountMutation.mutate({})
+    deleteAccountMutation.mutate()
   }
 
   return (
-    <div className="rounded-lg border border-destructive/50 p-6 flex items-center justify-between gap-4">
+    <div className="flex items-center justify-between gap-4 rounded-lg border border-destructive/50 p-6">
       <div>
         <h3 className="font-semibold text-destructive">Supprimer mon compte</h3>
         <p className="text-sm text-muted-foreground">
@@ -59,7 +59,7 @@ export const DeleteAccountSection = () => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           {showSuccess ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+            <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center">
               <div className="rounded-full bg-green-100 p-3">
                 <CheckIcon
                   className="size-8 text-green-600"
@@ -67,7 +67,7 @@ export const DeleteAccountSection = () => {
                 />
               </div>
               <div className="space-y-2">
-                <h3 className="font-semibold text-lg">Compte supprimé</h3>
+                <h3 className="text-lg font-semibold">Compte supprimé</h3>
                 <p className="text-muted-foreground">
                   Votre compte a été supprimé. Redirection...
                 </p>

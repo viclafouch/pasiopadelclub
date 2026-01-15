@@ -1,5 +1,4 @@
 import {
-  AlertCircleIcon,
   CalendarIcon,
   ClockIcon,
   InfoIcon,
@@ -16,12 +15,11 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { LOCATION_LABELS } from '@/constants/court'
-import { POLAR_PRODUCT_IDS } from '@/constants/polar'
-import type { CourtType, SelectedSlot } from '@/constants/types'
+import type { SelectedSlot } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
+import { getErrorMessage } from '@/helpers/error'
 import { formatCentsToEuros } from '@/helpers/number'
-import { api } from '~/convex/_generated/api'
-import { useConvexMutation } from '@convex-dev/react-query'
+import { authClient } from '@/lib/auth-client'
 import { useMutation } from '@tanstack/react-query'
 
 type BookingSummaryModalProps = {
@@ -35,8 +33,22 @@ export const BookingSummaryModal = ({
   onClose,
   selectedSlot
 }: BookingSummaryModalProps) => {
-  const initiateMutation = useMutation({
-    mutationFn: useConvexMutation(api.bookings.initiate)
+  const checkoutMutation = useMutation({
+    mutationFn: async (slotData: {
+      courtId: string
+      startAt: number
+      endAt: number
+      slug: string
+    }) => {
+      await authClient.checkout({
+        slug: slotData.slug,
+        referenceId: JSON.stringify({
+          courtId: slotData.courtId,
+          startAt: slotData.startAt,
+          endAt: slotData.endAt
+        })
+      })
+    }
   })
 
   if (!selectedSlot) {
@@ -47,23 +59,14 @@ export const BookingSummaryModal = ({
   const startDate = new Date(slot.startAt)
   const endDate = new Date(slot.endAt)
 
-  const handlePayClick = async () => {
-    const result = await initiateMutation.mutateAsync({
-      courtId: court._id,
+  const handlePayClick = () => {
+    checkoutMutation.mutate({
+      courtId: court.id,
       startAt: slot.startAt,
-      endAt: slot.endAt
+      endAt: slot.endAt,
+      slug: court.type
     })
-
-    const productId = POLAR_PRODUCT_IDS[court.type as CourtType]
-    const metadata = encodeURIComponent(
-      JSON.stringify({ bookingId: result.bookingId })
-    )
-    const checkoutUrl = `/api/checkout?products=${productId}&metadata=${metadata}`
-
-    window.location.href = checkoutUrl
   }
-
-  const errorMessage = initiateMutation.error?.message
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -115,29 +118,28 @@ export const BookingSummaryModal = ({
             />
             <p>Annulation gratuite jusqu&apos;à 24h avant le créneau.</p>
           </div>
-          {errorMessage ? (
-            <div
-              role="alert"
-              className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
-            >
-              <AlertCircleIcon
-                className="mt-0.5 size-4 shrink-0"
-                aria-hidden="true"
-              />
-              <p>{errorMessage}</p>
-            </div>
+          {checkoutMutation.isError ? (
+            <p role="alert" className="text-sm text-destructive">
+              {getErrorMessage(checkoutMutation.error)}
+            </p>
           ) : null}
         </div>
         <DialogFooter className="border-t bg-muted/30 px-6 py-4">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={checkoutMutation.isPending}
+          >
             Annuler
           </Button>
           <Button
             type="button"
             onClick={handlePayClick}
-            disabled={initiateMutation.isPending}
+            disabled={checkoutMutation.isPending}
+            aria-busy={checkoutMutation.isPending}
           >
-            {initiateMutation.isPending ? (
+            {checkoutMutation.isPending ? (
               <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
             ) : null}
             Payer{' '}
