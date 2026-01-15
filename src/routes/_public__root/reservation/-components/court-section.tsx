@@ -58,6 +58,7 @@ export const CourtSection = ({
               endAt={slot.endAt}
               price={court.price}
               status={slot.status}
+              isOwnBooking={slot.isOwnBooking}
               onSelect={
                 onSlotSelect
                   ? () => {

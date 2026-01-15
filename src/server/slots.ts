@@ -6,13 +6,14 @@ import {
   OPENING_HOUR
 } from '@/constants/booking'
 import { getSlotsByDateSchema } from '@/constants/schemas'
-import type { CourtWithSlots } from '@/constants/types'
+import type { Booking, CourtWithSlots, User } from '@/constants/types'
 import { db } from '@/db'
 import { blockedSlot, booking, court } from '@/db/schema'
 import { parseDateKey } from '@/helpers/date'
 import { createServerFn } from '@tanstack/react-start'
 
-type TimeRange = { startAt: Date; endAt: Date }
+type TimeRange = Pick<Booking, 'startAt' | 'endAt'>
+type BookingRange = Pick<Booking, 'startAt' | 'endAt' | 'userId'>
 
 const matchIsOverlapping = (
   startAt: number,
@@ -24,33 +25,49 @@ const matchIsOverlapping = (
   })
 }
 
-const computeSlotStatus = (
+const findOverlappingBooking = (
+  startAt: number,
+  endAt: number,
+  bookings: BookingRange[]
+) => {
+  return bookings.find((item) => {
+    return item.startAt.getTime() < endAt && item.endAt.getTime() > startAt
+  })
+}
+
+const computeSlotInfo = (
   startAt: number,
   endAt: number,
   now: number,
-  bookings: TimeRange[],
-  blockedSlots: TimeRange[]
+  bookings: BookingRange[],
+  blockedSlots: TimeRange[],
+  currentUserId: User['id'] | undefined
 ) => {
   if (startAt < now) {
-    return 'past' as const
+    return { status: 'past' as const, isOwnBooking: false }
   }
 
-  if (matchIsOverlapping(startAt, endAt, bookings)) {
-    return 'booked' as const
+  const overlappingBooking = findOverlappingBooking(startAt, endAt, bookings)
+
+  if (overlappingBooking) {
+    const isOwnBooking = overlappingBooking.userId === currentUserId
+
+    return { status: 'booked' as const, isOwnBooking }
   }
 
   if (matchIsOverlapping(startAt, endAt, blockedSlots)) {
-    return 'blocked' as const
+    return { status: 'blocked' as const, isOwnBooking: false }
   }
 
-  return 'available' as const
+  return { status: 'available' as const, isOwnBooking: false }
 }
 
 const generateSlotsForCourt = (
   courtData: typeof court.$inferSelect,
   baseDate: Date,
-  existingBookings: TimeRange[],
-  existingBlockedSlots: TimeRange[]
+  existingBookings: BookingRange[],
+  existingBlockedSlots: TimeRange[],
+  currentUserId: User['id'] | undefined
 ) => {
   const now = Date.now()
   const durationMinutes = courtData.duration
@@ -73,22 +90,24 @@ const generateSlotsForCourt = (
   return Array.from({ length: slotCount }, (_, index) => {
     const startAt = openingTimestamp + index * durationMs
     const endAt = startAt + durationMs
-    const status = computeSlotStatus(
+    const { status, isOwnBooking } = computeSlotInfo(
       startAt,
       endAt,
       now,
       existingBookings,
-      existingBlockedSlots
+      existingBlockedSlots,
+      currentUserId
     )
 
-    return { startAt, endAt, status }
+    return { startAt, endAt, status, isOwnBooking }
   })
 }
 
 export const getSlotsByDateFn = createServerFn({ method: 'GET' })
   .inputValidator(getSlotsByDateSchema)
   .handler(async ({ data }) => {
-    const baseDate = parseDateKey(data.date)
+    const { date, currentUserId } = data
+    const baseDate = parseDateKey(date)
 
     const startOfDay = new Date(
       baseDate.getFullYear(),
@@ -118,6 +137,7 @@ export const getSlotsByDateFn = createServerFn({ method: 'GET' })
       db
         .select({
           courtId: booking.courtId,
+          userId: booking.userId,
           startAt: booking.startAt,
           endAt: booking.endAt
         })
@@ -163,10 +183,13 @@ export const getSlotsByDateFn = createServerFn({ method: 'GET' })
 
       return {
         court: courtData,
-        slots: generateSlotsForCourt(courtData, baseDate, courtBookings, [
-          ...courtBlocked,
-          ...globalBlocked
-        ])
+        slots: generateSlotsForCourt(
+          courtData,
+          baseDate,
+          courtBookings,
+          [...courtBlocked, ...globalBlocked],
+          currentUserId
+        )
       }
     })
 

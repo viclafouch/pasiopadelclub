@@ -22,6 +22,7 @@ export type Slot = {
   startAt: number
   endAt: number
   status: SlotStatus
+  isOwnBooking: boolean
 }
 
 export type CourtWithSlots = {

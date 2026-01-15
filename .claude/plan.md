@@ -307,14 +307,14 @@ Voir détails dans les commits précédents. Toutes les fonctionnalités de base
 - [x] Vérification limite 2 réservations actives
 - [x] Redirection connexion si non authentifié
 
-### 5.5 "Réservé par vous" (UX improvement)
+### 5.5 "Réservé par vous" (UX improvement) ✅
 Afficher les créneaux réservés par l'utilisateur connecté en bleu info.
 
-- [ ] Ajouter couleur `--info` dans CSS (bleu ciel oklch)
-- [ ] Ajouter status `booked_by_user` dans SlotStatus type
-- [ ] Modifier query slots pour inclure `userId` du booking
-- [ ] Comparer `booking.userId` avec `user.id` connecté
-- [ ] SlotCard : style bleu info + texte "Réservé par vous"
+- [x] Ajouter couleur `--info` dans CSS (bleu ciel oklch)
+- [x] Ajouter `isOwnBooking: boolean` au type `Slot` (séparé du status)
+- [x] Modifier query slots pour inclure `userId` du booking
+- [x] Comparer `booking.userId` avec `user.id` connecté
+- [x] SlotCard : style bleu info + texte "Réservé par vous" si `isOwnBooking`
 
 ---
 

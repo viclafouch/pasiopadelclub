@@ -1,5 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
-import { CheckCircleIcon, ClockIcon, LockIcon, XCircleIcon } from 'lucide-react'
+import {
+  CheckCircleIcon,
+  ClockIcon,
+  LockIcon,
+  UserIcon,
+  XCircleIcon
+} from 'lucide-react'
 import type { SlotStatus } from '@/constants/types'
 import { formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
@@ -39,11 +45,19 @@ const STATUS_CONFIG: Record<SlotStatus, StatusConfig> = {
   }
 }
 
+const OWN_BOOKING_CONFIG: StatusConfig = {
+  icon: UserIcon,
+  label: 'Réservé par vous',
+  buttonClass: 'cursor-not-allowed border-info/50 bg-info/10',
+  textClass: 'text-info'
+}
+
 type SlotCardProps = {
   startAt: number
   endAt: number
   price: number
   status: SlotStatus
+  isOwnBooking: boolean
   onSelect?: () => void
 }
 
@@ -52,9 +66,10 @@ export const SlotCard = ({
   endAt,
   price,
   status,
+  isOwnBooking,
   onSelect
 }: SlotCardProps) => {
-  const config = STATUS_CONFIG[status]
+  const config = isOwnBooking ? OWN_BOOKING_CONFIG : STATUS_CONFIG[status]
   const Icon = config.icon
   const isClickable = status === 'available'
 
@@ -84,7 +99,9 @@ export const SlotCard = ({
         )}
       >
         <Icon className="size-4" aria-hidden="true" />
-        {status === 'available' ? formatCentsToEuros(price) : config.label}
+        {status === 'available' && !isOwnBooking
+          ? formatCentsToEuros(price)
+          : config.label}
       </span>
     </button>
   )

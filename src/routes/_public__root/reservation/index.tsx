@@ -54,7 +54,9 @@ const ReservationContent = () => {
     enabled: isAuthenticated
   })
 
-  const slotsQuery = useSuspenseQuery(getSlotsByDateQueryOpts(selectedDate))
+  const slotsQuery = useSuspenseQuery(
+    getSlotsByDateQueryOpts(selectedDate, user?.id)
+  )
 
   const handleDateChange = (newDate: string) => {
     navigate({
@@ -67,7 +69,7 @@ const ReservationContent = () => {
   }
 
   const handleDateHover = (dateKey: string) => {
-    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
+    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey, user?.id))
   }
 
   const handleSlotSelect = (court: Court, slot: Slot) => {

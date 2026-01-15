@@ -23,5 +23,6 @@ export const cancelBookingSchema = z.object({
 export const dateKeySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
 
 export const getSlotsByDateSchema = z.object({
-  date: dateKeySchema
+  date: dateKeySchema,
+  currentUserId: z.uuid().optional()
 })
