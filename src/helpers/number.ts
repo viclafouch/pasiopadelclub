@@ -4,30 +4,27 @@ import {
   type ValuesByLocale
 } from '@/i18n/config'
 
-type NumberFormatOptionsWithLocale = Intl.NumberFormatOptions & {
+type FormatCurrencyOptions = Intl.NumberFormatOptions & {
   locale?: Locale
 }
 
-export const FORMAT_OPTIONS_BY_LOCALE: ValuesByLocale<Intl.NumberFormatOptions> =
-  {
-    fr: {
-      style: 'currency',
-      minimumFractionDigits: 0,
-      currency: 'EUR'
-    }
+export const FORMAT_OPTIONS_BY_LOCALE = {
+  fr: {
+    style: 'currency',
+    minimumFractionDigits: 0,
+    currency: 'EUR'
   }
+} as const satisfies ValuesByLocale<Intl.NumberFormatOptions>
 
-export function formatEuros(
-  euros: number,
-  options?: NumberFormatOptionsWithLocale
-) {
+export function formatEuros(euros: number, options?: FormatCurrencyOptions) {
   const locale = options?.locale ?? LOCALE_FALLBACK
-  const defaultOptions = FORMAT_OPTIONS_BY_LOCALE[locale]
-
-  return euros.toLocaleString(locale, {
-    ...defaultOptions,
+  const localeDefaults = FORMAT_OPTIONS_BY_LOCALE[locale]
+  const formatted = euros.toLocaleString(locale, {
+    ...localeDefaults,
     ...options
   })
+
+  return formatted.replace(/\s/g, '')
 }
 
 export function convertCentsToEuros(cents: number) {
@@ -36,9 +33,7 @@ export function convertCentsToEuros(cents: number) {
 
 export function formatCentsToEuros(
   cents: number,
-  options?: NumberFormatOptionsWithLocale
+  options?: FormatCurrencyOptions
 ) {
-  const euros = convertCentsToEuros(cents)
-
-  return formatEuros(euros, options)
+  return formatEuros(convertCentsToEuros(cents), options)
 }
