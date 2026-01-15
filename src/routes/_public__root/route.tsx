@@ -8,7 +8,9 @@ const PublicLayout = () => {
   return (
     <>
       <Navbar variant={isHomePage ? 'overlay' : 'solid'} />
-      <Outlet />
+      <div className={isHomePage ? '' : 'pt-[var(--navbar-height)]'}>
+        <Outlet />
+      </div>
     </>
   )
 }

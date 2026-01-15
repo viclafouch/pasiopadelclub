@@ -56,11 +56,11 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
   return (
     <nav
       className={cn(
-        'absolute top-0 left-0 right-0 z-50 py-5',
+        'fixed top-0 left-0 right-0 z-50 h-[var(--navbar-height)]',
         isOverlay ? '' : 'bg-primary text-primary-foreground'
       )}
     >
-      <div className="container flex items-center justify-between">
+      <div className="container flex h-full items-center justify-between">
         <div className="flex items-center gap-10">
           <Link
             to="/"
