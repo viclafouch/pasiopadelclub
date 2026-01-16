@@ -98,9 +98,6 @@ export const UpcomingBookingsTab = () => {
     }
   })
 
-  const upcomingBookings = upcomingBookingsQuery.data
-  const activeCount = activeCountQuery.data
-
   const handleCancelClick = (bookingId: Booking['id']) => {
     setCancelingId(bookingId)
     setIsDialogOpen(true)
@@ -114,14 +111,14 @@ export const UpcomingBookingsTab = () => {
     cancelBookingMutation.mutate(cancelingId)
   }
 
-  const bookingToCancel = upcomingBookings.find((booking) => {
+  const bookingToCancel = upcomingBookingsQuery.data.find((booking) => {
     return booking.id === cancelingId
   })
   const canCancelBooking = bookingToCancel
     ? matchCanCancelBooking(bookingToCancel.startAt)
     : false
 
-  const isLimitReached = activeCount >= MAX_ACTIVE_BOOKINGS
+  const isLimitReached = activeCountQuery.data >= MAX_ACTIVE_BOOKINGS
 
   return (
     <>
@@ -138,11 +135,11 @@ export const UpcomingBookingsTab = () => {
             </p>
           </div>
         ) : null}
-        {upcomingBookings.length === 0 ? (
+        {upcomingBookingsQuery.data.length === 0 ? (
           <EmptyBookings />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            {upcomingBookings.map((booking) => {
+            {upcomingBookingsQuery.data.map((booking) => {
               return (
                 <BookingCard
                   key={booking.id}

@@ -289,9 +289,9 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 - [x] Route `/api/webhooks/polar.ts` avec event `order.paid`
 - [x] Idempotence et gestion conflits
 
-### 6.4 Pages de retour
+### 6.4 Pages de retour ✅
 - [x] Pages success/echec créées
-- [ ] Afficher récapitulatif réservation sur success.tsx
+- [x] Afficher récapitulatif réservation sur success.tsx
 
 ### 6.5 Remboursements
 - [ ] Fonction `refundBooking` via API Polar

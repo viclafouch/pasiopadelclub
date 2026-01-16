@@ -22,6 +22,7 @@ paths: "**/*.{ts,tsx}"
 - **Never destructure** `useQuery`/`useSuspenseQuery` results - use inferred types
 - Name variables with `*Query` suffix: `const currentUserQuery = useSuspenseQuery(...)`
 - Access data via `query.data`, status via `query.isPending`, etc.
+- **Never create intermediate variables** for `query.data` - use `query.data` directly everywhere
 
 ### Server Functions (TanStack Start)
 - Use `useMutation` (TanStack Query) for async operations

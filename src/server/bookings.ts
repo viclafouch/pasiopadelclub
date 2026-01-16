@@ -67,6 +67,32 @@ export const getBookingHistoryFn = createServerFn({ method: 'GET' })
     })
   })
 
+export const getLatestBookingFn = createServerFn({ method: 'GET' })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    const [result] = await db
+      .select()
+      .from(booking)
+      .innerJoin(court, eq(booking.courtId, court.id))
+      .where(
+        and(
+          eq(booking.userId, context.session.user.id),
+          eq(booking.status, 'confirmed')
+        )
+      )
+      .orderBy(desc(booking.createdAt))
+      .limit(1)
+
+    if (!result) {
+      return null
+    }
+
+    return {
+      ...result.booking,
+      court: result.court
+    }
+  })
+
 export const cancelBookingFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
   .inputValidator(cancelBookingSchema)

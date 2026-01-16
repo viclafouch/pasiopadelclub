@@ -138,9 +138,7 @@ const ReservationContent = () => {
       return
     }
 
-    const activeCount = activeCountQuery.data ?? 0
-
-    if (activeCount >= MAX_ACTIVE_BOOKINGS) {
+    if ((activeCountQuery.data ?? 0) >= MAX_ACTIVE_BOOKINGS) {
       setIsLimitDialogOpen(true)
 
       return
@@ -157,8 +155,8 @@ const ReservationContent = () => {
     setIsLimitDialogOpen(false)
   }
 
-  const activeCount = activeCountQuery.data ?? 0
-  const isAtLimit = isAuthenticated && activeCount >= MAX_ACTIVE_BOOKINGS
+  const isAtLimit =
+    isAuthenticated && (activeCountQuery.data ?? 0) >= MAX_ACTIVE_BOOKINGS
 
   return (
     <>

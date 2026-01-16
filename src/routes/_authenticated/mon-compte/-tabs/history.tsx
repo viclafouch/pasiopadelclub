@@ -6,9 +6,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 export const HistoryTab = () => {
   const historyQuery = useSuspenseQuery(getBookingHistoryQueryOpts())
 
-  const allBookings = historyQuery.data
-
-  if (allBookings.length === 0) {
+  if (historyQuery.data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 py-12 text-center">
         <HistoryIcon
@@ -30,7 +28,7 @@ export const HistoryTab = () => {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
-        {allBookings.map((booking) => {
+        {historyQuery.data.map((booking) => {
           return (
             <BookingCard
               key={booking.id}
