@@ -195,7 +195,7 @@ export const DaySelector = ({
               className={cn(
                 'relative flex min-w-[5rem] shrink-0 flex-col items-center gap-0.5 rounded-xl px-4 py-3 transition-colors',
                 isSelected
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-neutral text-neutral-foreground'
                   : 'bg-muted/50 hover:bg-muted'
               )}
               whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
@@ -209,7 +209,7 @@ export const DaySelector = ({
               {isSelected ? (
                 <motion.div
                   layoutId={prefersReducedMotion ? undefined : 'date-indicator'}
-                  className="absolute -bottom-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-primary"
+                  className="absolute -bottom-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-neutral"
                   transition={
                     prefersReducedMotion
                       ? { duration: 0 }
