@@ -7,11 +7,6 @@ export type Booking = InferSelectModel<typeof booking>
 export type Court = InferSelectModel<typeof court>
 export type User = InferSelectModel<typeof user>
 
-// Derived types - use Entity['field'] pattern instead of separate aliases
-export type CourtType = Court['type']
-export type CourtLocation = Court['location']
-export type BookingStatus = Booking['status']
-
 // Composite types
 export type BookingWithCourt = Booking & { court: Court }
 

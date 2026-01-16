@@ -1,14 +1,4 @@
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { booking, court, user } from '@/db/schema'
-
-export const userSelectSchema = createSelectSchema(user)
-export const userInsertSchema = createInsertSchema(user)
-
-export const courtSelectSchema = createSelectSchema(court)
-
-export const bookingSelectSchema = createSelectSchema(booking)
-export const bookingInsertSchema = createInsertSchema(booking)
 
 export const updateProfileSchema = z.object({
   firstName: z.string().min(1).max(50),
