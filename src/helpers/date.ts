@@ -9,8 +9,14 @@ import {
   startOfDay
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { TZDate } from '@date-fns/tz'
 
 const FR_LOCALE = { locale: fr }
+const PARIS_TZ = 'Europe/Paris'
+
+export const nowParis = () => {
+  return TZDate.tz(PARIS_TZ)
+}
 
 export const formatDateFr = (date: Date) => {
   return format(date, 'dd/MM/yyyy', FR_LOCALE)
@@ -29,18 +35,18 @@ export const formatDateKey = (date: Date) => {
 }
 
 export const getTodayDateKey = () => {
-  return formatDateKey(new Date())
+  return formatDateKey(nowParis())
 }
 
 export const getTomorrowDateKey = () => {
-  return formatDateKey(addDays(new Date(), 1))
+  return formatDateKey(addDays(nowParis(), 1))
 }
 
 export const getDefaultBookingDateKey = (
   closingHour: number,
   minSessionMinutes: number
 ) => {
-  const now = new Date()
+  const now = nowParis()
   const currentMinutes = getHours(now) * 60 + getMinutes(now)
   const lastSlotStartMinutes = closingHour * 60 - minSessionMinutes
   const hasRemainingSlots = currentMinutes < lastSlotStartMinutes
@@ -49,7 +55,7 @@ export const getDefaultBookingDateKey = (
 }
 
 export const getToday = () => {
-  return startOfDay(new Date())
+  return startOfDay(nowParis())
 }
 
 export const generateDates = (count: number) => {
@@ -88,5 +94,5 @@ export const matchIsToday = (date: Date) => {
 }
 
 export const parseDateKey = (dateKey: string) => {
-  return parse(dateKey, 'yyyy-MM-dd', new Date())
+  return parse(dateKey, 'yyyy-MM-dd', nowParis())
 }

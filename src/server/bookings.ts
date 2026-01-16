@@ -2,6 +2,7 @@ import { and, count, desc, eq, gt } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
+import { nowParis } from '@/helpers/date'
 import { polar } from '@/lib/auth'
 import { authMiddleware } from '@/lib/middleware'
 import { matchCanCancelBooking } from '@/utils/booking'
@@ -17,7 +18,7 @@ export const getActiveBookingCountFn = createServerFn({ method: 'GET' })
       .where(
         and(
           eq(booking.userId, context.session.user.id),
-          gt(booking.endAt, new Date()),
+          gt(booking.endAt, nowParis()),
           eq(booking.status, 'confirmed')
         )
       )
@@ -35,7 +36,7 @@ export const getUpcomingBookingsFn = createServerFn({ method: 'GET' })
       .where(
         and(
           eq(booking.userId, context.session.user.id),
-          gt(booking.startAt, new Date()),
+          gt(booking.startAt, nowParis()),
           eq(booking.status, 'confirmed')
         )
       )

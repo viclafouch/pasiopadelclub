@@ -23,6 +23,7 @@
     "db:seed": "npx tsx src/db/seed.ts"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.4.1",
     "@neondatabase/serverless": "^1.0.2",
     "@polar-sh/better-auth": "^1.6.4",
     "@polar-sh/sdk": "^0.42.2",
