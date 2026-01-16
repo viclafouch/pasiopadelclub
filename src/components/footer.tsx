@@ -1,3 +1,4 @@
+import { getYear } from 'date-fns'
 import { Separator } from '@/components/ui/separator'
 import { Link } from '@tanstack/react-router'
 
@@ -72,8 +73,7 @@ const Footer = () => {
           </Link>
         </div>
         <p className="text-center text-sm font-medium text-balance">
-          {`© ${new Date().getFullYear()}`} Pasio Padel Club - Tous droits
-          réservés
+          {`© ${getYear(new Date())}`} Pasio Padel Club - Tous droits réservés
         </p>
       </div>
     </footer>

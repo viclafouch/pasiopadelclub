@@ -1,3 +1,4 @@
+import { endOfDay, startOfDay } from 'date-fns'
 import { and, eq, gte, lt } from 'drizzle-orm'
 import { getSlotsByDateSchema } from '@/constants/schemas'
 import { db } from '@/db'
@@ -16,25 +17,8 @@ export const getSlotsByDateFn = createServerFn({ method: 'GET' })
     const session = await auth.api.getSession({ headers })
     const currentUserId = session?.user.id
     const baseDate = parseDateKey(date)
-
-    const startOfDay = new Date(
-      baseDate.getFullYear(),
-      baseDate.getMonth(),
-      baseDate.getDate(),
-      0,
-      0,
-      0,
-      0
-    )
-    const endOfDay = new Date(
-      baseDate.getFullYear(),
-      baseDate.getMonth(),
-      baseDate.getDate(),
-      23,
-      59,
-      59,
-      999
-    )
+    const dayStart = startOfDay(baseDate)
+    const dayEnd = endOfDay(baseDate)
 
     const [courts, bookings, blockedSlots] = await Promise.all([
       db
@@ -52,8 +36,8 @@ export const getSlotsByDateFn = createServerFn({ method: 'GET' })
         .from(booking)
         .where(
           and(
-            gte(booking.startAt, startOfDay),
-            lt(booking.startAt, endOfDay),
+            gte(booking.startAt, dayStart),
+            lt(booking.startAt, dayEnd),
             eq(booking.status, 'confirmed')
           )
         ),
@@ -66,8 +50,8 @@ export const getSlotsByDateFn = createServerFn({ method: 'GET' })
         .from(blockedSlot)
         .where(
           and(
-            gte(blockedSlot.startAt, startOfDay),
-            lt(blockedSlot.startAt, endOfDay)
+            gte(blockedSlot.startAt, dayStart),
+            lt(blockedSlot.startAt, dayEnd)
           )
         )
     ])

@@ -1,5 +1,6 @@
 import { DownloadIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { formatDateKey } from '@/helpers/date'
 import { downloadJson } from '@/helpers/download'
 import { getErrorMessage } from '@/helpers/error'
 import { exportMyDataFn } from '@/server/users'
@@ -11,7 +12,7 @@ export const DataExportSection = () => {
       return exportMyDataFn()
     },
     onSuccess: (data) => {
-      const filename = `pasio-padel-data-${new Date().toISOString().split('T')[0]}.json`
+      const filename = `pasio-padel-data-${formatDateKey(new Date())}.json`
       downloadJson(data, filename)
     }
   })
