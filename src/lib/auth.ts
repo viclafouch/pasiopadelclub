@@ -5,10 +5,10 @@ import { POLAR_PRODUCT_IDS } from '@/constants/polar'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 import { serverEnv } from '@/env/server'
-import { checkout, polar, webhooks } from '@polar-sh/better-auth'
+import { checkout, polar as polarPlugin, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
 
-const polarClient = new Polar({
+export const polar = new Polar({
   accessToken: serverEnv.POLAR_ACCESS_TOKEN,
   server: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox'
 })
@@ -78,8 +78,8 @@ export const auth = betterAuth({
   },
   plugins: [
     tanstackStartCookies(),
-    polar({
-      client: polarClient,
+    polarPlugin({
+      client: polar,
       createCustomerOnSignUp: true,
       use: [
         checkout({

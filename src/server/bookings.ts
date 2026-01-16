@@ -2,6 +2,7 @@ import { and, count, desc, eq, gt } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
+import { polar } from '@/lib/auth'
 import { authMiddleware } from '@/lib/middleware'
 import { matchCanCancelBooking } from '@/utils/booking'
 import { createServerFn } from '@tanstack/react-start'
@@ -123,6 +124,21 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
     if (!matchCanCancelBooking(bookingData.startAt)) {
       setResponseStatus(400)
       throw new Error('Annulation impossible moins de 24h avant')
+    }
+
+    if (bookingData.polarPaymentId) {
+      try {
+        await polar.refunds.create({
+          orderId: bookingData.polarPaymentId,
+          reason: 'customer_request',
+          amount: bookingData.price
+        })
+      } catch {
+        setResponseStatus(503)
+        throw new Error(
+          'Remboursement temporairement indisponible, réessayez plus tard'
+        )
+      }
     }
 
     await db

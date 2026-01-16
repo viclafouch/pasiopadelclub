@@ -274,7 +274,7 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 
 ---
 
-## Milestone 6 : Paiement Polar 🔄 EN COURS
+## Milestone 6 : Paiement Polar ✅
 
 ### 6.1 Configuration ✅
 - [x] Compte Polar sandbox + produits (double 60€, simple 30€, kids 15€)
@@ -293,9 +293,10 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 - [x] Pages success/echec créées
 - [x] Afficher récapitulatif réservation sur success.tsx
 
-### 6.5 Remboursements
-- [ ] Fonction `refundBooking` via API Polar
-- [ ] Intégration annulation utilisateur et blocage admin
+### 6.5 Remboursements ✅
+- [x] Fonction `refundBooking` via API Polar (Polar SDK)
+- [x] Intégration annulation utilisateur
+- [ ] Intégration blocage admin (Milestone 8-9)
 
 ---
 

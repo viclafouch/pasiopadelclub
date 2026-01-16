@@ -19,16 +19,19 @@ paths: "**/*.{ts,tsx}"
 
 ### Single Source of Truth (Drizzle)
 - **Drizzle schema is THE source of truth** for all database-related types
-- Use `Entity['field']` pattern to extract field types from entities
-- NEVER manually type `string` or `number` for DB fields - derive from schema
-- Types defined in `src/constants/types.ts` must reference Drizzle types
+- Extract field types from entities using indexed access types
+- NEVER manually type primitives for DB fields - derive from schema
+- Types in constants must reference Drizzle types
 
 ### Trust TypeScript Inference (CRITICAL)
 - **NEVER type function return types** - trust inference
-- **Use `as const satisfies Type`** for arrays/objects - combines literal preservation + type validation
-- **NEVER use `: Type`** on literals - use `satisfies` instead
-- Only exception for `: Type`: uninitialized variables or generic parameters
+- **Use const assertions with satisfies** for arrays/objects - combines literal preservation + type validation
+- **Avoid explicit type annotations on literals** - use satisfies instead
+- Only exception: uninitialized variables or generic parameters
 
-### Async/Await
-- Always handle promise rejections
-- Avoid floating promises (unhandled)
+### Async/Await & Error Handling (CRITICAL)
+- **Every promise must have error handling** - no unhandled rejections
+- **Backend**: wrap async calls in try/catch, throw with French message and appropriate HTTP status
+- **Frontend**: every mutation/async operation must display errors to user via `getErrorMessage()`
+- **Order matters**: operations that can fail externally must run BEFORE irreversible mutations
+- **User-facing errors**: always in French, always displayed in UI

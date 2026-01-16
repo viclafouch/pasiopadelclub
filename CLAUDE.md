@@ -30,6 +30,8 @@ For multi-step plans, divide them into multiple phases with different headings. 
 ### Rules Files
 - All files in `.claude/rules/` must be written in **English**
 - Keep rules concise and actionable
+- **No code examples** in rules - write general principles applicable to all cases
+- Rules describe WHAT to do/avoid, not HOW with specific syntax
 
 ### Code Quality
 - After implementing each task, run `code-simplifier` agent to simplify and validate the code
