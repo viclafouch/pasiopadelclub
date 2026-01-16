@@ -1,32 +1,102 @@
 import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import {
+  type BookingStatus,
+  Status,
+  StatusIndicator,
+  StatusLabel
+} from '@/components/kibo-ui/status'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 import type { Booking, BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
-import { getBookingStatusBadge } from '@/utils/booking'
+import { matchIsBookingInProgress } from '@/utils/booking'
 import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 
 type BookingCardProps = {
   booking: BookingWithCourt
   onCancel?: (bookingId: Booking['id']) => void
   showCancelButton?: boolean
+  isHistory?: boolean
+}
+
+const getDisplayStatus = (
+  booking: BookingWithCourt,
+  isHistory: boolean
+): BookingStatus => {
+  if (booking.status === 'cancelled') {
+    return 'cancelled'
+  }
+
+  if (isHistory) {
+    return 'past'
+  }
+
+  if (matchIsBookingInProgress(booking)) {
+    return 'in-progress'
+  }
+
+  return 'confirmed'
 }
 
 export const BookingCard = ({
   booking,
   onCancel,
-  showCancelButton = true
+  showCancelButton = true,
+  isHistory = false
 }: BookingCardProps) => {
-  const statusBadge = getBookingStatusBadge(booking.status)
   const { court } = booking
+  const displayStatus = getDisplayStatus(booking, isHistory)
   const isConfirmed = booking.status === 'confirmed'
-  const showCancel = showCancelButton && isConfirmed
+  const isInProgress = displayStatus === 'in-progress'
+  const showCancel = showCancelButton && isConfirmed && !isHistory
 
-  const handleCancel = () => {
-    onCancel?.(booking.id)
+  const renderCancelButton = () => {
+    if (!showCancel) {
+      return null
+    }
+
+    if (isInProgress) {
+      return (
+        <CardFooter>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  disabled
+                  aria-disabled="true"
+                >
+                  Annuler la réservation
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>Réservation en cours</TooltipContent>
+          </Tooltip>
+        </CardFooter>
+      )
+    }
+
+    return (
+      <CardFooter>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            onCancel?.(booking.id)
+          }}
+        >
+          Annuler la réservation
+        </Button>
+      </CardFooter>
+    )
   }
 
   return (
@@ -41,7 +111,10 @@ export const BookingCard = ({
               {getCourtTypeLabel(court.type)}
             </p>
           </div>
-          <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
+          <Status status={displayStatus}>
+            <StatusIndicator />
+            <StatusLabel />
+          </Status>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -73,13 +146,7 @@ export const BookingCard = ({
           </p>
         </div>
       </CardContent>
-      {showCancel ? (
-        <CardFooter>
-          <Button variant="outline" className="w-full" onClick={handleCancel}>
-            Annuler la réservation
-          </Button>
-        </CardFooter>
-      ) : null}
+      {renderCancelButton()}
     </Card>
   )
 }

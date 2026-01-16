@@ -15,7 +15,7 @@ const FR_LOCALE = { locale: fr }
 const PARIS_TZ = 'Europe/Paris'
 
 export const nowParis = () => {
-  return TZDate.tz(PARIS_TZ)
+  return new Date(TZDate.tz(PARIS_TZ).getTime())
 }
 
 export const formatDateFr = (date: Date) => {

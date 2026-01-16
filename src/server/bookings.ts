@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gt } from 'drizzle-orm'
+import { and, count, desc, eq, gt, lte } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
@@ -36,7 +36,7 @@ export const getUpcomingBookingsFn = createServerFn({ method: 'GET' })
       .where(
         and(
           eq(booking.userId, context.session.user.id),
-          gt(booking.startAt, nowParis()),
+          gt(booking.endAt, nowParis()),
           eq(booking.status, 'confirmed')
         )
       )
@@ -57,7 +57,12 @@ export const getBookingHistoryFn = createServerFn({ method: 'GET' })
       .select()
       .from(booking)
       .innerJoin(court, eq(booking.courtId, court.id))
-      .where(eq(booking.userId, context.session.user.id))
+      .where(
+        and(
+          eq(booking.userId, context.session.user.id),
+          lte(booking.endAt, nowParis())
+        )
+      )
       .orderBy(desc(booking.startAt))
       .limit(50)
 

@@ -34,6 +34,7 @@ export const HistoryTab = () => {
               key={booking.id}
               booking={booking}
               showCancelButton={false}
+              isHistory
             />
           )
         })}
