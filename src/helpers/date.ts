@@ -18,16 +18,20 @@ export const nowParis = () => {
   return new Date(TZDate.tz(PARIS_TZ).getTime())
 }
 
+const toParisDate = (date: Date) => {
+  return new TZDate(date, PARIS_TZ)
+}
+
 export const formatDateFr = (date: Date) => {
-  return format(date, 'dd/MM/yyyy', FR_LOCALE)
+  return format(toParisDate(date), 'dd/MM/yyyy', FR_LOCALE)
 }
 
 export const formatTimeFr = (date: Date) => {
-  return format(date, 'HH:mm', FR_LOCALE)
+  return format(toParisDate(date), 'HH:mm', FR_LOCALE)
 }
 
 export const formatDateTimeFr = (date: Date) => {
-  return format(date, 'dd/MM/yyyy HH:mm', FR_LOCALE)
+  return format(toParisDate(date), 'dd/MM/yyyy HH:mm', FR_LOCALE)
 }
 
 export const formatDateKey = (date: Date) => {
@@ -78,15 +82,15 @@ export const formatDayName = (date: Date) => {
     return 'Demain'
   }
 
-  return format(date, 'EEE', FR_LOCALE)
+  return format(toParisDate(date), 'EEE', FR_LOCALE)
 }
 
 export const formatDayNumber = (date: Date) => {
-  return format(date, 'd MMM', FR_LOCALE)
+  return format(toParisDate(date), 'd MMM', FR_LOCALE)
 }
 
 export const formatFullDateLabel = (date: Date) => {
-  return format(date, 'EEEE d MMMM yyyy', FR_LOCALE)
+  return format(toParisDate(date), 'EEEE d MMMM yyyy', FR_LOCALE)
 }
 
 export const matchIsToday = (date: Date) => {
