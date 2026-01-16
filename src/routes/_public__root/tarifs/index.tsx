@@ -311,7 +311,7 @@ const TarifsPage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
         <div className="container relative">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+            <h2 className="font-display text-xl font-bold text-foreground md:text-2xl">
               Prêt à jouer ?
             </h2>
             <p className="mt-4 text-muted-foreground">

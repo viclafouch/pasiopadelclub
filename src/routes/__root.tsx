@@ -58,6 +58,13 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
           type="font/woff2"
           crossOrigin=""
         />
+        <link
+          rel="preload"
+          href="/images/background-hero.webp"
+          as="image"
+          type="image/webp"
+          fetchPriority="high"
+        />
         <HeadContent />
       </head>
       <body>

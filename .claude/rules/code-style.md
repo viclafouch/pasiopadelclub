@@ -57,6 +57,12 @@ Avoid over-simplification that could:
 - Combining multiple calls
 - Providing simpler API for complex operations
 
+### Function Parameters
+- **Max 2 positional parameters** - use object destructuring beyond that
+- Define a dedicated type for the params object (named `*Params`)
+- Required properties first, optional last in type definition
+- Destructure directly in function signature, not in body
+
 ### Code Structure
 - Functions do one thing well
 - Under 30 lines when possible

@@ -13,7 +13,7 @@ import { SlotCard } from './slot-card'
 type CourtSectionProps = {
   court: Court
   slots: Slot[]
-  onSlotSelect?: (slot: Slot) => void
+  onSlotSelect?: (court: Court, slot: Slot) => void
 }
 
 export const CourtSection = ({
@@ -21,6 +21,10 @@ export const CourtSection = ({
   slots,
   onSlotSelect
 }: CourtSectionProps) => {
+  const handleSlotSelect = (slot: Slot) => {
+    onSlotSelect?.(court, slot)
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -54,18 +58,9 @@ export const CourtSection = ({
           return (
             <SlotCard
               key={slot.startAt}
-              startAt={slot.startAt}
-              endAt={slot.endAt}
+              slot={slot}
               price={court.price}
-              status={slot.status}
-              isOwnBooking={slot.isOwnBooking}
-              onSelect={
-                onSlotSelect
-                  ? () => {
-                      return onSlotSelect(slot)
-                    }
-                  : undefined
-              }
+              onSelect={onSlotSelect ? handleSlotSelect : undefined}
             />
           )
         })}

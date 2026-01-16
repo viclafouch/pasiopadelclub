@@ -40,7 +40,7 @@ export const Faq = () => {
       itemType="https://schema.org/FAQPage"
       className="container flex flex-col gap-8"
     >
-      <h2 className="font-display text-left text-3xl md:text-4xl lg:text-5xl">
+      <h2 className="font-display text-left text-xl md:text-2xl lg:text-3xl">
         FAQ
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
@@ -55,7 +55,7 @@ export const Faq = () => {
             >
               <h3
                 itemProp="name"
-                className="font-display text-base font-semibold text-foreground lg:text-lg"
+                className="font-sans text-base font-semibold text-foreground lg:text-lg"
               >
                 {item.question}
               </h3>

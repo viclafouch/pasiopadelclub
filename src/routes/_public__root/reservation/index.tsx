@@ -6,16 +6,12 @@ import {
   MAX_ACTIVE_BOOKINGS,
   MIN_SESSION_MINUTES
 } from '@/constants/booking'
+import { COURT_TYPE_ORDER } from '@/constants/court'
 import {
   getActiveBookingCountQueryOpts,
   getSlotsByDateQueryOpts
 } from '@/constants/queries'
-import type {
-  Court,
-  CourtWithSlots,
-  SelectedSlot,
-  Slot
-} from '@/constants/types'
+import type { Court, SelectedSlot, Slot } from '@/constants/types'
 import { getDefaultBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
 import {
@@ -33,35 +29,92 @@ import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
 import { LimitBanner } from './-components/limit-banner'
 import { LimitReachedDialog } from './-components/limit-reached-dialog'
-import { ReservationPageSkeleton } from './-components/skeletons'
+import { SlotsSkeleton } from './-components/skeletons'
 
 const searchSchema = z.object({
   date: z.string().optional()
 })
+
+type SlotsContentProps = {
+  selectedDate: string
+  isAtLimit: boolean
+  onSlotSelect: (court: Court, slot: Slot) => void
+}
+
+const SlotsContent = ({
+  selectedDate,
+  isAtLimit,
+  onSlotSelect
+}: SlotsContentProps) => {
+  const slotsQuery = useSuspenseQuery(getSlotsByDateQueryOpts(selectedDate))
+
+  const courtGroups = React.useMemo(() => {
+    const groupedByType = Map.groupBy(slotsQuery.data, (item) => {
+      return item.court.type
+    })
+
+    return COURT_TYPE_ORDER.map((type) => {
+      return {
+        type,
+        courts: groupedByType.get(type) ?? []
+      }
+    }).filter((group) => {
+      return group.courts.length > 0
+    })
+  }, [slotsQuery.data])
+
+  return (
+    <>
+      {isAtLimit ? <LimitBanner maxCount={MAX_ACTIVE_BOOKINGS} /> : null}
+      {courtGroups.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
+          <CalendarIcon
+            className="mx-auto size-12 text-muted-foreground/50"
+            aria-hidden="true"
+          />
+          <h3 className="mt-4 font-display font-semibold">
+            Aucun terrain disponible
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Aucun terrain ne correspond aux filtres sélectionnés.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {courtGroups.map((group) => {
+            return (
+              <CourtTypeGroup
+                key={group.type}
+                type={group.type}
+                courtsWithSlots={group.courts}
+                onSlotSelect={onSlotSelect}
+              />
+            )
+          })}
+        </div>
+      )}
+    </>
+  )
+}
 
 const ReservationContent = () => {
   const { user } = useRouteContext({ from: '__root__' })
   const { date } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const queryClient = useQueryClient()
-
-  const isAuthenticated = Boolean(user)
-  const selectedDate =
-    date ?? getDefaultBookingDateKey(CLOSING_HOUR, MIN_SESSION_MINUTES)
-
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
     null
   )
   const [isLimitDialogOpen, setIsLimitDialogOpen] = React.useState(false)
 
+  const isAuthenticated = Boolean(user)
+  const selectedDate =
+    date ?? getDefaultBookingDateKey(CLOSING_HOUR, MIN_SESSION_MINUTES)
+
   const activeCountQuery = useQuery({
     ...getActiveBookingCountQueryOpts(),
     enabled: isAuthenticated
   })
-
-  const slotsQuery = useSuspenseQuery(
-    getSlotsByDateQueryOpts(selectedDate, user?.id)
-  )
 
   const handleDateChange = (newDate: string) => {
     navigate({
@@ -74,7 +127,7 @@ const ReservationContent = () => {
   }
 
   const handleDateHover = (dateKey: string) => {
-    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey, user?.id))
+    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
   }
 
   const handleSlotSelect = (court: Court, slot: Slot) => {
@@ -106,27 +159,10 @@ const ReservationContent = () => {
 
   const activeCount = activeCountQuery.data ?? 0
   const isAtLimit = isAuthenticated && activeCount >= MAX_ACTIVE_BOOKINGS
-  const courtsWithSlots = slotsQuery.data
-
-  const courtsByType = courtsWithSlots.reduce<Record<string, CourtWithSlots[]>>(
-    (
-      groups: Record<string, CourtWithSlots[]>,
-      courtWithSlots: CourtWithSlots
-    ) => {
-      const courtType = courtWithSlots.court.type
-      const existing = groups[courtType] ?? []
-
-      return { ...groups, [courtType]: [...existing, courtWithSlots] }
-    },
-    {}
-  )
-
-  const typeOrder = ['double', 'simple', 'kids'] as const
 
   return (
     <>
       <div className="space-y-6">
-        {isAtLimit ? <LimitBanner maxCount={MAX_ACTIVE_BOOKINGS} /> : null}
         <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 sm:mx-auto sm:w-fit sm:max-w-full">
           <div className="day-selector-inner rounded-b-md bg-background py-2">
             <DaySelector
@@ -136,35 +172,13 @@ const ReservationContent = () => {
             />
           </div>
         </div>
-        {courtsWithSlots.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
-            <CalendarIcon
-              className="mx-auto size-12 text-muted-foreground/50"
-              aria-hidden="true"
-            />
-            <h3 className="mt-4 font-display font-semibold">
-              Aucun terrain disponible
-            </h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Aucun terrain ne correspond aux filtres sélectionnés.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {typeOrder.map((courtType) => {
-              const groupCourts = courtsByType[courtType]
-
-              return groupCourts ? (
-                <CourtTypeGroup
-                  key={courtType}
-                  type={courtType}
-                  courtsWithSlots={groupCourts}
-                  onSlotSelect={handleSlotSelect}
-                />
-              ) : null
-            })}
-          </div>
-        )}
+        <React.Suspense fallback={<SlotsSkeleton />}>
+          <SlotsContent
+            selectedDate={selectedDate}
+            isAtLimit={isAtLimit}
+            onSlotSelect={handleSlotSelect}
+          />
+        </React.Suspense>
       </div>
       <BookingSummaryModal
         isOpen={selectedSlot !== null}
@@ -195,9 +209,7 @@ const ReservationPage = () => {
       </section>
       <section className="py-6">
         <div className="container">
-          <React.Suspense fallback={<ReservationPageSkeleton />}>
-            <ReservationContent />
-          </React.Suspense>
+          <ReservationContent />
         </div>
       </section>
     </main>

@@ -40,6 +40,8 @@ export const LOCATION_LABELS = {
   both: 'Intérieur & Extérieur'
 } as const satisfies Record<Court['location'] | 'both', string>
 
+export const COURT_TYPE_ORDER: Court['type'][] = ['double', 'simple', 'kids']
+
 export const COURT_TYPE_LABELS = {
   double: 'Terrains Double',
   simple: 'Terrain Simple',

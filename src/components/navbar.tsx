@@ -14,7 +14,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { getAuthUserQueryOpts } from '@/constants/queries'
+import {
+  getAuthUserQueryOpts,
+  getSlotsByDateQueryOpts
+} from '@/constants/queries'
 import type { User } from '@/constants/types'
 import { useScrollFade } from '@/hooks/use-scroll-fade'
 import { authClient } from '@/lib/auth-client'
@@ -43,6 +46,7 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
   const handleSignOut = async () => {
     await authClient.signOut()
     queryClient.removeQueries(getAuthUserQueryOpts())
+    queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
     await router.invalidate()
   }
 

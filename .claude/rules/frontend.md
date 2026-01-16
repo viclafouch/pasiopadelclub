@@ -15,7 +15,7 @@ paths: "**/*.{ts,tsx}"
 
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
-- Do not update the code in the `src/components/ui` folder, just fix the linter errors.
+- Do not update the code in `src/components/ui` or `src/components/kibo-ui` folders, just fix linter errors.
 - **No margins on icons in buttons** - shadcn Button has built-in `gap` spacing
 
 ### TanStack Query

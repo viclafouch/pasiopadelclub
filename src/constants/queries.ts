@@ -1,4 +1,3 @@
-import type { User } from '@/constants/types'
 import { getCurrentUserFn } from '@/server/auth'
 import {
   getActiveBookingCountFn,
@@ -20,14 +19,11 @@ export const getAuthUserQueryOpts = () => {
 
 getAuthUserQueryOpts.all = ['auth-user'] as const
 
-export const getSlotsByDateQueryOpts = (
-  date: string,
-  currentUserId?: User['id']
-) => {
+export const getSlotsByDateQueryOpts = (date: string) => {
   return queryOptions({
-    queryKey: [...getSlotsByDateQueryOpts.all, date, currentUserId],
+    queryKey: [...getSlotsByDateQueryOpts.all, date],
     queryFn: async () => {
-      return getSlotsByDateFn({ data: { date, currentUserId } })
+      return getSlotsByDateFn({ data: { date } })
     },
     staleTime: 1000 * 30
   })

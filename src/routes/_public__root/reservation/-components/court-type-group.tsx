@@ -16,13 +16,9 @@ export const CourtTypeGroup = ({
   courtsWithSlots,
   onSlotSelect
 }: CourtTypeGroupProps) => {
-  const availableCount = courtsWithSlots.reduce((count, courtWithSlots) => {
-    const hasAvailable = courtWithSlots.slots.some((slot) => {
-      return slot.status === 'available'
-    })
-
-    return hasAvailable ? count + 1 : count
-  }, 0)
+  const availableCount = courtsWithSlots.filter((item) => {
+    return item.hasAvailableSlot
+  }).length
 
   return (
     <Card>
@@ -53,13 +49,7 @@ export const CourtTypeGroup = ({
               <CourtSection
                 court={courtWithSlots.court}
                 slots={courtWithSlots.slots}
-                onSlotSelect={
-                  onSlotSelect
-                    ? (slot) => {
-                        return onSlotSelect(courtWithSlots.court, slot)
-                      }
-                    : undefined
-                }
+                onSlotSelect={onSlotSelect}
               />
             </div>
           )

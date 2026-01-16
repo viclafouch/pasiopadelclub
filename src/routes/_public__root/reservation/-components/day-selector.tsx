@@ -6,7 +6,9 @@ import {
   formatDateKey,
   formatDayName,
   formatDayNumber,
-  generateDates
+  formatFullDateLabel,
+  generateDates,
+  matchIsToday
 } from '@/helpers/date'
 import { cn } from '@/lib/utils'
 
@@ -133,7 +135,7 @@ export const DaySelector = ({
   }
 
   return (
-    <div className="relative overflow-hidden">
+    <nav aria-label="Sélection de la date" className="relative overflow-hidden">
       <button
         type="button"
         onClick={handleScrollLeft}
@@ -141,7 +143,8 @@ export const DaySelector = ({
           'absolute inset-y-0 left-0 z-10 flex w-10 items-center justify-start bg-gradient-to-r from-background via-background/80 to-transparent pl-1 transition-opacity duration-200',
           canScrollLeft ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
-        aria-label="Dates précédentes"
+        aria-label="Afficher les dates précédentes"
+        tabIndex={canScrollLeft ? 0 : -1}
       >
         <ChevronLeftIcon className="size-5 text-muted-foreground" />
       </button>
@@ -152,18 +155,23 @@ export const DaySelector = ({
           'absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-end bg-gradient-to-l from-background via-background/80 to-transparent pr-1 transition-opacity duration-200',
           canScrollRight ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
-        aria-label="Dates suivantes"
+        aria-label="Afficher les dates suivantes"
+        tabIndex={canScrollRight ? 0 : -1}
       >
         <ChevronRightIcon className="size-5 text-muted-foreground" />
       </button>
       <div
         ref={scrollRef}
+        role="listbox"
+        aria-label="Dates disponibles"
         className="scrollbar-hide flex gap-2 overflow-x-auto py-2"
       >
         <div ref={startSentinelRef} className="shrink-0" aria-hidden="true" />
         {dates.map((date) => {
           const dateKey = formatDateKey(date)
           const isSelected = dateKey === selectedDate
+          const isToday = matchIsToday(date)
+          const fullDateLabel = formatFullDateLabel(date)
 
           return (
             <motion.button
@@ -174,6 +182,10 @@ export const DaySelector = ({
                 }
               }}
               type="button"
+              role="option"
+              aria-selected={isSelected}
+              aria-current={isToday ? 'date' : undefined}
+              aria-label={`Réserver le ${fullDateLabel}`}
               onClick={() => {
                 handleDateClick(dateKey)
               }}
@@ -191,9 +203,9 @@ export const DaySelector = ({
               <span className="text-xs font-medium uppercase tracking-wide opacity-80">
                 {formatDayName(date)}
               </span>
-              <span className="text-sm font-semibold">
+              <time dateTime={dateKey} className="text-sm font-semibold">
                 {formatDayNumber(date)}
-              </span>
+              </time>
               {isSelected ? (
                 <motion.div
                   layoutId={prefersReducedMotion ? undefined : 'date-indicator'}
@@ -203,6 +215,7 @@ export const DaySelector = ({
                       ? { duration: 0 }
                       : { type: 'spring', bounce: 0.3, duration: 0.4 }
                   }
+                  aria-hidden="true"
                 />
               ) : null}
             </motion.button>
@@ -210,6 +223,6 @@ export const DaySelector = ({
         })}
         <div ref={endSentinelRef} className="shrink-0" aria-hidden="true" />
       </div>
-    </div>
+    </nav>
   )
 }

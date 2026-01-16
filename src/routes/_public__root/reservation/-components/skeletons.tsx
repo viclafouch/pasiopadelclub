@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DAYS_TO_SHOW } from '@/constants/booking'
 
 const SLOTS_90_MIN_COUNT = 9
 const SLOTS_60_MIN_COUNT = 14
@@ -10,32 +9,6 @@ const SKELETON_COURTS = [
   { type: 'simple', courtCount: 1, slotsPerCourt: SLOTS_60_MIN_COUNT },
   { type: 'kids', courtCount: 1, slotsPerCourt: SLOTS_60_MIN_COUNT }
 ] as const
-
-const DaySelectorSkeleton = () => {
-  return (
-    <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 sm:mx-auto sm:w-fit sm:max-w-full">
-      <div className="day-selector-inner rounded-b-md bg-background py-2">
-        <div className="relative overflow-hidden">
-          <div className="scrollbar-hide flex gap-2 overflow-x-auto py-2">
-            <div className="w-px shrink-0" aria-hidden="true" />
-            {Array.from({ length: DAYS_TO_SHOW }).map((_, index) => {
-              return (
-                <div
-                  key={index}
-                  className="flex min-w-[5rem] shrink-0 flex-col items-center gap-0.5 rounded-xl bg-muted/50 px-4 py-3"
-                >
-                  <Skeleton className="h-4 w-8" />
-                  <Skeleton className="h-5 w-10" />
-                </div>
-              )
-            })}
-            <div className="w-px shrink-0" aria-hidden="true" />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 const SlotCardSkeleton = () => {
   return (
@@ -104,21 +77,18 @@ const CourtTypeGroupSkeleton = ({
   )
 }
 
-export const ReservationPageSkeleton = () => {
+export const SlotsSkeleton = () => {
   return (
-    <div className="space-y-6">
-      <DaySelectorSkeleton />
-      <div className="space-y-8">
-        {SKELETON_COURTS.map((config) => {
-          return (
-            <CourtTypeGroupSkeleton
-              key={config.type}
-              courtCount={config.courtCount}
-              slotsPerCourt={config.slotsPerCourt}
-            />
-          )
-        })}
-      </div>
+    <div className="space-y-8">
+      {SKELETON_COURTS.map((config) => {
+        return (
+          <CourtTypeGroupSkeleton
+            key={config.type}
+            courtCount={config.courtCount}
+            slotsPerCourt={config.slotsPerCourt}
+          />
+        )
+      })}
     </div>
   )
 }

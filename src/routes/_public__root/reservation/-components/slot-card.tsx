@@ -6,7 +6,7 @@ import {
   UserIcon,
   XCircleIcon
 } from 'lucide-react'
-import type { SlotStatus } from '@/constants/types'
+import type { Slot, SlotStatus } from '@/constants/types'
 import { formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
@@ -52,30 +52,24 @@ const OWN_BOOKING_CONFIG: StatusConfig = {
   textClass: 'text-info'
 }
 
-type SlotCardProps = {
-  startAt: number
-  endAt: number
-  price: number
-  status: SlotStatus
-  isOwnBooking: boolean
-  onSelect?: () => void
+const getStatusConfig = (slot: Slot) => {
+  return slot.isOwnBooking ? OWN_BOOKING_CONFIG : STATUS_CONFIG[slot.status]
 }
 
-export const SlotCard = ({
-  startAt,
-  endAt,
-  price,
-  status,
-  isOwnBooking,
-  onSelect
-}: SlotCardProps) => {
-  const config = isOwnBooking ? OWN_BOOKING_CONFIG : STATUS_CONFIG[status]
+type SlotCardProps = {
+  slot: Slot
+  price: number
+  onSelect?: (slot: Slot) => void
+}
+
+export const SlotCard = ({ slot, price, onSelect }: SlotCardProps) => {
+  const config = getStatusConfig(slot)
   const Icon = config.icon
-  const isClickable = status === 'available'
+  const isClickable = slot.status === 'available'
 
   const handleClick = () => {
     if (isClickable && onSelect) {
-      onSelect()
+      onSelect(slot)
     }
   }
 
@@ -90,7 +84,8 @@ export const SlotCard = ({
       )}
     >
       <span className="text-base font-bold">
-        {formatTimeFr(new Date(startAt))} - {formatTimeFr(new Date(endAt))}
+        {formatTimeFr(new Date(slot.startAt))} -{' '}
+        {formatTimeFr(new Date(slot.endAt))}
       </span>
       <span
         className={cn(
@@ -99,7 +94,7 @@ export const SlotCard = ({
         )}
       >
         <Icon className="size-4" aria-hidden="true" />
-        {status === 'available' && !isOwnBooking
+        {slot.status === 'available' && !slot.isOwnBooking
           ? formatCentsToEuros(price)
           : config.label}
       </span>

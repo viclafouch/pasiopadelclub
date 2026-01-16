@@ -4,6 +4,7 @@ import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 import { BookingSection } from './-components/booking-section'
 import { Hero } from './-components/hero'
+import { StoriesSection } from './-components/stories-section'
 
 const RouteComponent = () => {
   return (
@@ -11,6 +12,7 @@ const RouteComponent = () => {
       <Hero />
       <BookingSection />
       <Faq />
+      <StoriesSection />
       <Map />
     </main>
   )

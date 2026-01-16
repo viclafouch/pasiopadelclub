@@ -243,250 +243,82 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 
 ---
 
-## Milestone 0 : Migration Neon + Drizzle + Better Auth ✅ COMPLÉTÉ
+## Milestone 0 : Migration Neon + Drizzle + Better Auth ✅
 
-### Objectif
-Migrer de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pour un SSR propre sans loading states.
+Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pour SSR.
 
-### 0.1 Setup Drizzle + Neon ✅
-- [x] Créer compte Neon + projet "pasio-padel"
-- [x] Ajouter `DATABASE_URL` dans `.env`
-- [x] Installer `drizzle-orm` + `@neondatabase/serverless`
-- [x] Installer `drizzle-kit` (dev)
-- [x] Créer `drizzle.config.ts`
-- [x] Créer `src/db/index.ts` - client Drizzle
-- [x] Créer `src/db/schema.ts` - tables (users, courts, bookings, blockedSlots)
-- [x] Première migration `npm run db:migrate`
-- [x] Seed des terrains
-
-### 0.2 Setup Better Auth ✅
-- [x] Installer `better-auth`
-- [x] Créer `src/lib/auth.ts` - config Better Auth + Drizzle adapter
-- [x] Créer `src/lib/auth-client.ts` - client auth avec `polarClient()` plugin
-- [x] Créer route API `/api/auth/$.ts` - handler auth
-- [x] Configurer middleware TanStack Start pour sessions
-- [x] Tables auth créées par Better Auth (user, session, account, verification)
-- [x] Champs additionnels : firstName, lastName, phone, role, isBlocked, isAnonymized
-
-### 0.3 Migration des routes ✅
-- [x] Remplacer hooks Clerk par Better Auth hooks
-- [x] Remplacer queries Convex par queries Drizzle
-- [x] Migrer `_authenticated/route.tsx` - session serveur via beforeLoad
-- [x] Migrer `_admin/route.tsx` - vérification rôle serveur
-- [x] Migrer `_auth/route.tsx` - redirect si connecté
-- [x] Migrer page réservation - queries Drizzle
-- [x] Migrer page mon-compte - queries Drizzle
-
-### 0.4 Cleanup ✅
-- [x] Supprimer dossier `convex/`
-- [x] Désinstaller packages Convex
-- [x] Désinstaller packages Clerk
-- [x] Supprimer providers Convex/Clerk de `__root.tsx`
-- [x] Nettoyer env variables
-- [x] Mettre à jour `src/env/server.ts` et `src/env/client.ts`
+- [x] Setup Drizzle + Neon (schema, migrations, seed terrains)
+- [x] Setup Better Auth avec Drizzle adapter
+- [x] Migration des routes et queries
+- [x] Cleanup packages Convex/Clerk
 
 ---
 
-## Milestones 1-4 : Pages Publiques, Auth, Espace Utilisateur ✅ COMPLÉTÉS
+## Milestones 1-4 : Pages Publiques, Auth, Espace Utilisateur ✅
 
-Voir détails dans les commits précédents. Toutes les fonctionnalités de base sont implémentées :
-- Pages publiques (Galerie, Contact, Tarifs, Mentions légales, CGV)
-- Authentification Better Auth (inscription, connexion)
-- Espace utilisateur (profil, réservations, historique, annulation, export RGPD)
+- [x] Pages publiques (Galerie, Contact, Tarifs, Mentions légales, CGV)
+- [x] Authentification Better Auth (inscription, connexion)
+- [x] Espace utilisateur (profil, réservations, historique, annulation, export RGPD)
 
 ---
 
-## Milestone 5 : Système de Réservation (Frontend) ✅ COMPLÉTÉ
+## Milestone 5 : Système de Réservation ✅
 
-### 5.1-5.4 Interface de réservation ✅
 - [x] Page `/reservation` avec URL state (date)
 - [x] DaySelector sticky avec 10 jours, prefetch on hover
 - [x] Groupes par type de terrain (double, simple, kids)
 - [x] SlotCard avec status (available, booked, blocked, past)
 - [x] BookingSummaryModal avec récapitulatif
 - [x] Vérification limite 2 réservations actives
-- [x] Redirection connexion si non authentifié
-
-### 5.5 "Réservé par vous" (UX improvement) ✅
-Afficher les créneaux réservés par l'utilisateur connecté en bleu info.
-
-- [x] Ajouter couleur `--info` dans CSS (bleu ciel oklch)
-- [x] Ajouter `isOwnBooking: boolean` au type `Slot` (séparé du status)
-- [x] Modifier query slots pour inclure `userId` du booking
-- [x] Comparer `booking.userId` avec `user.id` connecté
-- [x] SlotCard : style bleu info + texte "Réservé par vous" si `isOwnBooking`
+- [x] "Réservé par vous" (créneaux user en bleu info)
 
 ---
 
-## Milestone 6 : Intégration Paiement Polar 🔄 EN COURS
+## Milestone 6 : Paiement Polar 🔄 EN COURS
 
-### Objectif
-Intégrer Polar pour le paiement en ligne via Better Auth plugin.
+### 6.1 Configuration ✅
+- [x] Compte Polar sandbox + produits (double 60€, simple 30€, kids 15€)
+- [x] Plugin Better Auth (serveur + client)
+- [ ] Webhook URL dans Polar dashboard (prod)
 
-### 6.1 Configuration Polar ✅
-- [x] Créer compte Polar (sandbox)
-- [x] Configurer clés API dans `.env`
-- [x] Créer produits Polar (double 60€, simple 30€, kids 15€)
-- [x] Créer `src/constants/polar.ts` - product IDs
-- [x] Configurer plugin `polar()` dans `src/lib/auth.ts`
-- [x] Configurer plugin `polarClient()` dans `src/lib/auth-client.ts`
-- [ ] Configurer webhook dans Polar dashboard (prod)
+### 6.2 Flux de paiement ✅
+- [x] Checkout via `authClient.checkout()` avec referenceId encodé
+- [x] Booking créé uniquement après paiement confirmé (pas de "pending")
 
-### 6.2 Flux de paiement (simplifié) ✅
-> **Approche choisie** : Pas de booking "pending". Le booking est créé uniquement à la confirmation de paiement.
+### 6.3 Webhook ✅
+- [x] Route `/api/webhooks/polar.ts` avec event `order.paid`
+- [x] Idempotence et gestion conflits
 
-- [x] `BookingSummaryModal` utilise `authClient.checkout({ slug, referenceId })`
-- [x] Le `referenceId` contient les infos du slot (courtId, startAt, endAt) encodées
-- [x] Redirection automatique vers Polar Checkout
-- [x] Email pré-rempli grâce à `createCustomerOnSignUp: true`
-
-### 6.3 Webhook Polar ✅
-- [x] Route `/api/webhooks/polar.ts` créée
-- [x] Gérer event `order.paid` :
-  - [x] Décoder `metadata.referenceId` (courtId, startAt, endAt)
-  - [x] Vérifier que le créneau est toujours disponible
-  - [x] Créer le booking avec status "confirmed"
-  - [x] Stocker `polarPaymentId` (unique constraint)
-  - [ ] Déclencher email confirmation (M7)
-- [x] Gérer conflit : log + alerte admin pour remboursement manuel
-- [x] Idempotence : vérification paiement déjà traité
-- [x] PII masqué dans les logs (emails, IDs)
-
-### 6.4 Pages de Retour
-- [x] Route `/reservation/success.tsx` créée
-- [ ] Afficher récapitulatif réservation (fetch via checkout_id)
-- [x] Route `/reservation/echec.tsx` créée
-- [x] Afficher message erreur + boutons retry/accueil
+### 6.4 Pages de retour
+- [x] Pages success/echec créées
+- [ ] Afficher récapitulatif réservation sur success.tsx
 
 ### 6.5 Remboursements
-- [ ] Créer fonction `refundBooking` via API Polar
-- [ ] Utiliser dans annulation utilisateur (> 24h)
-- [ ] Utiliser dans blocage admin
-- [ ] Utiliser dans blocage utilisateur
-
-### Livrables attendus
-- Paiement Polar via Better Auth plugin
-- Booking créé uniquement après paiement confirmé
-- Pas de gestion de status "pending"
-- Email pré-rempli au checkout
+- [ ] Fonction `refundBooking` via API Polar
+- [ ] Intégration annulation utilisateur et blocage admin
 
 ---
 
 ## Milestone 7 : Emails Transactionnels
 
-### Objectif
-Implémenter les emails de confirmation et de rappel via Resend.
-
-### 7.1 Configuration Resend
-- [ ] Créer compte Resend
-- [ ] Ajouter domaine pasiopadelclub.fr
-- [ ] Vérifier DNS domaine
-- [ ] Configurer clé API dans `.env`
-- [ ] Créer `src/lib/resend.ts` - client
-- [ ] Installer React Email
-- [ ] Créer dossier `src/emails/`
-
-### 7.2 Templates emails
-- [ ] Créer template `BookingConfirmation.tsx`
-- [ ] Créer template `BookingReminder.tsx`
-- [ ] Créer template `BookingCancelled.tsx`
-- [ ] Créer template `ContactForm.tsx`
-
-### 7.3 Système de rappel
-- [ ] Créer cron toutes les 15 minutes
-- [ ] Query réservations à rappeler (24h avant)
-- [ ] Envoyer email rappel
+- [ ] Configuration Resend + domaine pasiopadelclub.fr
+- [ ] Templates : confirmation, rappel 24h, annulation, contact
+- [ ] Cron rappel 24h avant créneaux
 
 ---
 
-## Milestone 7.5 : Internationalisation (i18n) - Français
+## Milestone 7.5 : i18n Français
 
-### Objectif
-S'assurer que toutes les erreurs et messages s'affichent en français. Préparation pour l'anglais futur.
-
-### Sources d'erreurs potentiellement en anglais
-
-| Source | Type d'erreurs | Solution |
-|--------|---------------|----------|
-| **Better Auth** | Auth (credentials, email exists, etc.) | Mapper via `$ERROR_CODES` |
-| **Polar** | Paiement (card declined, etc.) | Mapper via types d'erreur SDK |
-| **Zod** | Validation | ✅ Déjà FR |
-| **Server functions** | Custom | ✅ Déjà FR |
-
-### 7.5.1 Better Auth ✅
-- **Doc :** https://www.better-auth.com/docs/concepts/client#error-codes-and-localization
-- **Typage :** `authClient.$ERROR_CODES` expose tous les codes possibles
-- **Accès :** `error.code` retourné par les méthodes auth
-- [x] Lister tous les codes via `$ERROR_CODES`
-- [x] Créer helper `src/helpers/auth-errors.ts` avec mapping FR
-- [x] Intégrer dans connexion/inscription (Alert component shadcn)
-
-### 7.5.2 Polar
-- **Doc :** https://github.com/polarsource/polar-js
-- **Types d'erreur SDK :** `PaymentError`, `ExpiredCheckoutError`, `NotOpenCheckout`, `AlreadyActiveSubscriptionError`, etc.
-- **Paiement refusé :** champs `declineReason` (code) et `declineMessage` (message EN)
-- [ ] Lister les erreurs possibles depuis le SDK Polar
-- [ ] Créer helper `src/helpers/polar-errors.ts` avec mapping FR
-- [ ] Intégrer dans les pages paiement (success/echec)
-
-### 7.5.3 Zod - Audit
-- [x] `inscription.tsx` ✅
-- [x] `connexion.tsx` ✅
-- [x] `contact/index.tsx` ✅
-- [x] `validation.ts` (profileFormSchema) ✅
-- [x] `schemas.ts` ✅ (server-side only, pas de messages user-facing)
-
-### 7.5.4 (Futur) Multi-langue EN
-- [ ] Structure `src/i18n/` pour FR/EN
-- [ ] Extraire strings UI vers fichiers de traduction
-- [ ] Lib i18n légère (react-i18next ou alternative)
-
-### Livrables
-- Toutes les erreurs user-facing en français
-- Helpers centralisés par source (auth, polar)
-- Architecture prête pour l'anglais
+- [x] Erreurs Better Auth traduites
+- [x] Validation Zod en FR
+- [ ] Traduction erreurs Polar
 
 ---
 
-## Milestones 8-13 : Admin, SEO, Tests, RGPD, Déploiement
+## Milestones 8-13 : À venir
 
-Ces milestones restent à implémenter après la finalisation du système de réservation et paiement.
-
-Voir le plan détaillé dans les sections précédentes.
-
----
-
-## État actuel du projet
-
-### Complété ✅
-- Infrastructure Neon + Drizzle (migration appliquée)
-- Better Auth avec champs additionnels (firstName, lastName, phone, role)
-- Plugin Polar Better Auth (serveur + client)
-- Pages publiques et authentification
-- Espace utilisateur complet
-- Interface de réservation (M5.1-5.4)
-- Modal récapitulatif avec checkout Better Auth + useMutation + error handling
-- Flux paiement Polar complet (M6.2)
-- Webhook Polar `order.paid` avec idempotence et logs sécurisés (M6.3)
-- Pages success/echec créées (M6.4 partiel)
-- Vérification `isBlocked` sur annulation booking
-- Contrainte unique sur `polarPaymentId` (schéma mis à jour)
-- Routes auth (connexion/inscription) avec invalidation cache/router
-- i18n Better Auth (M7.5.1) - erreurs FR
-- i18n Zod (M7.5.3) - tous les formulaires validés FR
-
-### En cours 🔄
-- **M6.1** : Configurer webhook URL dans Polar dashboard (prod)
-- **M6.4** : Afficher récapitulatif réservation sur success.tsx (fetch via checkout_id)
-- **M6.5** : Remboursements via API Polar
-- Tester le flux complet de paiement end-to-end
-
-### À faire
-- M5.5 : "Réservé par vous" (créneaux user en bleu info)
-- M7 : Emails transactionnels
-- M7.5.2 : Traduction erreurs Polar
-- M8-9 : Dashboard admin
-- M10 : SEO & optimisation
-- M11 : Tests & sécurité
-- M12 : RGPD
-- M13 : Déploiement
+- **M8-9** : Dashboard admin (stats, blocage créneaux/users, réservations manuelles)
+- **M10** : SEO (Schema.org, Google My Business)
+- **M11** : Tests (Vitest)
+- **M12** : RGPD (anonymisation, suppression compte)
+- **M13** : Déploiement Railway

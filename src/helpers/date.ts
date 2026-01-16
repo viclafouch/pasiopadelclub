@@ -126,6 +126,25 @@ export const formatDayNumber = (date: Date) => {
   })
 }
 
+export const formatFullDateLabel = (date: Date) => {
+  return date.toLocaleDateString(DEFAULT_LOCALE, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+}
+
+export const matchIsToday = (date: Date) => {
+  const today = new Date()
+
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  )
+}
+
 export const parseDateKey = (dateKey: string) => {
   const [year, month, day] = dateKey.split('-').map(Number) as [
     number,

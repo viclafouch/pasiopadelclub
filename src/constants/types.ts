@@ -28,6 +28,7 @@ export type Slot = {
 export type CourtWithSlots = {
   court: Court
   slots: Slot[]
+  hasAvailableSlot: boolean
 }
 
 export type SelectedSlot = {
