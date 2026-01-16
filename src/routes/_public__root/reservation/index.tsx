@@ -196,14 +196,27 @@ const ReservationContent = () => {
 const ReservationPage = () => {
   return (
     <main className="min-h-screen bg-background">
-      <section className="border-b bg-muted/30 py-8">
-        <div className="container">
-          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+      <section className="relative flex h-[300px] items-center justify-center overflow-hidden">
+        <picture>
+          <source srcSet="/images/terrain.webp" type="image/webp" />
+          <img
+            src="/images/terrain.jpg"
+            alt="Terrain de padel Pasio Padel Club Anglet"
+            className="absolute inset-0 h-full w-full object-cover"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"
+          aria-hidden="true"
+        />
+        <div className="relative z-10 text-center">
+          <h1 className="font-display text-4xl font-light tracking-tight text-white sm:text-5xl">
             Réserver un terrain
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Choisissez une date et un créneau pour réserver votre partie de
-            padel.
+          <p className="mt-3 text-lg text-white/80">
+            Choisissez une date et un créneau pour votre partie
           </p>
         </div>
       </section>
@@ -226,7 +239,15 @@ export const Route = createFileRoute('/_public__root/reservation/')({
         description:
           'Réservez votre court de padel en ligne à Pasio Padel Club Anglet. Choisissez votre créneau parmi nos 6 terrains disponibles 7j/7.',
         pathname: '/reservation'
-      })
+      }),
+      links: [
+        {
+          rel: 'preload',
+          href: '/images/terrain.webp',
+          as: 'image',
+          type: 'image/webp'
+        }
+      ]
     }
   }
 })

@@ -44,7 +44,7 @@ export const DeleteAccountSection = () => {
   return (
     <div className="flex items-center justify-between gap-4 rounded-lg border border-destructive/50 p-6">
       <div>
-        <h3 className="font-display font-semibold text-destructive">
+        <h3 className="font-sans text-xl font-bold text-destructive">
           Supprimer mon compte
         </h3>
         <p className="text-sm text-muted-foreground">

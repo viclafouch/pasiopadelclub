@@ -27,7 +27,15 @@ export const Route = createFileRoute('/_public__root/')({
         description:
           'Pasio Padel Club à Anglet : réservez vos courts de padel en ligne. 6 terrains disponibles 7j/7 de 8h à 22h. Location de raquettes et cours particuliers.',
         pathname: '/'
-      })
+      }),
+      links: [
+        {
+          rel: 'preload',
+          href: '/images/background-hero.webp',
+          as: 'image',
+          type: 'image/webp'
+        }
+      ]
     }
   }
 })

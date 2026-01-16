@@ -89,7 +89,7 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
       <div className="space-y-6">
         <div className="space-y-4 rounded-lg border p-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-display font-semibold">
+            <h3 className="font-sans text-xl font-bold">
               Informations personnelles
             </h3>
             <Button
