@@ -15,7 +15,7 @@ paths: "**/*.{ts,tsx}"
 
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.
-- Do not update the code in `src/components/ui` or `src/components/kibo-ui` folders, just fix linter errors.
+- **Never modify code** in `src/components/ui`, `src/components/kibo-ui`, or `src/components/animate-ui` folders - run `npm run lint:fix` first (auto-fixes formatting), then add `/* eslint-disable */` at the top of files to ignore remaining errors.
 - **No margins on icons in buttons** - shadcn Button has built-in `gap` spacing
 
 ### TanStack Query

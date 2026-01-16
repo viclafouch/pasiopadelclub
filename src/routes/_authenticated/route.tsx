@@ -20,6 +20,8 @@ export const Route = createFileRoute('/_authenticated')({
         search: { redirect: location.pathname }
       })
     }
+
+    return { user: context.user }
   },
   component: AuthenticatedLayout
 })

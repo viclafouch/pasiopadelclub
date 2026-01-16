@@ -1,8 +1,12 @@
 import React from 'react'
 import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
 import { z } from 'zod'
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger
+} from '@/components/animate-ui/components/animate/tabs'
 import { BookingCardSkeleton } from '@/components/booking-card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { seo } from '@/utils/seo'
 import {
   createFileRoute,
@@ -38,7 +42,7 @@ const searchSchema = z.object({
 })
 
 const MonComptePage = () => {
-  const { user } = useRouteContext({ from: '__root__' })
+  const { user } = useRouteContext({ from: '/_authenticated' })
   const { tab = 'reservations' } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
 
@@ -69,33 +73,21 @@ const MonComptePage = () => {
               )
             })}
           </TabsList>
-          <TabsContent
-            value="reservations"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
+          <React.Activity mode={tab === 'reservations' ? 'visible' : 'hidden'}>
             <React.Suspense fallback={<BookingsSkeleton />}>
               <UpcomingBookingsTab />
             </React.Suspense>
-          </TabsContent>
-          <TabsContent
-            value="historique"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
+          </React.Activity>
+          <React.Activity mode={tab === 'historique' ? 'visible' : 'hidden'}>
             <React.Suspense fallback={<BookingsSkeleton />}>
               <HistoryTab />
             </React.Suspense>
-          </TabsContent>
-          <TabsContent
-            value="profil"
-            forceMount
-            className="data-[state=inactive]:hidden"
-          >
+          </React.Activity>
+          <React.Activity mode={tab === 'profil' ? 'visible' : 'hidden'}>
             <React.Suspense fallback={<ProfileTabSkeleton />}>
-              {user ? <ProfileTab user={user} /> : null}
+              <ProfileTab user={user} />
             </React.Suspense>
-          </TabsContent>
+          </React.Activity>
         </Tabs>
       </div>
     </div>
