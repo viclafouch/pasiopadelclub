@@ -5,6 +5,10 @@ import {
   OPENING_HOUR
 } from '@/constants/booking'
 import type { Booking, Court, CourtWithSlots, User } from '@/constants/types'
+import { nowParis } from '@/helpers/date'
+import { TZDate } from '@date-fns/tz'
+
+const PARIS_TZ = 'Europe/Paris'
 
 type TimeRange = Pick<Booking, 'startAt' | 'endAt'>
 type BookingRange = Pick<Booking, 'startAt' | 'endAt' | 'userId'>
@@ -81,20 +85,21 @@ const generateSlotsForCourt = ({
   blockedSlots,
   currentUserId
 }: GenerateSlotsParams) => {
-  const now = Date.now()
+  const now = nowParis().getTime()
   const durationMinutes = court.duration
 
   const availableMinutes = (CLOSING_HOUR - OPENING_HOUR) * MINUTES_PER_HOUR
   const slotCount = Math.floor(availableMinutes / durationMinutes)
 
-  const openingTimestamp = new Date(
+  const openingTimestamp = new TZDate(
     baseDate.getFullYear(),
     baseDate.getMonth(),
     baseDate.getDate(),
     OPENING_HOUR,
     0,
     0,
-    0
+    0,
+    PARIS_TZ
   ).getTime()
 
   const durationMs = durationMinutes * MS_PER_MINUTE
