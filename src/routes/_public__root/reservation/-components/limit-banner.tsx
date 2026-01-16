@@ -20,7 +20,7 @@ export const LimitBanner = ({ maxCount }: LimitBannerProps) => {
         <Link
           to="/mon-compte"
           search={{ tab: 'reservations' }}
-          className="font-medium underline underline-offset-2 hover:no-underline"
+          className="font-medium underline underline-offset-2"
         >
           Gérer mes réservations
         </Link>

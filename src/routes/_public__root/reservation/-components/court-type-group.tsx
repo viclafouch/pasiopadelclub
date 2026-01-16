@@ -16,9 +16,16 @@ export const CourtTypeGroup = ({
   courtsWithSlots,
   onSlotSelect
 }: CourtTypeGroupProps) => {
-  const availableCount = courtsWithSlots.filter((item) => {
-    return item.hasAvailableSlot
-  }).length
+  const availableSlotsCount = courtsWithSlots.reduce(
+    (total, courtWithSlots) => {
+      const availableSlots = courtWithSlots.slots.filter((slot) => {
+        return slot.status === 'available'
+      })
+
+      return total + availableSlots.length
+    },
+    0
+  )
 
   return (
     <Card>
@@ -27,10 +34,10 @@ export const CourtTypeGroup = ({
           <h2 className="font-display text-lg font-semibold">
             {COURT_TYPE_LABELS[type]}
           </h2>
-          {availableCount > 0 ? (
-            <Badge className="gap-1.5 bg-primary/15 text-primary hover:bg-primary/15">
+          {availableSlotsCount > 0 ? (
+            <Badge className="gap-1.5 bg-success/15 text-success hover:bg-success/15">
               <CheckCircleIcon className="size-3.5" aria-hidden="true" />
-              {availableCount} dispo
+              {availableSlotsCount} dispo
             </Badge>
           ) : null}
         </div>

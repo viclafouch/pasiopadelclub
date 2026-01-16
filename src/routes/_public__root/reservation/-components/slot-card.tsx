@@ -22,8 +22,8 @@ const STATUS_CONFIG: Record<SlotStatus, StatusConfig> = {
   available: {
     icon: CheckCircleIcon,
     label: '',
-    buttonClass: 'border-primary bg-primary/10 hover:bg-primary/20',
-    textClass: 'font-semibold text-primary'
+    buttonClass: 'border-success bg-success/10 hover:bg-success/20',
+    textClass: 'font-semibold text-success'
   },
   booked: {
     icon: XCircleIcon,
