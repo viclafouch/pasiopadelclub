@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 export const updateProfileSchema = z.object({
-  firstName: z.string().min(1).max(50),
-  lastName: z.string().min(1).max(50),
+  firstName: z.string().nonempty().max(50),
+  lastName: z.string().nonempty().max(50),
   phone: z.string().max(20).optional()
 })
 

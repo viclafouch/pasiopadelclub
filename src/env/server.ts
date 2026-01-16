@@ -7,8 +7,7 @@ export const serverEnv = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32),
     VITE_SITE_URL: z.url(),
     POLAR_ACCESS_TOKEN: z.string().startsWith('polar_'),
-    POLAR_WEBHOOK_SECRET: z.string().min(1),
-    WEBHOOK_AUTH_TOKEN: z.string().min(32)
+    POLAR_WEBHOOK_SECRET: z.string().nonempty()
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true
