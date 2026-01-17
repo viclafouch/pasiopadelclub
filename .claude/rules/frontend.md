@@ -30,6 +30,12 @@ paths: "**/*.{ts,tsx}"
 - Always display `mutation.error` with `getErrorMessage()` helper
 - Name: `*Mutation` suffix
 
+### Execution Boundaries (TanStack Start)
+- **`createServerOnlyFn`** for utility functions accessing DB, env vars, or server-only APIs - crashes if called from client
+- **`createClientOnlyFn`** for utility functions using `window`, `localStorage`, or browser-only APIs - crashes if called from server
+- **`createServerFn`** for RPC calls (client can call, executes on server via network request)
+- Place server-only utilities in `src/utils/` wrapped with `createServerOnlyFn`
+
 ### Forms
 - **TanStack Form** + **Zod** + **useMutation** for submission
 

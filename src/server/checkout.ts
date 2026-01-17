@@ -1,30 +1,21 @@
 import { and, eq, gt, lt } from 'drizzle-orm'
-import { z } from 'zod'
+import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
 import { serverEnv } from '@/env/server'
 import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
-import { authMiddleware } from '@/lib/middleware'
+import { activeUserMiddleware } from '@/lib/middleware'
 import { stripe } from '@/lib/stripe.server'
 import { getCourtTypeLabel } from '@/utils/court'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
 
-const createCheckoutSchema = z.object({
-  courtId: z.uuid(),
-  startAt: z.number(),
-  endAt: z.number()
-})
+const MS_PER_MINUTE = 1000 * 60
 
 export const createCheckoutSessionFn = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
-  .inputValidator(createCheckoutSchema)
+  .middleware([activeUserMiddleware])
+  .inputValidator(bookingSlotSchema)
   .handler(async ({ data, context }) => {
-    if (context.session.user.isBlocked) {
-      setResponseStatus(403)
-      throw new Error('Action non autorisée')
-    }
-
     const { courtId, startAt, endAt } = data
     const startDate = new Date(startAt)
     const endDate = new Date(endAt)
@@ -52,7 +43,7 @@ export const createCheckoutSessionFn = createServerFn({ method: 'POST' })
     }
 
     const durationMs = endAt - startAt
-    const expectedDurationMs = courtData.duration * 60 * 1000
+    const expectedDurationMs = courtData.duration * MS_PER_MINUTE
 
     if (durationMs !== expectedDurationMs) {
       setResponseStatus(400)

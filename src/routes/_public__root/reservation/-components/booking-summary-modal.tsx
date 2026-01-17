@@ -1,10 +1,13 @@
+import React from 'react'
 import {
   CalendarIcon,
   ClockIcon,
+  CreditCardIcon,
   InfoIcon,
   LoaderIcon,
   MapPinIcon,
-  UsersIcon
+  UsersIcon,
+  WalletIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,12 +18,18 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { LOCATION_LABELS } from '@/constants/court'
-import type { SelectedSlot } from '@/constants/types'
+import { getUserBalanceQueryOpts } from '@/constants/queries'
+import type { BookingSlotData, SelectedSlot } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
 import { formatCentsToEuros } from '@/helpers/number'
+import { cn } from '@/lib/utils'
 import { createCheckoutSessionFn } from '@/server/checkout'
-import { useMutation } from '@tanstack/react-query'
+import { payBookingWithCreditsFn } from '@/server/credit-payment'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, useRouteContext } from '@tanstack/react-router'
+
+type PaymentMethod = 'card' | 'credit'
 
 type BookingSummaryModalProps = {
   isOpen: boolean
@@ -33,15 +42,34 @@ export const BookingSummaryModal = ({
   onClose,
   selectedSlot
 }: BookingSummaryModalProps) => {
-  const checkoutMutation = useMutation({
-    mutationFn: async (slotData: {
-      courtId: string
-      startAt: number
-      endAt: number
-    }) => {
-      const result = await createCheckoutSessionFn({ data: slotData })
+  const { user } = useRouteContext({ from: '/_public__root' })
+  const isLoggedIn = user !== null
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [paymentMethod, setPaymentMethod] =
+    React.useState<PaymentMethod>('card')
 
+  const balanceQuery = useQuery({
+    ...getUserBalanceQueryOpts(),
+    enabled: isLoggedIn && isOpen
+  })
+
+  const checkoutMutation = useMutation({
+    mutationFn: async (slotData: BookingSlotData) => {
+      const result = await createCheckoutSessionFn({ data: slotData })
       window.location.href = result.url
+    }
+  })
+
+  const creditMutation = useMutation({
+    mutationFn: async (slotData: BookingSlotData) => {
+      await payBookingWithCreditsFn({ data: slotData })
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['wallet'] })
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      await queryClient.invalidateQueries({ queryKey: ['slots'] })
+      navigate({ to: '/reservation/success' })
     }
   })
 
@@ -53,12 +81,23 @@ export const BookingSummaryModal = ({
   const startDate = new Date(slot.startAt)
   const endDate = new Date(slot.endAt)
 
+  const balance = balanceQuery.data ?? 0
+  const hasEnoughCredits = balance >= court.price
+  const isPending = checkoutMutation.isPending || creditMutation.isPending
+  const error = checkoutMutation.error ?? creditMutation.error
+
   const handlePayClick = () => {
-    checkoutMutation.mutate({
+    const slotData = {
       courtId: court.id,
       startAt: slot.startAt,
       endAt: slot.endAt
-    })
+    }
+
+    if (paymentMethod === 'credit') {
+      creditMutation.mutate(slotData)
+    } else {
+      checkoutMutation.mutate(slotData)
+    }
   }
 
   return (
@@ -104,6 +143,87 @@ export const BookingSummaryModal = ({
               {formatCentsToEuros(court.price, { minimumFractionDigits: 2 })}
             </span>
           </div>
+          {isLoggedIn ? (
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium">Mode de paiement</legend>
+              <div
+                role="radiogroup"
+                aria-label="Mode de paiement"
+                className="grid grid-cols-2 gap-3"
+              >
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={paymentMethod === 'card'}
+                  onClick={() => {
+                    setPaymentMethod('card')
+                  }}
+                  disabled={isPending}
+                  className={cn(
+                    'flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all',
+                    paymentMethod === 'card'
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:border-primary/50'
+                  )}
+                >
+                  <CreditCardIcon
+                    className={cn(
+                      'size-5',
+                      paymentMethod === 'card'
+                        ? 'text-primary'
+                        : 'text-muted-foreground'
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm font-medium">Carte bancaire</span>
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={paymentMethod === 'credit'}
+                  aria-describedby={
+                    !hasEnoughCredits && balance > 0
+                      ? 'credits-insufficient'
+                      : undefined
+                  }
+                  onClick={() => {
+                    if (hasEnoughCredits) {
+                      setPaymentMethod('credit')
+                    }
+                  }}
+                  disabled={isPending}
+                  className={cn(
+                    'flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all',
+                    paymentMethod === 'credit'
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border',
+                    hasEnoughCredits ? 'hover:border-primary/50' : 'opacity-50'
+                  )}
+                >
+                  <WalletIcon
+                    className={cn(
+                      'size-5',
+                      paymentMethod === 'credit'
+                        ? 'text-primary'
+                        : 'text-muted-foreground'
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm font-medium">
+                    Crédits ({formatCentsToEuros(balance)})
+                  </span>
+                </button>
+              </div>
+              {!hasEnoughCredits && balance > 0 ? (
+                <p
+                  id="credits-insufficient"
+                  className="text-xs text-muted-foreground"
+                >
+                  Solde insuffisant pour payer en crédits
+                </p>
+              ) : null}
+            </fieldset>
+          ) : null}
           <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-700">
             <InfoIcon
               className="mt-0.5 size-4 shrink-0 text-amber-600"
@@ -111,9 +231,9 @@ export const BookingSummaryModal = ({
             />
             <p>Annulation gratuite jusqu&apos;à 24h avant le créneau.</p>
           </div>
-          {checkoutMutation.isError ? (
+          {error ? (
             <p role="alert" className="text-sm text-destructive">
-              {getErrorMessage(checkoutMutation.error)}
+              {getErrorMessage(error)}
             </p>
           ) : null}
         </div>
@@ -122,20 +242,20 @@ export const BookingSummaryModal = ({
             type="button"
             variant="outline"
             onClick={onClose}
-            disabled={checkoutMutation.isPending}
+            disabled={isPending}
           >
             Annuler
           </Button>
           <Button
             type="button"
             onClick={handlePayClick}
-            disabled={checkoutMutation.isPending}
-            aria-busy={checkoutMutation.isPending}
+            disabled={isPending}
+            aria-busy={isPending}
           >
-            {checkoutMutation.isPending ? (
+            {isPending ? (
               <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
             ) : null}
-            Payer{' '}
+            {paymentMethod === 'credit' ? 'Réserver' : 'Payer'}{' '}
             {formatCentsToEuros(court.price, { minimumFractionDigits: 2 })}
           </Button>
         </DialogFooter>

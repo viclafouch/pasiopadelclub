@@ -18,3 +18,14 @@ export const authMiddleware = createMiddleware({ type: 'function' }).server(
     return next({ context: { session } })
   }
 )
+
+export const activeUserMiddleware = createMiddleware({ type: 'function' })
+  .middleware([authMiddleware])
+  .server(async ({ next, context }) => {
+    if (context.session.user.isBlocked) {
+      setResponseStatus(403)
+      throw new Error('Action non autorisée')
+    }
+
+    return next()
+  })

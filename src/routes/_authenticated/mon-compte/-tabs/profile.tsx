@@ -1,6 +1,10 @@
 import React from 'react'
 import { PencilIcon } from 'lucide-react'
 import { AnimatedNotification } from '@/components/animated-notification'
+import {
+  CreditBalanceSection,
+  CreditBalanceSectionSkeleton
+} from '@/components/credit-balance-section'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { CurrentUser } from '@/server/auth'
@@ -11,6 +15,7 @@ import { EditProfileModal } from './edit-profile-modal'
 export const ProfileTabSkeleton = () => {
   return (
     <div className="space-y-6">
+      <CreditBalanceSectionSkeleton />
       <div className="space-y-4 rounded-lg border p-6">
         <div className="flex items-center justify-between">
           <Skeleton className="h-5 w-40" />
@@ -87,6 +92,9 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
         Vos informations ont été mises à jour.
       </AnimatedNotification>
       <div className="space-y-6">
+        <React.Suspense fallback={<CreditBalanceSectionSkeleton />}>
+          <CreditBalanceSection />
+        </React.Suspense>
         <div className="space-y-4 rounded-lg border p-6">
           <div className="flex items-center justify-between">
             <h3 className="font-sans text-xl font-bold">

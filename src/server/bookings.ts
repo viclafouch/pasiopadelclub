@@ -1,11 +1,11 @@
-import { and, count, desc, eq, gt, lte, or } from 'drizzle-orm'
+import { and, count, desc, eq, gt, lte, or, sum } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
-import { booking, court } from '@/db/schema'
+import { booking, court, walletTransaction } from '@/db/schema'
 import { nowParis } from '@/helpers/date'
-import { authMiddleware } from '@/lib/middleware'
-import { stripe } from '@/lib/stripe.server'
+import { activeUserMiddleware, authMiddleware } from '@/lib/middleware'
 import { matchCanCancelBooking } from '@/utils/booking'
+import { safeRefund } from '@/utils/stripe'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
 
@@ -101,25 +101,16 @@ export const getLatestBookingFn = createServerFn({ method: 'GET' })
   })
 
 export const cancelBookingFn = createServerFn({ method: 'POST' })
-  .middleware([authMiddleware])
+  .middleware([activeUserMiddleware])
   .inputValidator(cancelBookingSchema)
   .handler(async ({ data, context }) => {
-    if (context.session.user.isBlocked) {
-      setResponseStatus(403)
-      throw new Error('Action non autorisée')
-    }
-
     const { bookingId } = data
+    const userId = context.session.user.id
 
     const [bookingData] = await db
       .select()
       .from(booking)
-      .where(
-        and(
-          eq(booking.id, bookingId),
-          eq(booking.userId, context.session.user.id)
-        )
-      )
+      .where(and(eq(booking.id, bookingId), eq(booking.userId, userId)))
       .limit(1)
 
     if (!bookingData) {
@@ -142,31 +133,51 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
       throw new Error('Annulation impossible moins de 24h avant')
     }
 
-    if (bookingData.stripePaymentId) {
-      try {
-        /* eslint-disable camelcase */
-        await stripe.refunds.create({
-          payment_intent: bookingData.stripePaymentId
-        })
-        /* eslint-enable camelcase */
-      } catch (error) {
-        const isAlreadyRefunded =
-          error instanceof Error &&
-          error.message.includes('already been refunded')
-
-        if (!isAlreadyRefunded) {
-          setResponseStatus(503)
-          throw new Error(
-            'Remboursement temporairement indisponible, réessayez plus tard'
-          )
-        }
-      }
-    }
-
-    await db
+    const updatedRows = await db
       .update(booking)
       .set({ status: 'cancelled' })
-      .where(eq(booking.id, bookingId))
+      .where(and(eq(booking.id, bookingId), eq(booking.status, 'confirmed')))
+      .returning({ id: booking.id })
+
+    if (updatedRows.length === 0) {
+      setResponseStatus(409)
+      throw new Error('Réservation déjà annulée')
+    }
+
+    if (bookingData.paymentType === 'credit') {
+      await db.transaction(
+        async (tx) => {
+          const [balanceResult] = await tx
+            .select({ balance: sum(walletTransaction.amountCents) })
+            .from(walletTransaction)
+            .where(eq(walletTransaction.userId, userId))
+
+          const currentBalance = Number(balanceResult?.balance ?? 0)
+          const newBalance = currentBalance + bookingData.price
+
+          await tx.insert(walletTransaction).values({
+            userId,
+            type: 'refund',
+            amountCents: bookingData.price,
+            balanceAfterCents: newBalance,
+            bookingId,
+            description: 'Remboursement annulation'
+          })
+        },
+        { isolationLevel: 'serializable' }
+      )
+    } else if (bookingData.stripePaymentId) {
+      const refundResult = await safeRefund({
+        paymentIntentId: bookingData.stripePaymentId
+      })
+
+      if (!refundResult.success && !refundResult.alreadyRefunded) {
+        setResponseStatus(503)
+        throw new Error(
+          'Remboursement temporairement indisponible, réessayez plus tard'
+        )
+      }
+    }
 
     return { success: true }
   })

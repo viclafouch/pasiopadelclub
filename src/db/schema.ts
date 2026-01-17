@@ -24,7 +24,18 @@ export const bookingStatusEnum = pgEnum('booking_status', [
   'expired'
 ])
 
-export const paymentTypeEnum = pgEnum('payment_type', ['online', 'free'])
+export const paymentTypeEnum = pgEnum('payment_type', [
+  'online',
+  'free',
+  'credit'
+])
+
+export const walletTransactionTypeEnum = pgEnum('wallet_transaction_type', [
+  'purchase',
+  'payment',
+  'refund',
+  'expiration'
+])
 
 export const user = pgTable('user', {
   id: uuid('id')
@@ -172,6 +183,7 @@ export const booking = pgTable(
     endAt: timestamp('end_at').notNull(),
     price: integer('price').notNull(),
     stripePaymentId: text('stripe_payment_id').unique(),
+    creditTransactionId: uuid('credit_transaction_id'),
     paymentType: paymentTypeEnum('payment_type').notNull(),
     status: bookingStatusEnum('status').notNull().default('pending'),
     reminderSent: boolean('reminder_sent').notNull().default(false),
@@ -207,6 +219,52 @@ export const blockedSlot = pgTable(
       index('blocked_slot_start_at_idx').on(table.startAt),
       index('blocked_slot_court_id_idx').on(table.courtId),
       index('blocked_slot_court_start_idx').on(table.courtId, table.startAt)
+    ]
+  }
+)
+
+export const creditPack = pgTable('credit_pack', {
+  id: uuid('id')
+    .default(sql`gen_random_uuid()`)
+    .primaryKey(),
+  name: text('name').notNull(),
+  priceCents: integer('price_cents').notNull(),
+  creditsCents: integer('credits_cents').notNull(),
+  validityMonths: integer('validity_months').notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+})
+
+export const walletTransaction = pgTable(
+  'wallet_transaction',
+  {
+    id: uuid('id')
+      .default(sql`gen_random_uuid()`)
+      .primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => {
+        return user.id
+      }),
+    type: walletTransactionTypeEnum('type').notNull(),
+    amountCents: integer('amount_cents').notNull(),
+    balanceAfterCents: integer('balance_after_cents').notNull(),
+    creditPackId: uuid('credit_pack_id').references(() => {
+      return creditPack.id
+    }),
+    bookingId: uuid('booking_id').references(() => {
+      return booking.id
+    }),
+    stripePaymentId: text('stripe_payment_id').unique(),
+    expiresAt: timestamp('expires_at'),
+    description: text('description'),
+    createdAt: timestamp('created_at').defaultNow().notNull()
+  },
+  (table) => {
+    return [
+      index('wallet_transaction_user_id_idx').on(table.userId),
+      index('wallet_transaction_expires_at_idx').on(table.expiresAt),
+      index('wallet_transaction_user_type_idx').on(table.userId, table.type)
     ]
   }
 )

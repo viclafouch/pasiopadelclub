@@ -179,6 +179,7 @@ const ReservationContent = () => {
         </React.Suspense>
       </div>
       <BookingSummaryModal
+        key={selectedSlot?.slot.startAt}
         isOpen={selectedSlot !== null}
         onClose={handleCloseModal}
         selectedSlot={selectedSlot}

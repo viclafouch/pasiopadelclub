@@ -20,6 +20,7 @@ import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__r
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
 import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
+import { Route as Public__rootCreditsIndexRouteImport } from './routes/_public__root/credits/index'
 import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
@@ -83,6 +84,12 @@ const Public__rootGalerieIndexRoute =
     path: '/galerie/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
+const Public__rootCreditsIndexRoute =
+  Public__rootCreditsIndexRouteImport.update({
+    id: '/credits/',
+    path: '/credits/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
 const Public__rootContactIndexRoute =
   Public__rootContactIndexRouteImport.update({
     id: '/contact/',
@@ -140,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
+  '/credits': typeof Public__rootCreditsIndexRoute
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
@@ -157,6 +165,7 @@ export interface FileRoutesByTo {
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
+  '/credits': typeof Public__rootCreditsIndexRoute
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
@@ -179,6 +188,7 @@ export interface FileRoutesById {
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
   '/_public__root/contact/': typeof Public__rootContactIndexRoute
+  '/_public__root/credits/': typeof Public__rootCreditsIndexRoute
   '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
   '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/mon-compte'
     | '/cgv'
     | '/contact'
+    | '/credits'
     | '/galerie'
     | '/mentions-legales'
     | '/reservation'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/mon-compte'
     | '/cgv'
     | '/contact'
+    | '/credits'
     | '/galerie'
     | '/mentions-legales'
     | '/reservation'
@@ -236,6 +248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mon-compte/'
     | '/_public__root/cgv/'
     | '/_public__root/contact/'
+    | '/_public__root/credits/'
     | '/_public__root/galerie/'
     | '/_public__root/mentions-legales/'
     | '/_public__root/reservation/'
@@ -328,6 +341,13 @@ declare module '@tanstack/react-router' {
       path: '/galerie'
       fullPath: '/galerie'
       preLoaderRoute: typeof Public__rootGalerieIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/credits/': {
+      id: '/_public__root/credits/'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof Public__rootCreditsIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/contact/': {
@@ -432,6 +452,7 @@ interface Public__rootRouteRouteChildren {
   Public__rootReservationSuccessRoute: typeof Public__rootReservationSuccessRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
   Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
+  Public__rootCreditsIndexRoute: typeof Public__rootCreditsIndexRoute
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
   Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
@@ -444,6 +465,7 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootReservationSuccessRoute: Public__rootReservationSuccessRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
   Public__rootContactIndexRoute: Public__rootContactIndexRoute,
+  Public__rootCreditsIndexRoute: Public__rootCreditsIndexRoute,
   Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
   Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,

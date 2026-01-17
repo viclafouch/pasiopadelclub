@@ -1,40 +1,137 @@
 /* eslint-disable no-console */
-/* eslint-disable camelcase */
-import { and, eq, gt, lt } from 'drizzle-orm'
+
+import { addMonths } from 'date-fns'
+import { and, eq, gt, isNull, lt, or, sum } from 'drizzle-orm'
 import type Stripe from 'stripe'
+import {
+  bookingMetadataSchema,
+  creditPackMetadataSchema
+} from '@/constants/schemas'
+import { STRIPE_METADATA_TYPE_CREDIT_PACK } from '@/constants/wallet'
 import { db } from '@/db'
-import { booking, court, user } from '@/db/schema'
+import {
+  booking,
+  court,
+  creditPack,
+  user,
+  walletTransaction
+} from '@/db/schema'
 import { serverEnv } from '@/env/server'
+import { nowParis } from '@/helpers/date'
 import { stripe } from '@/lib/stripe.server'
+import { safeRefund } from '@/utils/stripe'
 import { createFileRoute } from '@tanstack/react-router'
 
-const processedEventIds = new Set<string>()
-
-const maskEmail = (email: string) => {
+function maskEmail(email: string) {
   const [local, domain] = email.split('@')
 
   return `${local?.[0] ?? '?'}***@${domain}`
 }
 
-const maskId = (id: string) => {
+function maskId(id: string) {
   return `${id.slice(0, 8)}...`
 }
 
-const handleCheckoutCompleted = async (
-  eventId: string,
+async function handleCreditPackPurchase(
   session: Stripe.Checkout.Session
-): Promise<void> => {
-  if (processedEventIds.has(eventId)) {
-    console.log('[Webhook] Event already processed:', eventId)
+): Promise<void> {
+  const paymentIntentId = session.payment_intent as string | null
+
+  if (!paymentIntentId) {
+    console.error('[Webhook] Missing payment_intent for credit pack')
 
     return
   }
 
-  const {
-    metadata,
-    customer_email: customerEmail,
-    amount_total: amountPaid
-  } = session
+  const parsed = creditPackMetadataSchema.safeParse(session.metadata)
+
+  if (!parsed.success) {
+    console.error(
+      '[Webhook] Invalid credit pack metadata:',
+      parsed.error.message
+    )
+
+    return
+  }
+
+  const { packId, userId, creditsCents, validityMonths } = parsed.data
+
+  const [[userData], [packData]] = await Promise.all([
+    db.select().from(user).where(eq(user.id, userId)).limit(1),
+    db.select().from(creditPack).where(eq(creditPack.id, packId)).limit(1)
+  ])
+
+  if (!userData) {
+    console.error('[Webhook] User not found for credit pack:', maskId(userId))
+
+    return
+  }
+
+  if (!packData) {
+    console.error('[Webhook] Credit pack not found:', maskId(packId))
+
+    return
+  }
+
+  const expiresAt = addMonths(nowParis(), validityMonths)
+
+  const insertedRows = await db.transaction(
+    async (tx) => {
+      const txNow = nowParis()
+      const [balanceResult] = await tx
+        .select({ balance: sum(walletTransaction.amountCents) })
+        .from(walletTransaction)
+        .where(
+          and(
+            eq(walletTransaction.userId, userId),
+            or(
+              isNull(walletTransaction.expiresAt),
+              gt(walletTransaction.expiresAt, txNow)
+            )
+          )
+        )
+
+      const currentBalance = Number(balanceResult?.balance ?? 0)
+      const newBalance = currentBalance + creditsCents
+
+      return tx
+        .insert(walletTransaction)
+        .values({
+          userId,
+          type: 'purchase',
+          amountCents: creditsCents,
+          balanceAfterCents: newBalance,
+          creditPackId: packId,
+          stripePaymentId: paymentIntentId,
+          expiresAt,
+          description: `Achat pack ${packData.name}`
+        })
+        .onConflictDoNothing({ target: walletTransaction.stripePaymentId })
+        .returning({ id: walletTransaction.id })
+    },
+    { isolationLevel: 'serializable' }
+  )
+
+  if (insertedRows.length === 0) {
+    console.log(
+      '[Webhook] Credit pack already processed:',
+      maskId(paymentIntentId)
+    )
+
+    return
+  }
+
+  console.log('[Webhook] Credit pack purchased:', {
+    userId: maskId(userId),
+    credits: creditsCents / 100,
+    expiresAt: expiresAt.toISOString()
+  })
+}
+
+async function handleCheckoutCompleted(
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  const { customer_email: customerEmail, amount_total: amountPaid } = session
   const paymentIntentId = session.payment_intent as string | null
 
   if (!paymentIntentId) {
@@ -43,38 +140,15 @@ const handleCheckoutCompleted = async (
     return
   }
 
-  if (!metadata?.courtId || !metadata.startAt || !metadata.endAt) {
-    console.error('[Webhook] Missing metadata')
+  const parsed = bookingMetadataSchema.safeParse(session.metadata)
+
+  if (!parsed.success) {
+    console.error('[Webhook] Invalid booking metadata:', parsed.error.message)
 
     return
   }
 
-  if (!metadata.userId) {
-    console.error('[Webhook] Missing userId in metadata')
-
-    return
-  }
-
-  const { courtId } = metadata
-  const startAt = Number(metadata.startAt)
-  const endAt = Number(metadata.endAt)
-  const { userId } = metadata
-
-  const startDate = new Date(startAt)
-  const endDate = new Date(endAt)
-
-  const [existingPayment] = await db
-    .select({ id: booking.id })
-    .from(booking)
-    .where(eq(booking.stripePaymentId, paymentIntentId))
-    .limit(1)
-
-  if (existingPayment) {
-    console.log('[Webhook] Payment already processed:', maskId(paymentIntentId))
-    processedEventIds.add(eventId)
-
-    return
-  }
+  const { courtId, userId, startAt, endAt } = parsed.data
 
   const [[userData], [courtData]] = await Promise.all([
     db.select().from(user).where(eq(user.id, userId)).limit(1),
@@ -101,10 +175,7 @@ const handleCheckoutCompleted = async (
       expected: courtData.price,
       paid: amountPaid
     })
-    await stripe.refunds.create({
-      payment_intent: paymentIntentId,
-      reason: 'fraudulent'
-    })
+    await safeRefund({ paymentIntentId, reason: 'fraudulent' })
 
     return
   }
@@ -116,8 +187,8 @@ const handleCheckoutCompleted = async (
       and(
         eq(booking.courtId, courtId),
         eq(booking.status, 'confirmed'),
-        lt(booking.startAt, endDate),
-        gt(booking.endAt, startDate)
+        lt(booking.startAt, endAt),
+        gt(booking.endAt, startAt)
       )
     )
     .limit(1)
@@ -127,54 +198,40 @@ const handleCheckoutCompleted = async (
       courtId: maskId(courtId),
       paymentId: maskId(paymentIntentId)
     })
-    await stripe.refunds.create({
-      payment_intent: paymentIntentId,
-      reason: 'duplicate'
-    })
+    await safeRefund({ paymentIntentId, reason: 'duplicate' })
 
     return
   }
 
-  try {
-    const [newBooking] = await db
-      .insert(booking)
-      .values({
-        userId: userData.id,
-        courtId,
-        startAt: startDate,
-        endAt: endDate,
-        price: courtData.price,
-        paymentType: 'online',
-        status: 'confirmed',
-        stripePaymentId: paymentIntentId
-      })
-      .returning()
+  const insertedRows = await db
+    .insert(booking)
+    .values({
+      userId: userData.id,
+      courtId,
+      startAt,
+      endAt,
+      price: courtData.price,
+      paymentType: 'online',
+      status: 'confirmed',
+      stripePaymentId: paymentIntentId
+    })
+    .onConflictDoNothing({ target: booking.stripePaymentId })
+    .returning({ id: booking.id })
 
-    console.log('[Webhook] Booking created:', maskId(newBooking?.id ?? ''))
-    processedEventIds.add(eventId)
-  } catch (error) {
-    const isUniqueViolation =
-      error instanceof Error && error.message.includes('unique')
+  if (insertedRows.length === 0) {
+    console.log('[Webhook] Payment already processed:', maskId(paymentIntentId))
 
-    if (isUniqueViolation) {
-      console.log(
-        '[Webhook] Duplicate payment ignored:',
-        maskId(paymentIntentId)
-      )
-      processedEventIds.add(eventId)
-
-      return
-    }
-
-    throw error
+    return
   }
+
+  console.log('[Webhook] Booking created:', maskId(insertedRows[0]?.id ?? ''))
 }
 
-const webhookHandler = async ({
+async function webhookHandler({
   request
 }: {
   request: Request
-}): Promise<Response> => {
+}): Promise<Response> {
   const signature = request.headers.get('stripe-signature')
 
   if (!signature) {
@@ -197,20 +254,19 @@ const webhookHandler = async ({
     return new Response('Invalid request', { status: 400 })
   }
 
-  if (processedEventIds.has(event.id)) {
-    console.log('[Webhook] Duplicate event ignored:', event.id)
-
-    return new Response(JSON.stringify({ received: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    })
-  }
-
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        await handleCheckoutCompleted(event.id, session)
+        const matchIsCreditPack =
+          session.metadata?.type === STRIPE_METADATA_TYPE_CREDIT_PACK
+
+        if (matchIsCreditPack) {
+          await handleCreditPackPurchase(session)
+        } else {
+          await handleCheckoutCompleted(session)
+        }
+
         break
       }
 

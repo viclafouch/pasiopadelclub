@@ -1,5 +1,5 @@
 import React from 'react'
-import { CalendarIcon, HistoryIcon, UserIcon } from 'lucide-react'
+import { CalendarIcon, HistoryIcon, UserIcon, WalletIcon } from 'lucide-react'
 import { z } from 'zod'
 import {
   Tabs,
@@ -13,6 +13,7 @@ import {
   useNavigate,
   useRouteContext
 } from '@tanstack/react-router'
+import { CreditsTab, CreditsTabSkeleton } from './-tabs/credits'
 import { HistoryTab } from './-tabs/history'
 import { ProfileTab, ProfileTabSkeleton } from './-tabs/profile'
 import { UpcomingBookingsTab } from './-tabs/upcoming-bookings'
@@ -29,6 +30,7 @@ const BookingsSkeleton = () => {
 const TABS = [
   { value: 'reservations', label: 'Réservations', icon: CalendarIcon },
   { value: 'historique', label: 'Historique', icon: HistoryIcon },
+  { value: 'credits', label: 'Crédits', icon: WalletIcon },
   { value: 'profil', label: 'Profil', icon: UserIcon }
 ] as const
 
@@ -83,6 +85,11 @@ const MonComptePage = () => {
           <React.Activity mode={tab === 'historique' ? 'visible' : 'hidden'}>
             <React.Suspense fallback={<BookingsSkeleton />}>
               <HistoryTab />
+            </React.Suspense>
+          </React.Activity>
+          <React.Activity mode={tab === 'credits' ? 'visible' : 'hidden'}>
+            <React.Suspense fallback={<CreditsTabSkeleton />}>
+              <CreditsTab />
             </React.Suspense>
           </React.Activity>
           <React.Activity mode={tab === 'profil' ? 'visible' : 'hidden'}>

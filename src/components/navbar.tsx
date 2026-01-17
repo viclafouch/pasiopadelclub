@@ -28,7 +28,8 @@ import { Link, useRouteContext, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
   { linkOptions: { to: '/' }, label: 'Accueil' },
-  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' }
+  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
+  { linkOptions: { to: '/credits' }, label: 'Packs' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
 type NavbarProps = {
