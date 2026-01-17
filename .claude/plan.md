@@ -279,7 +279,7 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 ### 6.1 Configuration ✅
 - [x] Compte Polar sandbox + produits (double 60€, simple 30€, kids 15€)
 - [x] Plugin Better Auth (serveur + client)
-- [ ] Webhook URL dans Polar dashboard (prod)
+- [x] Webhook URL dans Polar dashboard (prod)
 
 ### 6.2 Flux de paiement ✅
 - [x] Checkout via `authClient.checkout()` avec referenceId encodé
@@ -316,10 +316,29 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 
 ---
 
-## Milestones 8-13 : À venir
+## Milestone 8 : Déploiement Railway ✅
 
-- **M8-9** : Dashboard admin (stats, blocage créneaux/users, réservations manuelles)
-- **M10** : SEO (Schema.org, Google My Business)
-- **M11** : Tests (Vitest)
-- **M12** : RGPD (anonymisation, suppression compte)
-- **M13** : Déploiement Railway
+- [x] Configuration Railway avec Railpack
+- [x] Variables d'environnement (Neon, Polar, Better Auth)
+- [x] Timezone serveur (Paris) pour dates cohérentes
+- [x] Package-lock.json sync (Node 24 + npm 11.7.0 dans engines)
+- [x] Invalidation cache TanStack Query après paiement
+
+---
+
+## Milestones 9-13 : À venir
+
+- **M9-10** : Dashboard admin (stats, blocage créneaux/users, réservations manuelles)
+- **M11** : SEO (Schema.org, Google My Business)
+- **M12** : Tests (Vitest)
+- **M13** : RGPD (anonymisation, suppression compte)
+
+---
+
+## Améliorations Better Auth (non-critique)
+
+- [ ] Ajouter `rateLimit` config (protection brute force)
+- [ ] Configurer `trustedOrigins` pour production
+- [ ] Configurer `ipAddressHeaders` (Railway proxy)
+- [ ] Fusionner vérification admin role dans `beforeLoad` (éviter flash)
+- [ ] Centraliser types additionalFields via `auth.$Infer` (éviter duplication client/serveur)
