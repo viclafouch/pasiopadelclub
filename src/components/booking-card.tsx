@@ -57,48 +57,6 @@ export const BookingCard = ({
   const isInProgress = displayStatus === 'in-progress'
   const showCancel = showCancelButton && isConfirmed && !isHistory
 
-  const renderCancelButton = () => {
-    if (!showCancel) {
-      return null
-    }
-
-    if (isInProgress) {
-      return (
-        <CardFooter>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  disabled
-                  aria-disabled="true"
-                >
-                  Annuler la réservation
-                </Button>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>Réservation en cours</TooltipContent>
-          </Tooltip>
-        </CardFooter>
-      )
-    }
-
-    return (
-      <CardFooter>
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => {
-            onCancel?.(booking.id)
-          }}
-        >
-          Annuler la réservation
-        </Button>
-      </CardFooter>
-    )
-  }
-
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -141,12 +99,48 @@ export const BookingCard = ({
         </div>
         <div className="flex items-center justify-between pt-2 border-t">
           <p className="font-medium">{formatCentsToEuros(booking.price)}</p>
-          <p className="text-xs text-muted-foreground">
-            Réservé le {formatDateFr(new Date(booking.createdAt))}
-          </p>
+          {booking.status === 'cancelled' ? (
+            <p className="text-xs text-muted-foreground">
+              Remboursement effectué
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Réservé le {formatDateFr(new Date(booking.createdAt))}
+            </p>
+          )}
         </div>
       </CardContent>
-      {renderCancelButton()}
+      {showCancel ? (
+        <CardFooter>
+          {isInProgress ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    disabled
+                    aria-disabled="true"
+                  >
+                    Annuler la réservation
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Réservation en cours</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                return onCancel?.(booking.id)
+              }}
+            >
+              Annuler la réservation
+            </Button>
+          )}
+        </CardFooter>
+      ) : null}
     </Card>
   )
 }

@@ -33,13 +33,16 @@ For multi-step plans, divide them into multiple phases with different headings. 
 - **No code examples** in rules - write general principles applicable to all cases
 - Rules describe WHAT to do/avoid, not HOW with specific syntax
 
-### Code Quality
-- After implementing each task, run `code-simplifier` agent to simplify and validate the code
-- The agent verifies compliance with all rules in `.claude/rules/`:
+### Code Quality (MANDATORY)
+- **ALWAYS run `code-simplifier:code-simplifier` agent** after implementing any feature or fix
+- **ALWAYS verify ALL rules** in `.claude/rules/` are respected before considering a task done
+- The agent verifies compliance with:
   - `typescript.md`: naming conventions, type safety, async handling
   - `comments.md`: no redundant comments, self-documenting code
   - `code-style.md`: clarity over brevity, proper naming, no unnecessary abstractions
+  - `frontend.md`: React patterns, accessibility, ternary conditionals
   - `testing.md`: BDD-style tests, proper mocking, coverage
+- **Never skip this step** - run simplifier even for small changes
 - Never mark a task complete without running `code-simplifier`
 
 ### Libraries

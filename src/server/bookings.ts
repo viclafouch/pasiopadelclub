@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gt, lte } from 'drizzle-orm'
+import { and, count, desc, eq, gt, lte, or } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
@@ -60,7 +60,7 @@ export const getBookingHistoryFn = createServerFn({ method: 'GET' })
       .where(
         and(
           eq(booking.userId, context.session.user.id),
-          lte(booking.endAt, nowParis())
+          or(lte(booking.endAt, nowParis()), eq(booking.status, 'cancelled'))
         )
       )
       .orderBy(desc(booking.startAt))
