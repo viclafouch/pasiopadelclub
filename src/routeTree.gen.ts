@@ -24,7 +24,7 @@ import { Route as Public__rootContactIndexRouteImport } from './routes/_public__
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
-import { Route as ApiWebhooksPolarRouteImport } from './routes/api/webhooks/polar'
+import { Route as ApiWebhooksStripeRouteImport } from './routes/api/webhooks/stripe'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as Public__rootReservationSuccessRouteImport } from './routes/_public__root/reservation/success'
 import { Route as Public__rootReservationEchecRouteImport } from './routes/_public__root/reservation/echec'
@@ -105,9 +105,9 @@ const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const ApiWebhooksPolarRoute = ApiWebhooksPolarRouteImport.update({
-  id: '/api/webhooks/polar',
-  path: '/api/webhooks/polar',
+const ApiWebhooksStripeRoute = ApiWebhooksStripeRouteImport.update({
+  id: '/api/webhooks/stripe',
+  path: '/api/webhooks/stripe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -135,7 +135,7 @@ export interface FileRoutesByFullPath {
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
+  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/admin': typeof AdminAdminIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
@@ -152,7 +152,7 @@ export interface FileRoutesByTo {
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
+  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/admin': typeof AdminAdminIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
@@ -174,7 +174,7 @@ export interface FileRoutesById {
   '/_public__root/reservation/echec': typeof Public__rootReservationEchecRoute
   '/_public__root/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/polar': typeof ApiWebhooksPolarRoute
+  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
@@ -193,7 +193,7 @@ export interface FileRouteTypes {
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
-    | '/api/webhooks/polar'
+    | '/api/webhooks/stripe'
     | '/admin'
     | '/mon-compte'
     | '/cgv'
@@ -210,7 +210,7 @@ export interface FileRouteTypes {
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
-    | '/api/webhooks/polar'
+    | '/api/webhooks/stripe'
     | '/admin'
     | '/mon-compte'
     | '/cgv'
@@ -231,7 +231,7 @@ export interface FileRouteTypes {
     | '/_public__root/reservation/echec'
     | '/_public__root/reservation/success'
     | '/api/auth/$'
-    | '/api/webhooks/polar'
+    | '/api/webhooks/stripe'
     | '/_admin/admin/'
     | '/_authenticated/mon-compte/'
     | '/_public__root/cgv/'
@@ -248,7 +248,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiWebhooksPolarRoute: typeof ApiWebhooksPolarRoute
+  ApiWebhooksStripeRoute: typeof ApiWebhooksStripeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -358,11 +358,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/api/webhooks/polar': {
-      id: '/api/webhooks/polar'
-      path: '/api/webhooks/polar'
-      fullPath: '/api/webhooks/polar'
-      preLoaderRoute: typeof ApiWebhooksPolarRouteImport
+    '/api/webhooks/stripe': {
+      id: '/api/webhooks/stripe'
+      path: '/api/webhooks/stripe'
+      fullPath: '/api/webhooks/stripe'
+      preLoaderRoute: typeof ApiWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -459,7 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiWebhooksPolarRoute: ApiWebhooksPolarRoute,
+  ApiWebhooksStripeRoute: ApiWebhooksStripeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -171,7 +171,7 @@ export const booking = pgTable(
     startAt: timestamp('start_at').notNull(),
     endAt: timestamp('end_at').notNull(),
     price: integer('price').notNull(),
-    polarPaymentId: text('polar_payment_id').unique(),
+    stripePaymentId: text('stripe_payment_id').unique(),
     paymentType: paymentTypeEnum('payment_type').notNull(),
     status: bookingStatusEnum('status').notNull().default('pending'),
     reminderSent: boolean('reminder_sent').notNull().default(false),

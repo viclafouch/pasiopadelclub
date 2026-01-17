@@ -19,7 +19,7 @@ import type { SelectedSlot } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
 import { formatCentsToEuros } from '@/helpers/number'
-import { authClient } from '@/lib/auth-client'
+import { createCheckoutSessionFn } from '@/server/checkout'
 import { useMutation } from '@tanstack/react-query'
 
 type BookingSummaryModalProps = {
@@ -38,16 +38,10 @@ export const BookingSummaryModal = ({
       courtId: string
       startAt: number
       endAt: number
-      slug: string
     }) => {
-      await authClient.checkout({
-        slug: slotData.slug,
-        referenceId: JSON.stringify({
-          courtId: slotData.courtId,
-          startAt: slotData.startAt,
-          endAt: slotData.endAt
-        })
-      })
+      const result = await createCheckoutSessionFn({ data: slotData })
+
+      window.location.href = result.url
     }
   })
 
@@ -63,8 +57,7 @@ export const BookingSummaryModal = ({
     checkoutMutation.mutate({
       courtId: court.id,
       startAt: slot.startAt,
-      endAt: slot.endAt,
-      slug: court.type
+      endAt: slot.endAt
     })
   }
 

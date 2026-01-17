@@ -3,8 +3,8 @@ import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
 import { nowParis } from '@/helpers/date'
-import { polar } from '@/lib/auth'
 import { authMiddleware } from '@/lib/middleware'
+import { stripe } from '@/lib/stripe.server'
 import { matchCanCancelBooking } from '@/utils/booking'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
@@ -127,23 +127,39 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
       throw new Error('Action non autorisée')
     }
 
+    if (bookingData.status === 'cancelled') {
+      setResponseStatus(400)
+      throw new Error('Réservation déjà annulée')
+    }
+
+    if (bookingData.status !== 'confirmed') {
+      setResponseStatus(400)
+      throw new Error("Impossible d'annuler cette réservation")
+    }
+
     if (!matchCanCancelBooking(bookingData.startAt)) {
       setResponseStatus(400)
       throw new Error('Annulation impossible moins de 24h avant')
     }
 
-    if (bookingData.polarPaymentId) {
+    if (bookingData.stripePaymentId) {
       try {
-        await polar.refunds.create({
-          orderId: bookingData.polarPaymentId,
-          reason: 'customer_request',
-          amount: bookingData.price
+        /* eslint-disable camelcase */
+        await stripe.refunds.create({
+          payment_intent: bookingData.stripePaymentId
         })
-      } catch {
-        setResponseStatus(503)
-        throw new Error(
-          'Remboursement temporairement indisponible, réessayez plus tard'
-        )
+        /* eslint-enable camelcase */
+      } catch (error) {
+        const isAlreadyRefunded =
+          error instanceof Error &&
+          error.message.includes('already been refunded')
+
+        if (!isAlreadyRefunded) {
+          setResponseStatus(503)
+          throw new Error(
+            'Remboursement temporairement indisponible, réessayez plus tard'
+          )
+        }
       }
     }
 

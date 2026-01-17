@@ -1,18 +1,9 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { POLAR_PRODUCT_IDS } from '@/constants/polar'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 import { serverEnv } from '@/env/server'
-import { checkout, polar as polarPlugin, webhooks } from '@polar-sh/better-auth'
-import { Polar } from '@polar-sh/sdk'
-
-export const polar = new Polar({
-  accessToken: serverEnv.POLAR_ACCESS_TOKEN,
-  // DO NOT CHANGE FOR NOW
-  server: 'sandbox'
-})
 
 export const auth = betterAuth({
   appName: 'Pasio Padel Club',
@@ -28,11 +19,11 @@ export const auth = betterAuth({
     }
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // 1 day
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60 // 5 minutes
+      maxAge: 5 * 60
     }
   },
   user: {
@@ -77,27 +68,7 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 100
   },
-  plugins: [
-    tanstackStartCookies(),
-    polarPlugin({
-      client: polar,
-      createCustomerOnSignUp: true,
-      use: [
-        checkout({
-          products: [
-            { productId: POLAR_PRODUCT_IDS.double, slug: 'double' },
-            { productId: POLAR_PRODUCT_IDS.simple, slug: 'simple' },
-            { productId: POLAR_PRODUCT_IDS.kids, slug: 'kids' }
-          ],
-          successUrl: '/reservation/success?checkout_id={CHECKOUT_ID}',
-          authenticatedUsersOnly: true
-        }),
-        webhooks({
-          secret: serverEnv.POLAR_WEBHOOK_SECRET
-        })
-      ]
-    })
-  ]
+  plugins: [tanstackStartCookies()]
 })
 
 export type Session = typeof auth.$Infer.Session

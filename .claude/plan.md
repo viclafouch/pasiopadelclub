@@ -14,8 +14,8 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 |--------|-------------|
 | Frontend | React 19, TanStack Start avec Tanstack Router (SSR), Tailwind CSS 4, Shadcn, Vite |
 | Backend | Drizzle ORM + Neon (Postgres serverless) |
-| Authentification | Better Auth (avec plugin Polar) |
-| Paiement | Polar (intégré via Better Auth) |
+| Authentification | Better Auth |
+| Paiement | Stripe (SDK direct, paiements one-time) |
 | Emails transactionnels | Resend (templates React Email brandés) |
 | Hébergement | Railway |
 | Tests | Vitest (unitaires + intégration), pas de E2E |
@@ -47,8 +47,8 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 ## Règles de Réservation
 
 - **Type** : Location de terrain uniquement (pas de cours avec coach)
-- **Paiement** : Immédiat et obligatoire via Polar
-- **Création booking** : Uniquement après confirmation paiement (webhook Polar `order.paid`)
+- **Paiement** : Immédiat et obligatoire via Stripe Checkout
+- **Création booking** : Uniquement après confirmation paiement (webhook Stripe `checkout.session.completed`)
 - **Pas de blocage préventif** : Le créneau reste disponible jusqu'au paiement confirmé
 - **Double-booking** : Très rare (~20 users), si ça arrive → remboursement manuel
 - **Annulation** : Autorisée uniquement si effectuée au moins 24 heures avant le créneau réservé (remboursement intégral)
@@ -90,7 +90,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 - **Mes réservations** : Créneaux réservés par l'utilisateur connecté en bleu (couleur `info`) avec texte "Réservé par vous"
 
 ### Gestion des erreurs
-- **Polar indisponible** : Message simple "Paiement temporairement indisponible, réessayez plus tard"
+- **Stripe indisponible** : Message simple "Paiement temporairement indisponible, réessayez plus tard"
 - **Échec email** : Retry automatique 3x avec délai croissant (1min, 5min, 15min). Après 3 échecs, log l'erreur
 
 ---
@@ -209,7 +209,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
   startAt: timestamp,
   endAt: timestamp,
   price: number,              // en centimes
-  polarPaymentId: string | null,
+  stripePaymentId: string | null,  // Stripe PaymentIntent ID
   paymentType: "online" | "free",
   status: "confirmed" | "cancelled",  // PAS de "pending"
   createdAt: timestamp
@@ -274,29 +274,62 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 
 ---
 
-## Milestone 6 : Paiement Polar ✅
+## Milestone 6 : Paiement Polar ✅ (remplacé par Stripe)
 
-### 6.1 Configuration ✅
-- [x] Compte Polar sandbox + produits (double 60€, simple 30€, kids 15€)
-- [x] Plugin Better Auth (serveur + client)
-- [x] Webhook URL dans Polar dashboard (prod)
+> **Note** : Polar remplacé par Stripe - voir Milestone 6.5
 
-### 6.2 Flux de paiement ✅
-- [x] Checkout via `authClient.checkout()` avec referenceId encodé
-- [x] Booking créé uniquement après paiement confirmé (pas de "pending")
+---
 
-### 6.3 Webhook ✅
-- [x] Route `/api/webhooks/polar.ts` avec event `order.paid`
-- [x] Idempotence et gestion conflits
+## Milestone 6.5 : Migration Polar → Stripe
 
-### 6.4 Pages de retour ✅
-- [x] Pages success/echec créées
-- [x] Afficher récapitulatif réservation sur success.tsx
+### Contexte
+Polar pas assez mature, l'ancien site utilisait déjà Stripe. Le plugin `@better-auth/stripe` est orienté subscriptions, donc on utilise le **Stripe SDK directement** pour les paiements one-time.
 
-### 6.5 Remboursements ✅
-- [x] Fonction `refundBooking` via API Polar (Polar SDK)
-- [x] Intégration annulation utilisateur
-- [ ] Intégration blocage admin (Milestone 8-9)
+### Phase 1 : Configuration
+- [ ] Installer `stripe` SDK (package npm)
+- [ ] Env vars: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY`
+- [ ] Créer `src/lib/stripe.ts` avec client Stripe initialisé
+
+### Phase 2 : Server Function Checkout
+- [ ] Créer `src/server/checkout.ts` avec `createCheckoutSessionFn`
+- [ ] Checkout Session avec `mode: 'payment'` (one-time)
+- [ ] Metadata: `courtId`, `startAt`, `endAt`, `userId`
+- [ ] `success_url` et `cancel_url` configurés
+- [ ] Prix dynamique via `line_items` (amount en centimes)
+
+### Phase 3 : Webhook Stripe
+- [ ] Créer `src/routes/api/webhooks/stripe.ts`
+- [ ] Gérer `checkout.session.completed`
+- [ ] Vérifier signature webhook
+- [ ] Idempotence via `stripePaymentId` unique
+- [ ] Créer booking après paiement confirmé
+- [ ] Supprimer `src/routes/api/webhooks/polar.ts`
+
+### Phase 4 : Database Migration
+- [ ] Renommer `polarPaymentId` → `stripePaymentId` (migration Drizzle)
+- [ ] Mettre à jour schema et types
+
+### Phase 5 : Remboursements
+- [ ] Adapter `cancelBookingFn` pour utiliser `stripe.refunds.create()`
+- [ ] Refund via PaymentIntent ID
+
+### Phase 6 : Client Updates
+- [ ] Modifier `booking-summary-modal.tsx` pour appeler server function
+- [ ] Supprimer `polarClient()` de `auth-client.ts`
+- [ ] Mettre à jour `success.tsx` si nécessaire
+
+### Phase 7 : Cleanup
+- [ ] Supprimer `src/lib/auth.ts` → export `polar` et plugin
+- [ ] Supprimer `src/constants/polar.ts`
+- [ ] Désinstaller packages: `@polar-sh/better-auth`, `@polar-sh/sdk`, `@polar-sh/tanstack-start`
+- [ ] Supprimer env vars Polar: `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`
+- [ ] Mettre à jour `.env.example`
+
+### Phase 8 : Tests
+- [ ] Tester checkout flow complet (sandbox Stripe)
+- [ ] Tester webhook avec Stripe CLI (`stripe listen`)
+- [ ] Tester remboursement
+- [ ] Déployer webhook URL sur Stripe Dashboard
 
 ---
 
@@ -312,14 +345,15 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 
 - [x] Erreurs Better Auth traduites
 - [x] Validation Zod en FR
-- [ ] Traduction erreurs Polar
+- [ ] Traduction erreurs Stripe
 
 ---
 
 ## Milestone 8 : Déploiement Railway ✅
 
 - [x] Configuration Railway avec Railpack
-- [x] Variables d'environnement (Neon, Polar, Better Auth)
+- [x] Variables d'environnement (Neon, Better Auth)
+- [ ] Variables d'environnement Stripe (après M6.5)
 - [x] Timezone serveur (Paris) pour dates cohérentes
 - [x] Package-lock.json sync (Node 24 + npm 11.7.0 dans engines)
 - [x] Invalidation cache TanStack Query après paiement
