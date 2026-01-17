@@ -104,7 +104,7 @@ export const BookingCard = ({
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <h3 className="font-display font-semibold text-lg">
+            <h3 className="font-sans font-semibold text-lg">
               Terrain {court.name}
             </h3>
             <p className="text-muted-foreground text-sm">

@@ -7,7 +7,12 @@ import {
   UsersIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { getLatestBookingQueryOpts } from '@/constants/queries'
+import {
+  getActiveBookingCountQueryOpts,
+  getLatestBookingQueryOpts,
+  getSlotsByDateQueryOpts,
+  getUpcomingBookingsQueryOpts
+} from '@/constants/queries'
 import type { BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
@@ -222,6 +227,17 @@ const ReservationSuccessPage = () => {
 }
 
 export const Route = createFileRoute('/_public__root/reservation/success')({
+  beforeLoad: ({ context }) => {
+    context.queryClient.invalidateQueries({
+      queryKey: getUpcomingBookingsQueryOpts.all
+    })
+    context.queryClient.invalidateQueries({
+      queryKey: getActiveBookingCountQueryOpts.all
+    })
+    context.queryClient.invalidateQueries({
+      queryKey: getSlotsByDateQueryOpts.all
+    })
+  },
   head: () => {
     return {
       meta: seo({
