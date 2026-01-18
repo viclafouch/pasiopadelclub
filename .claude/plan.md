@@ -280,83 +280,62 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 
 ---
 
-## Milestone 6.5 : Migration Polar → Stripe
+## Milestone 6.5 : Migration Polar → Stripe ✅
 
-### Contexte
-Polar pas assez mature, l'ancien site utilisait déjà Stripe. Le plugin `@better-auth/stripe` est orienté subscriptions, donc on utilise le **Stripe SDK directement** pour les paiements one-time.
+- [x] SDK Stripe installé, `src/lib/stripe.server.ts` créé
+- [x] `src/server/checkout.ts` avec `createCheckoutSessionFn`
+- [x] `src/routes/api/webhooks/stripe.ts` (signature, idempotence, booking)
+- [x] Schema DB: `stripePaymentId` (plus de polarPaymentId)
+- [x] `src/utils/stripe.ts` avec `safeRefund()`
+- [x] Booking modal appelle server function Stripe
+- [x] Cleanup Polar complet (packages, fichiers, références)
+- [x] Tests webhook OK
 
-### Phase 1 : Configuration
-- [ ] Installer `stripe` SDK (package npm)
-- [ ] Env vars: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY`
-- [ ] Créer `src/lib/stripe.ts` avec client Stripe initialisé
+---
 
-### Phase 2 : Server Function Checkout
-- [ ] Créer `src/server/checkout.ts` avec `createCheckoutSessionFn`
-- [ ] Checkout Session avec `mode: 'payment'` (one-time)
-- [ ] Metadata: `courtId`, `startAt`, `endAt`, `userId`
-- [ ] `success_url` et `cancel_url` configurés
-- [ ] Prix dynamique via `line_items` (amount en centimes)
+## Milestone 6.6 : Système de Crédits/Wallet ✅
 
-### Phase 3 : Webhook Stripe
-- [ ] Créer `src/routes/api/webhooks/stripe.ts`
-- [ ] Gérer `checkout.session.completed`
-- [ ] Vérifier signature webhook
-- [ ] Idempotence via `stripePaymentId` unique
-- [ ] Créer booking après paiement confirmé
-- [ ] Supprimer `src/routes/api/webhooks/polar.ts`
+Système de prépaiement par crédits avec bonus et expiration.
 
-### Phase 4 : Database Migration
-- [ ] Renommer `polarPaymentId` → `stripePaymentId` (migration Drizzle)
-- [ ] Mettre à jour schema et types
-
-### Phase 5 : Remboursements
-- [ ] Adapter `cancelBookingFn` pour utiliser `stripe.refunds.create()`
-- [ ] Refund via PaymentIntent ID
-
-### Phase 6 : Client Updates
-- [ ] Modifier `booking-summary-modal.tsx` pour appeler server function
-- [ ] Supprimer `polarClient()` de `auth-client.ts`
-- [ ] Mettre à jour `success.tsx` si nécessaire
-
-### Phase 7 : Cleanup
-- [ ] Supprimer `src/lib/auth.ts` → export `polar` et plugin
-- [ ] Supprimer `src/constants/polar.ts`
-- [ ] Désinstaller packages: `@polar-sh/better-auth`, `@polar-sh/sdk`, `@polar-sh/tanstack-start`
-- [ ] Supprimer env vars Polar: `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`
-- [ ] Mettre à jour `.env.example`
-
-### Phase 8 : Tests
-- [ ] Tester checkout flow complet (sandbox Stripe)
-- [ ] Tester webhook avec Stripe CLI (`stripe listen`)
-- [ ] Tester remboursement
-- [ ] Déployer webhook URL sur Stripe Dashboard
+- [x] Schema DB: `creditPack`, `walletTransaction`
+- [x] `src/server/wallet.ts` (balance, transactions, packs, expiration)
+- [x] `src/server/credits-checkout.ts` (achat crédits via Stripe)
+- [x] `src/server/credit-payment.ts` (payer réservation avec crédits)
+- [x] `src/utils/wallet.ts` (getUserBalance)
+- [x] `src/components/credit-pack-card.tsx`, `credit-balance-section.tsx`
+- [x] Route `/credits` (page publique achat packs)
+- [x] Tab "Crédits" dans mon-compte (solde, historique)
+- [x] Booking modal: choix paiement carte vs crédits
+- [x] Webhook Stripe gère achat crédits
+- [x] Seed 3 packs (Starter, Pro, Premium)
 
 ---
 
 ## Milestone 7 : Emails Transactionnels
 
 - [ ] Configuration Resend + domaine pasiopadelclub.fr
-- [ ] Templates : confirmation, rappel 24h, annulation, contact
+- [ ] Templates React Email: confirmation, rappel 24h, annulation, contact
 - [ ] Cron rappel 24h avant créneaux
 
 ---
 
 ## Milestone 7.5 : i18n Français
 
-- [x] Erreurs Better Auth traduites
+- [x] Erreurs Better Auth traduites (`src/helpers/auth-errors.ts`)
 - [x] Validation Zod en FR
-- [ ] Traduction erreurs Stripe
+- [ ] Traduction erreurs Stripe (codes: insufficient_funds, lost_card, etc.)
 
 ---
 
 ## Milestone 8 : Déploiement Railway ✅
 
 - [x] Configuration Railway avec Railpack
-- [x] Variables d'environnement (Neon, Better Auth)
-- [ ] Variables d'environnement Stripe (après M6.5)
-- [x] Timezone serveur (Paris) pour dates cohérentes
-- [x] Package-lock.json sync (Node 24 + npm 11.7.0 dans engines)
+- [x] Variables d'environnement (Neon, Better Auth, Stripe)
+- [x] Timezone serveur (Paris)
+- [x] Package-lock.json sync
 - [x] Invalidation cache TanStack Query après paiement
+- [ ] Supprimer env vars Polar sur Railway (POLAR_ACCESS_TOKEN, POLAR_WEBHOOK_SECRET)
+- [ ] Configurer webhook URL Stripe sur Dashboard (production)
 
 ---
 
@@ -374,5 +353,4 @@ Polar pas assez mature, l'ancien site utilisait déjà Stripe. Le plugin `@bette
 - [ ] Ajouter `rateLimit` config (protection brute force)
 - [ ] Configurer `trustedOrigins` pour production
 - [ ] Configurer `ipAddressHeaders` (Railway proxy)
-- [ ] Fusionner vérification admin role dans `beforeLoad` (éviter flash)
-- [ ] Centraliser types additionalFields via `auth.$Infer` (éviter duplication client/serveur)
+- [ ] Centraliser types additionalFields via `auth.$Infer`
