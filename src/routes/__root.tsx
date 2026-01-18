@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 import Footer from '@/components/footer'
+import { Navbar } from '@/components/navbar'
 import {
   getAuthUserQueryOpts,
   getCreditPacksQueryOpts
@@ -64,6 +65,7 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
         <HeadContent />
       </head>
       <body>
+        <Navbar />
         {children}
         <Footer />
         <TanStackDevtools

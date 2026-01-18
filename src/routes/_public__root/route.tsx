@@ -1,4 +1,3 @@
-import { Navbar } from '@/components/navbar'
 import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router'
 
 const PublicLayout = () => {
@@ -6,12 +5,9 @@ const PublicLayout = () => {
   const isHomePage = location.pathname === '/'
 
   return (
-    <>
-      <Navbar variant={isHomePage ? 'overlay' : 'solid'} />
-      <div className={isHomePage ? '' : 'pt-[var(--navbar-height)]'}>
-        <Outlet />
-      </div>
-    </>
+    <div className={isHomePage ? '' : 'pt-[var(--navbar-height)]'}>
+      <Outlet />
+    </div>
   )
 }
 
