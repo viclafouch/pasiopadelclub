@@ -1,7 +1,10 @@
 /// <reference types="vite/client" />
 
 import Footer from '@/components/footer'
-import { getAuthUserQueryOpts } from '@/constants/queries'
+import {
+  getAuthUserQueryOpts,
+  getCreditPacksQueryOpts
+} from '@/constants/queries'
 import type { CurrentUser } from '@/server/auth'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
@@ -84,6 +87,8 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery(getAuthUserQueryOpts())
+
+    context.queryClient.ensureQueryData(getCreditPacksQueryOpts())
 
     return { user }
   },
