@@ -136,27 +136,27 @@ const Public__rootReservationEchecRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof Public__rootIndexRoute
   '/connexion': typeof AuthConnexionRoute
   '/inscription': typeof AuthInscriptionRoute
-  '/': typeof Public__rootIndexRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
-  '/admin': typeof AdminAdminIndexRoute
-  '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
-  '/cgv': typeof Public__rootCgvIndexRoute
-  '/contact': typeof Public__rootContactIndexRoute
-  '/credits': typeof Public__rootCreditsIndexRoute
-  '/galerie': typeof Public__rootGalerieIndexRoute
-  '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
-  '/reservation': typeof Public__rootReservationIndexRoute
-  '/tarifs': typeof Public__rootTarifsIndexRoute
+  '/admin/': typeof AdminAdminIndexRoute
+  '/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
+  '/cgv/': typeof Public__rootCgvIndexRoute
+  '/contact/': typeof Public__rootContactIndexRoute
+  '/credits/': typeof Public__rootCreditsIndexRoute
+  '/galerie/': typeof Public__rootGalerieIndexRoute
+  '/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
+  '/reservation/': typeof Public__rootReservationIndexRoute
+  '/tarifs/': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof Public__rootIndexRoute
   '/connexion': typeof AuthConnexionRoute
   '/inscription': typeof AuthInscriptionRoute
-  '/': typeof Public__rootIndexRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -197,27 +197,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/connexion'
     | '/inscription'
-    | '/'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
     | '/api/webhooks/stripe'
-    | '/admin'
-    | '/mon-compte'
-    | '/cgv'
-    | '/contact'
-    | '/credits'
-    | '/galerie'
-    | '/mentions-legales'
-    | '/reservation'
-    | '/tarifs'
+    | '/admin/'
+    | '/mon-compte/'
+    | '/cgv/'
+    | '/contact/'
+    | '/credits/'
+    | '/galerie/'
+    | '/mentions-legales/'
+    | '/reservation/'
+    | '/tarifs/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/connexion'
     | '/inscription'
-    | '/'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
@@ -269,28 +269,28 @@ declare module '@tanstack/react-router' {
     '/_public__root': {
       id: '/_public__root'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof Public__rootRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
       id: '/_auth'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_admin': {
       id: '/_admin'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -318,63 +318,63 @@ declare module '@tanstack/react-router' {
     '/_public__root/tarifs/': {
       id: '/_public__root/tarifs/'
       path: '/tarifs'
-      fullPath: '/tarifs'
+      fullPath: '/tarifs/'
       preLoaderRoute: typeof Public__rootTarifsIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/reservation/': {
       id: '/_public__root/reservation/'
       path: '/reservation'
-      fullPath: '/reservation'
+      fullPath: '/reservation/'
       preLoaderRoute: typeof Public__rootReservationIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/mentions-legales/': {
       id: '/_public__root/mentions-legales/'
       path: '/mentions-legales'
-      fullPath: '/mentions-legales'
+      fullPath: '/mentions-legales/'
       preLoaderRoute: typeof Public__rootMentionsLegalesIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/galerie/': {
       id: '/_public__root/galerie/'
       path: '/galerie'
-      fullPath: '/galerie'
+      fullPath: '/galerie/'
       preLoaderRoute: typeof Public__rootGalerieIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/credits/': {
       id: '/_public__root/credits/'
       path: '/credits'
-      fullPath: '/credits'
+      fullPath: '/credits/'
       preLoaderRoute: typeof Public__rootCreditsIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/contact/': {
       id: '/_public__root/contact/'
       path: '/contact'
-      fullPath: '/contact'
+      fullPath: '/contact/'
       preLoaderRoute: typeof Public__rootContactIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/cgv/': {
       id: '/_public__root/cgv/'
       path: '/cgv'
-      fullPath: '/cgv'
+      fullPath: '/cgv/'
       preLoaderRoute: typeof Public__rootCgvIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_authenticated/mon-compte/': {
       id: '/_authenticated/mon-compte/'
       path: '/mon-compte'
-      fullPath: '/mon-compte'
+      fullPath: '/mon-compte/'
       preLoaderRoute: typeof AuthenticatedMonCompteIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_admin/admin/': {
       id: '/_admin/admin/'
       path: '/admin'
-      fullPath: '/admin'
+      fullPath: '/admin/'
       preLoaderRoute: typeof AdminAdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
