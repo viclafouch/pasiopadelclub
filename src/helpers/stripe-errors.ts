@@ -1,5 +1,14 @@
-/* eslint-disable camelcase */
-const STRIPE_ERRORS_FR = {
+import type Stripe from 'stripe'
+
+/**
+ * Stripe decline codes - French translations
+ * @see https://stripe.com/docs/declines/codes
+ * @see https://stripe.com/docs/error-codes
+ *
+ * Ces codes peuvent évoluer, vérifier la doc Stripe si un code manque.
+ */
+const STRIPE_DECLINE_CODES_FR: Record<string, string> = {
+  /* eslint-disable camelcase */
   card_declined: 'Carte refusée',
   insufficient_funds: 'Fonds insuffisants',
   lost_card: 'Carte déclarée perdue',
@@ -42,12 +51,25 @@ const STRIPE_ERRORS_FR = {
   transaction_not_allowed: 'Transaction non autorisée',
   try_again_later: 'Veuillez réessayer plus tard',
   withdrawal_count_limit_exceeded: 'Limite de retraits atteinte'
-} as const
+  /* eslint-enable camelcase */
+}
 
-type StripeErrorCode = keyof typeof STRIPE_ERRORS_FR
+const DEFAULT_ERROR_MESSAGE =
+  'Paiement refusé, veuillez réessayer ou utiliser une autre carte'
 
-export function getStripeErrorMessage(code: string) {
-  const message = STRIPE_ERRORS_FR[code as StripeErrorCode]
+export function getStripeErrorMessage(
+  codeOrError: string | Stripe.errors.StripeError
+) {
+  const code =
+    typeof codeOrError === 'string'
+      ? codeOrError
+      : (codeOrError.decline_code ?? codeOrError.code)
+
+  if (!code) {
+    return DEFAULT_ERROR_MESSAGE
+  }
+
+  const message = STRIPE_DECLINE_CODES_FR[code]
 
   if (message) {
     return message
@@ -58,5 +80,18 @@ export function getStripeErrorMessage(code: string) {
     console.warn(`[stripe-errors] Code non traduit: ${code}`)
   }
 
-  return 'Paiement refusé, veuillez réessayer ou utiliser une autre carte'
+  return DEFAULT_ERROR_MESSAGE
+}
+
+export function matchIsStripeError(
+  error: unknown
+): error is Stripe.errors.StripeError {
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'type' in error &&
+    typeof error.type === 'string' &&
+    (error.type.startsWith('Stripe') ||
+      error.type === 'TemporarySessionExpiredError')
+  )
 }
