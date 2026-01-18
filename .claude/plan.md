@@ -319,11 +319,11 @@ Système de prépaiement par crédits avec bonus et expiration.
 
 ---
 
-## Milestone 7.5 : i18n Français
+## Milestone 7.5 : i18n Français ✅
 
 - [x] Erreurs Better Auth traduites (`src/helpers/auth-errors.ts`)
 - [x] Validation Zod en FR
-- [ ] Traduction erreurs Stripe (codes: insufficient_funds, lost_card, etc.)
+- [x] Traduction erreurs Stripe (`src/helpers/stripe-errors.ts`)
 
 ---
 
