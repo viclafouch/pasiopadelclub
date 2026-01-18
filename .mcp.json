@@ -7,6 +7,14 @@
     "shadcn": {
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
+    },
+    "resend": {
+      "command": "npx",
+      "args": ["-y", "resend-mcp"],
+      "env": {
+        "RESEND_API_KEY": "",
+        "SENDER_EMAIL_ADDRESS": "onboarding@resend.dev"
+      }
     }
   }
 }
