@@ -73,6 +73,14 @@
     "ws": "^8.19.0",
     "zod": "^4.3.5"
   },
+  "overrides": {
+    "nitro": {
+      "chokidar": "5.0.0",
+      "unstorage": {
+        "chokidar": "5.0.0"
+      }
+    }
+  },
   "devDependencies": {
     "@react-email/preview-server": "^5.2.5",
     "@tanstack/devtools-vite": "^0.3.11",
