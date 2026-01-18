@@ -1,8 +1,10 @@
 import {
   CalendarDays,
+  History,
   LogOut,
   User as UserIcon,
-  UserCircle
+  UserCircle,
+  Wallet
 } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -15,19 +17,21 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
+  getActiveBookingCountQueryOpts,
   getAuthUserQueryOpts,
-  getSlotsByDateQueryOpts
+  getSlotsByDateQueryOpts,
+  getUserBalanceQueryOpts
 } from '@/constants/queries'
 import type { User } from '@/constants/types'
+import { formatCentsToEuros } from '@/helpers/number'
 import { useScrollFade } from '@/hooks/use-scroll-fade'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { LinkOptions } from '@tanstack/react-router'
 import { Link, useRouteContext, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
-  { linkOptions: { to: '/' }, label: 'Accueil' },
   { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
   { linkOptions: { to: '/credits' }, label: 'Packs' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
@@ -43,6 +47,16 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
 
   const isOverlay = variant === 'overlay'
   const { needsFallback, opacity } = useScrollFade({ enabled: isOverlay })
+
+  const userBalanceQuery = useQuery({
+    ...getUserBalanceQueryOpts(),
+    enabled: Boolean(user)
+  })
+
+  const activeBookingCountQuery = useQuery({
+    ...getActiveBookingCountQueryOpts(),
+    enabled: Boolean(user)
+  })
 
   const handleSignOut = async () => {
     await authClient.signOut()
@@ -103,7 +117,7 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
             className="rounded-full bg-white text-slate-900 hover:bg-white/90"
             asChild
           >
-            <Link to="/reservation">Réserver</Link>
+            <Link to="/reservation">Réserver un terrain</Link>
           </Button>
           {user ? (
             <DropdownMenu>
@@ -136,12 +150,50 @@ export const Navbar = ({ variant = 'overlay' }: NavbarProps) => {
                   >
                     <CalendarDays className="size-4" />
                     Mes réservations
+                    {activeBookingCountQuery.data ? (
+                      <span className="ml-auto text-muted-foreground">
+                        ({activeBookingCountQuery.data})
+                      </span>
+                    ) : null}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/mon-compte" search={{}} className="cursor-pointer">
+                  <Link
+                    to="/mon-compte"
+                    search={{ tab: 'credits' }}
+                    className="cursor-pointer"
+                  >
+                    <Wallet className="size-4" />
+                    Mes crédits
+                    {userBalanceQuery.data ? (
+                      <span className="ml-auto text-muted-foreground">
+                        (
+                        {formatCentsToEuros(userBalanceQuery.data, {
+                          minimumFractionDigits: 2
+                        })}
+                        )
+                      </span>
+                    ) : null}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/mon-compte"
+                    search={{ tab: 'historique' }}
+                    className="cursor-pointer"
+                  >
+                    <History className="size-4" />
+                    Historique
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/mon-compte"
+                    search={{ tab: 'profil' }}
+                    className="cursor-pointer"
+                  >
                     <UserCircle className="size-4" />
-                    Mon compte
+                    Profil
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
