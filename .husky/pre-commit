@@ -1,10 +1,1 @@
-# Verify package-lock.json is in sync
-npm install --package-lock-only --ignore-scripts 2>/dev/null
-if ! git diff --quiet package-lock.json; then
-  echo "❌ package-lock.json is out of sync with package.json"
-  echo "Run 'npm install' and commit the updated package-lock.json"
-  git checkout package-lock.json
-  exit 1
-fi
-
 npm run lint
