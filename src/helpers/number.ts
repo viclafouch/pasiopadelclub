@@ -11,7 +11,7 @@ type FormatCurrencyOptions = Intl.NumberFormatOptions & {
 export const FORMAT_OPTIONS_BY_LOCALE = {
   fr: {
     style: 'currency',
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 2,
     currency: 'EUR'
   }
 } as const satisfies ValuesByLocale<Intl.NumberFormatOptions>

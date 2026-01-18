@@ -60,7 +60,7 @@
     "libphonenumber-js": "^1.12.34",
     "lucide-react": "^0.562.0",
     "motion": "^12.26.2",
-    "nitro": "latest",
+    "nitro": "^3.0.1-alpha.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "resend": "^6.7.0",

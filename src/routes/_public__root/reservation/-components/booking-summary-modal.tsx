@@ -255,8 +255,9 @@ export const BookingSummaryModal = ({
             {isPending ? (
               <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
             ) : null}
-            {paymentMethod === 'credit' ? 'Réserver' : 'Payer'}{' '}
-            {formatCentsToEuros(court.price, { minimumFractionDigits: 2 })}
+            {paymentMethod === 'credit'
+              ? `Utiliser ${formatCentsToEuros(court.price)} de crédits`
+              : `Payer ${formatCentsToEuros(court.price)}`}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -59,7 +59,8 @@ const CreditsSummary = ({ creditsCents, isPopular }: CreditsSummaryProps) => {
               isPopular ? 'text-white' : 'text-foreground'
             )}
           >
-            {formatCentsToEuros(creditsCents)} de crédits
+            {formatCentsToEuros(creditsCents, { minimumFractionDigits: 0 })} de
+            crédits
           </p>
           <p
             className={cn(
@@ -140,7 +141,9 @@ export const CreditPackCard = ({
                 isPopular ? 'text-white' : 'text-foreground'
               )}
             >
-              {formatCentsToEuros(pack.priceCents)}
+              {formatCentsToEuros(pack.priceCents, {
+                minimumFractionDigits: 0
+              })}
             </span>
           </div>
           {bonusCents > 0 ? (
@@ -154,7 +157,8 @@ export const CreditPackCard = ({
             >
               <GiftIcon className="size-4" aria-hidden="true" />
               <span className="font-semibold">
-                +{formatCentsToEuros(bonusCents)} offerts
+                +{formatCentsToEuros(bonusCents, { minimumFractionDigits: 0 })}{' '}
+                offerts
               </span>
             </div>
           ) : null}

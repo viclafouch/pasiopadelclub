@@ -95,7 +95,7 @@ export const SlotCard = ({ slot, price, onSelect }: SlotCardProps) => {
       >
         <Icon className="size-4" aria-hidden="true" />
         {slot.status === 'available' && !slot.isOwnBooking
-          ? formatCentsToEuros(price)
+          ? formatCentsToEuros(price, { minimumFractionDigits: 0 })
           : config.label}
       </span>
     </button>

@@ -184,7 +184,7 @@ const PricingCard = ({
                 isFeatured ? 'text-white' : 'text-foreground'
               )}
             >
-              {formatCentsToEuros(price)}
+              {formatCentsToEuros(price, { minimumFractionDigits: 0 })}
             </span>
             <span
               className={cn(
@@ -204,7 +204,9 @@ const PricingCard = ({
             )}
           >
             <span className="font-semibold">
-              {formatCentsToEuros(price / players)}
+              {formatCentsToEuros(price / players, {
+                minimumFractionDigits: 0
+              })}
             </span>
             <span className={isFeatured ? 'text-white/70' : 'text-primary/70'}>
               par joueur
