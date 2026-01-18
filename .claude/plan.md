@@ -313,9 +313,12 @@ Système de prépaiement par crédits avec bonus et expiration.
 
 ## Milestone 7 : Emails Transactionnels
 
-- [ ] Configuration Resend + domaine pasiopadelclub.fr
-- [ ] Templates React Email: confirmation, rappel 24h, annulation, contact
+- [x] Configuration Resend (`src/lib/resend.server.ts`)
+- [x] Templates React Email: vérification, bienvenue, confirmation, rappel 24h, annulation
+- [x] Intégration Better Auth (vérification email, bienvenue après validation)
+- [x] Intégration booking (confirmation webhook, annulation)
 - [ ] Cron rappel 24h avant créneaux
+- [ ] Email contact (formulaire)
 
 ---
 

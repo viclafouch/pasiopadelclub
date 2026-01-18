@@ -7,7 +7,10 @@ export const serverEnv = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32),
     VITE_SITE_URL: z.url(),
     STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
-    STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_')
+    STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_'),
+    RESEND_API_KEY: z.string().startsWith('re_'),
+    EMAIL_OVERRIDE_TO: z.email().optional(),
+    EMAIL_OVERRIDE_FROM: z.string().optional()
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true

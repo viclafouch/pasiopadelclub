@@ -2,8 +2,12 @@ import { and, count, desc, eq, gt, lte, or, sum } from 'drizzle-orm'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
-import { nowParis } from '@/helpers/date'
+import { BookingCancellationEmail } from '@/emails'
+import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
+import { formatCentsToEuros } from '@/helpers/number'
+import { extractFirstName } from '@/helpers/string'
 import { activeUserMiddleware, authMiddleware } from '@/lib/middleware'
+import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
 import { matchCanCancelBooking } from '@/utils/booking'
 import { safeRefund } from '@/utils/stripe'
 import { createServerFn } from '@tanstack/react-start'
@@ -106,17 +110,25 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
   .handler(async ({ data, context }) => {
     const { bookingId } = data
     const userId = context.session.user.id
+    const userEmail = context.session.user.email
+    const userFirstName =
+      context.session.user.firstName ??
+      extractFirstName(context.session.user.name)
 
-    const [bookingData] = await db
+    const [bookingWithCourt] = await db
       .select()
       .from(booking)
+      .innerJoin(court, eq(booking.courtId, court.id))
       .where(and(eq(booking.id, bookingId), eq(booking.userId, userId)))
       .limit(1)
 
-    if (!bookingData) {
+    if (!bookingWithCourt) {
       setResponseStatus(403)
       throw new Error('Action non autorisée')
     }
+
+    const bookingData = bookingWithCourt.booking
+    const courtData = bookingWithCourt.court
 
     if (bookingData.status === 'cancelled') {
       setResponseStatus(400)
@@ -178,6 +190,22 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
         )
       }
     }
+
+    resend.emails
+      .send({
+        from: EMAIL_FROM,
+        to: getEmailRecipient(userEmail),
+        subject: `Annulation confirmée - ${courtData.name} le ${formatDateFr(bookingData.startAt)}`,
+        react: BookingCancellationEmail({
+          firstName: userFirstName,
+          courtName: courtData.name,
+          date: formatDateFr(bookingData.startAt),
+          startTime: formatTimeFr(bookingData.startAt),
+          price: formatCentsToEuros(bookingData.price)
+        })
+      })
+      // eslint-disable-next-line no-console
+      .catch(console.error)
 
     return { success: true }
   })

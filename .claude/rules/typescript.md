@@ -35,3 +35,4 @@ paths: "**/*.{ts,tsx}"
 - **Frontend**: every mutation/async operation must display errors to user via `getErrorMessage()`
 - **Order matters**: operations that can fail externally must run BEFORE irreversible mutations
 - **User-facing errors**: always in French, always displayed in UI
+- **Never use `void`** for fire-and-forget promises - use `.catch(console.error)` instead

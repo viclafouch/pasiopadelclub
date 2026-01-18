@@ -16,8 +16,12 @@ import {
   user,
   walletTransaction
 } from '@/db/schema'
+import { BookingConfirmationEmail, CreditPackPurchaseEmail } from '@/emails'
 import { serverEnv } from '@/env/server'
-import { nowParis } from '@/helpers/date'
+import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
+import { formatCentsToEuros } from '@/helpers/number'
+import { extractFirstName } from '@/helpers/string'
+import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
 import { stripe } from '@/lib/stripe.server'
 import { safeRefund } from '@/utils/stripe'
 import { createFileRoute } from '@tanstack/react-router'
@@ -126,6 +130,29 @@ async function handleCreditPackPurchase(
     credits: creditsCents / 100,
     expiresAt: expiresAt.toISOString()
   })
+
+  const emailTo = getEmailRecipient(userData.email)
+  console.log('[Webhook] Sending credit pack email to:', emailTo)
+
+  resend.emails
+    .send({
+      from: EMAIL_FROM,
+      to: emailTo,
+      subject: `Achat confirmé - ${packData.name}`,
+      react: CreditPackPurchaseEmail({
+        firstName: userData.firstName ?? extractFirstName(userData.name),
+        packName: packData.name,
+        creditsAmount: formatCentsToEuros(creditsCents),
+        totalPaid: formatCentsToEuros(packData.priceCents),
+        expiresAt: formatDateFr(expiresAt)
+      })
+    })
+    .then(() => {
+      console.log('[Webhook] Credit pack email sent successfully')
+    })
+    .catch((error) => {
+      console.error('[Webhook] Failed to send credit pack email:', error)
+    })
 }
 
 async function handleCheckoutCompleted(
@@ -225,6 +252,22 @@ async function handleCheckoutCompleted(
   }
 
   console.log('[Webhook] Booking created:', maskId(insertedRows[0]?.id ?? ''))
+
+  resend.emails
+    .send({
+      from: EMAIL_FROM,
+      to: getEmailRecipient(userData.email),
+      subject: `Réservation confirmée - ${courtData.name} le ${formatDateFr(startAt)}`,
+      react: BookingConfirmationEmail({
+        firstName: userData.firstName ?? extractFirstName(userData.name),
+        courtName: courtData.name,
+        date: formatDateFr(startAt),
+        startTime: formatTimeFr(startAt),
+        endTime: formatTimeFr(endAt),
+        price: formatCentsToEuros(courtData.price)
+      })
+    })
+    .catch(console.error)
 }
 
 async function webhookHandler({
