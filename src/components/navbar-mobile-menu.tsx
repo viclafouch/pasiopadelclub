@@ -34,7 +34,8 @@ import { Link, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
   { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits' }, label: 'Packs' }
+  { linkOptions: { to: '/credits' }, label: 'Packs' },
+  { linkOptions: { to: '/application' }, label: 'Application' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
 const ACCOUNT_LINKS = [

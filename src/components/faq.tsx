@@ -1,6 +1,11 @@
 import React from 'react'
 
-const faqItems = [
+type FaqItem = {
+  question: string
+  answer: string
+}
+
+const FAQ_ITEMS = [
   {
     question: "Qu'est-ce que le padel et en quoi diffère-t-il du tennis ?",
     answer:
@@ -31,7 +36,7 @@ const faqItems = [
     answer:
       'Oui, nous proposons des cours particuliers et collectifs pour tous les niveaux. Nos coachs certifiés vous aideront à progresser, que vous soyez débutant ou joueur confirmé cherchant à perfectionner votre technique.'
   }
-] as const
+] as const satisfies FaqItem[]
 
 export const Faq = () => {
   return (
@@ -44,7 +49,7 @@ export const Faq = () => {
         FAQ
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-        {faqItems.map((item, index) => {
+        {FAQ_ITEMS.map((item, index) => {
           return (
             <div
               key={index}

@@ -1,4 +1,5 @@
 import React from 'react'
+import type { LucideIcon } from 'lucide-react'
 import { CalendarIcon, HistoryIcon, UserIcon, WalletIcon } from 'lucide-react'
 import { z } from 'zod'
 import {
@@ -27,12 +28,18 @@ const BookingsSkeleton = () => {
   )
 }
 
+type TabConfig = {
+  value: string
+  label: string
+  icon: LucideIcon
+}
+
 const TABS = [
   { value: 'reservations', label: 'Réservations', icon: CalendarIcon },
   { value: 'historique', label: 'Historique', icon: HistoryIcon },
   { value: 'credits', label: 'Crédits', icon: WalletIcon },
   { value: 'profil', label: 'Profil', icon: UserIcon }
-] as const
+] as const satisfies TabConfig[]
 
 const TAB_VALUES = TABS.map((tab) => {
   return tab.value

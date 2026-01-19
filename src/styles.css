@@ -210,3 +210,27 @@
     }
   }
 }
+
+@utility desktop-only {
+  @media (width < 768px) {
+    display: none !important;
+  }
+}
+
+@utility mobile-only {
+  @media (width >= 768px) {
+    display: none !important;
+  }
+}
+
+@utility ios-first {
+  html[data-os='ios'] & {
+    order: -1;
+  }
+}
+
+@utility android-first {
+  html[data-os='android'] & {
+    order: -1;
+  }
+}

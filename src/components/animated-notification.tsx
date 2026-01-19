@@ -54,7 +54,7 @@ const VARIANT_STYLES = {
 >
 
 const ANIMATION_DURATION = 0.3
-const EASE_OUT = [0.4, 0, 0.2, 1] as const
+const EASE_OUT = [0.4, 0, 0.2, 1] as const satisfies number[]
 
 export const AnimatedNotification = ({
   show,

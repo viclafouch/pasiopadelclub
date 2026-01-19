@@ -14,6 +14,7 @@ import {
   HeadContent,
   Link,
   Outlet,
+  ScriptOnce,
   Scripts
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -23,6 +24,8 @@ type RootRouteContext = {
   queryClient: QueryClient
   user: CurrentUser | null
 }
+
+const OS_DETECTION_SCRIPT = `(function(){var u=navigator.userAgent.toLowerCase();var o=/iphone|ipad|ipod/.test(u)?'ios':/android/.test(u)?'android':'other';document.documentElement.dataset.os=o})();`
 
 const NotFoundComponent = () => {
   return (
@@ -46,8 +49,9 @@ const NotFoundComponent = () => {
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="fr">
+    <html lang="fr" data-os="other" suppressHydrationWarning>
       <head>
+        <ScriptOnce>{OS_DETECTION_SCRIPT}</ScriptOnce>
         <link
           rel="preload"
           href="/fonts/pasio-body.woff2"

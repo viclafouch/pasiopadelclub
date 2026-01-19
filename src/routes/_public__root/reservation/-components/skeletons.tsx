@@ -4,11 +4,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 const SLOTS_90_MIN_COUNT = 9
 const SLOTS_60_MIN_COUNT = 14
 
+type SkeletonCourt = {
+  type: string
+  courtCount: number
+  slotsPerCourt: number
+}
+
 const SKELETON_COURTS = [
   { type: 'double', courtCount: 4, slotsPerCourt: SLOTS_90_MIN_COUNT },
   { type: 'simple', courtCount: 1, slotsPerCourt: SLOTS_60_MIN_COUNT },
   { type: 'kids', courtCount: 1, slotsPerCourt: SLOTS_60_MIN_COUNT }
-] as const
+] as const satisfies SkeletonCourt[]
 
 const SlotCardSkeleton = () => {
   return (

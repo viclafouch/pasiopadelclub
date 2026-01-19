@@ -42,6 +42,12 @@ const Footer = () => {
             Galerie
           </Link>
           <Link
+            to="/application"
+            className="opacity-80 transition-opacity duration-300 hover:opacity-100"
+          >
+            Application
+          </Link>
+          <Link
             to="/contact"
             className="opacity-80 transition-opacity duration-300 hover:opacity-100"
           >

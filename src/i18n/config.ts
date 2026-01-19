@@ -1,4 +1,4 @@
-export const LOCALES = ['fr'] as const
+export const LOCALES = ['fr'] as const satisfies string[]
 
 export type Locale = (typeof LOCALES)[number]
 

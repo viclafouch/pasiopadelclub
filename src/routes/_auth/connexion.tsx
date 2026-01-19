@@ -104,6 +104,7 @@ const ConnexionPage = () => {
                       id={field.name}
                       type="email"
                       placeholder="votre@email.com"
+                      autoComplete="email"
                       value={field.state.value}
                       onChange={(event) => {
                         return field.handleChange(event.target.value)
@@ -138,6 +139,7 @@ const ConnexionPage = () => {
                       id={field.name}
                       type="password"
                       placeholder="••••••••"
+                      autoComplete="current-password"
                       value={field.state.value}
                       onChange={(event) => {
                         return field.handleChange(event.target.value)

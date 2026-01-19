@@ -9,6 +9,13 @@ import {
   StoryOverlay
 } from '@/components/kibo-ui/stories'
 
+type PlaceholderStory = {
+  id: number
+  image: string
+  author: string
+  avatar: string
+}
+
 const PLACEHOLDER_STORIES = [
   {
     id: 1,
@@ -52,7 +59,7 @@ const PLACEHOLDER_STORIES = [
     author: 'Camille P.',
     avatar: ''
   }
-] as const
+] as const satisfies PlaceholderStory[]
 
 export const StoriesSection = () => {
   return (

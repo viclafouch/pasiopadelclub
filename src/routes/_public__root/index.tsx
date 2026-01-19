@@ -2,6 +2,7 @@ import { Faq } from '@/components/faq'
 import { Map } from '@/components/map'
 import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
+import { AppDownloadSection } from './-components/app-download-section'
 import { BookingSection } from './-components/booking-section'
 import { Hero } from './-components/hero'
 import { StoriesSection } from './-components/stories-section'
@@ -11,6 +12,7 @@ const RouteComponent = () => {
     <main>
       <Hero />
       <BookingSection />
+      <AppDownloadSection />
       <Faq />
       <StoriesSection />
       <Map />

@@ -23,6 +23,7 @@ import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__
 import { Route as Public__rootCreditsIndexRouteImport } from './routes/_public__root/credits/index'
 import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
+import { Route as Public__rootApplicationIndexRouteImport } from './routes/_public__root/application/index'
 import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as ApiWebhooksStripeRouteImport } from './routes/api/webhooks/stripe'
@@ -101,6 +102,12 @@ const Public__rootCgvIndexRoute = Public__rootCgvIndexRouteImport.update({
   path: '/cgv/',
   getParentRoute: () => Public__rootRouteRoute,
 } as any)
+const Public__rootApplicationIndexRoute =
+  Public__rootApplicationIndexRouteImport.update({
+    id: '/application/',
+    path: '/application/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
 const AuthenticatedMonCompteIndexRoute =
   AuthenticatedMonCompteIndexRouteImport.update({
     id: '/mon-compte/',
@@ -145,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/admin/': typeof AdminAdminIndexRoute
   '/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
+  '/application/': typeof Public__rootApplicationIndexRoute
   '/cgv/': typeof Public__rootCgvIndexRoute
   '/contact/': typeof Public__rootContactIndexRoute
   '/credits/': typeof Public__rootCreditsIndexRoute
@@ -163,6 +171,7 @@ export interface FileRoutesByTo {
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/admin': typeof AdminAdminIndexRoute
   '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
+  '/application': typeof Public__rootApplicationIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
   '/credits': typeof Public__rootCreditsIndexRoute
@@ -186,6 +195,7 @@ export interface FileRoutesById {
   '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
+  '/_public__root/application/': typeof Public__rootApplicationIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
   '/_public__root/contact/': typeof Public__rootContactIndexRoute
   '/_public__root/credits/': typeof Public__rootCreditsIndexRoute
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/api/webhooks/stripe'
     | '/admin/'
     | '/mon-compte/'
+    | '/application/'
     | '/cgv/'
     | '/contact/'
     | '/credits/'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | '/api/webhooks/stripe'
     | '/admin'
     | '/mon-compte'
+    | '/application'
     | '/cgv'
     | '/contact'
     | '/credits'
@@ -246,6 +258,7 @@ export interface FileRouteTypes {
     | '/api/webhooks/stripe'
     | '/_admin/admin/'
     | '/_authenticated/mon-compte/'
+    | '/_public__root/application/'
     | '/_public__root/cgv/'
     | '/_public__root/contact/'
     | '/_public__root/credits/'
@@ -364,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootCgvIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
+    '/_public__root/application/': {
+      id: '/_public__root/application/'
+      path: '/application'
+      fullPath: '/application/'
+      preLoaderRoute: typeof Public__rootApplicationIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
     '/_authenticated/mon-compte/': {
       id: '/_authenticated/mon-compte/'
       path: '/mon-compte'
@@ -450,6 +470,7 @@ interface Public__rootRouteRouteChildren {
   Public__rootIndexRoute: typeof Public__rootIndexRoute
   Public__rootReservationEchecRoute: typeof Public__rootReservationEchecRoute
   Public__rootReservationSuccessRoute: typeof Public__rootReservationSuccessRoute
+  Public__rootApplicationIndexRoute: typeof Public__rootApplicationIndexRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
   Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
   Public__rootCreditsIndexRoute: typeof Public__rootCreditsIndexRoute
@@ -463,6 +484,7 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootIndexRoute: Public__rootIndexRoute,
   Public__rootReservationEchecRoute: Public__rootReservationEchecRoute,
   Public__rootReservationSuccessRoute: Public__rootReservationSuccessRoute,
+  Public__rootApplicationIndexRoute: Public__rootApplicationIndexRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
   Public__rootContactIndexRoute: Public__rootContactIndexRoute,
   Public__rootCreditsIndexRoute: Public__rootCreditsIndexRoute,
