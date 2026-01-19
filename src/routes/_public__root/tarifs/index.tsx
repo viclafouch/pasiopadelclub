@@ -5,13 +5,12 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { CLUB_INFO } from '@/constants/app'
 import { LOCATION_LABELS } from '@/constants/court'
 import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
 import { seo } from '@/utils/seo'
 import { createFileRoute, Link } from '@tanstack/react-router'
-
-type Location = keyof typeof LOCATION_LABELS
 
 type FeatureRowProps = {
   icon: React.ReactNode
@@ -101,7 +100,7 @@ type PricingCardProps = {
   duration: number
   players: number
   courts: string[]
-  location: Location
+  location: keyof typeof LOCATION_LABELS
   isFeatured?: boolean
   tooltip?: string
 }
@@ -276,7 +275,7 @@ const TarifsPage = () => {
               price={3000}
               duration={60}
               players={2}
-              courts={['Simple']}
+              courts={['Simple N°1', 'Simple Initiation']}
               location="indoor"
             />
             <PricingCard
@@ -298,13 +297,20 @@ const TarifsPage = () => {
               tooltip="Ouvert à tous"
             />
           </div>
-          <div className="text-center">
+          <div className="space-y-4 text-center">
             <p className="text-muted-foreground">
               Tous les terrains sont disponibles de{' '}
               <span className="font-semibold text-primary">8h à 22h</span>,{' '}
               <span className="font-semibold text-foreground">
                 7 jours sur 7
               </span>
+            </p>
+            <p className="text-muted-foreground">
+              <span className="font-medium text-foreground">
+                Location de matériel :
+              </span>{' '}
+              raquettes à 3€, accessoires et boîtes de balles disponibles sur
+              place.
             </p>
           </div>
         </div>
@@ -336,8 +342,7 @@ export const Route = createFileRoute('/_public__root/tarifs/')({
     return {
       meta: seo({
         title: 'Tarifs',
-        description:
-          'Découvrez les tarifs de Pasio Padel Club à Anglet : terrains Double (60€/90min), Simple (30€/60min) et Kids (15€/60min). Réservez en ligne 7j/7.',
+        description: `Découvrez les tarifs de ${CLUB_INFO.name} à ${CLUB_INFO.address.city} : terrains Double (60€/90min), Simple (30€/60min) et Kids (15€/60min). Location de raquettes à 3€. Réservez en ligne 7j/7.`,
         pathname: '/tarifs'
       })
     }

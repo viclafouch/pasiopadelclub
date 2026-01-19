@@ -34,15 +34,16 @@ Remplacer le site Wix actuel (pasiopadelclub.com) qui est un one-page non respon
 | Horaires | 8h - 22h tous les jours |
 | Domaine | pasiopadelclub.fr |
 
-### Terrains (6 total)
+### Terrains (7 total)
 
 | Court | Type | Lieu | Joueurs | Durée | Prix |
 |-------|------|------|---------|-------|------|
 | Court N°1 | double | indoor | 4 | 90 min | 60€ |
 | Court N°2 | double | indoor | 4 | 90 min | 60€ |
-| Court N°3 | double | outdoor | 4 | 90 min | 60€ |
-| Court N°4 | double | outdoor | 4 | 90 min | 60€ |
+| Court N°3 | double | semi-couvert | 4 | 90 min | 60€ |
+| Court N°4 | double | semi-couvert | 4 | 90 min | 60€ |
 | Simple N°1 | simple | indoor | 2 | 60 min | 30€ |
+| Simple Initiation | simple | indoor | 2 | 60 min | 30€ |
 | Court Kids | kids | indoor | 2 | 60 min | 15€ |
 
 ---

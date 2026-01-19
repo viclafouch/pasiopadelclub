@@ -353,16 +353,18 @@ Système de prépaiement par crédits avec bonus et expiration.
 - [x] Lien Facebook : **https://www.facebook.com/profile.php?id=61582670787439**
 - [x] Lien Instagram : **https://www.instagram.com/pasio_padel_club/**
 
-### Homepage - Section "À Propos"
-Texte exact à utiliser :
-> Le PASIO PADEL CLUB est un club de padel qui vise à offrir un espace de qualité pour les amateurs & pro de padel. Notre engagement est d'offrir des installations modernes et des événements passionnants pour tous les niveaux de joueurs. Rejoignez notre communauté et découvrez la passion du padel.
->
-> Nous louons des raquettes sur place au prix de 3€, accessoires et boîtes de balles.
+### Homepage - Section Features ✅
+- [x] Section "Tout pour votre confort" avec 6 blocs features émojis
+- [x] 🏟️ Piste panoramique (4 doubles · 1 simple · 1 kids)
+- [x] 📹 Vidéo de vos matchs (téléchargement gratuit)
+- [x] 🍹 Bar & espace convivial
+- [x] 💆 Presso-thérapie (sur réservation)
+- [x] 🎾 Location de matériel (à partir de 3€)
+- [x] 🚿 Vestiaires & douches (accès inclus)
 
-### Page Tarifs - Informations manquantes
-- [x] Prix par personne ✅ déjà affiché ("X € par joueur" calculé automatiquement)
-- [ ] Ajouter mention : **"Nous louons des raquettes sur place au prix de 3€, accessoires et boîtes de balles."**
-  - Note : La FAQ mentionne déjà la location de raquettes mais sans le prix de 3€
+### Page Tarifs - Informations manquantes ✅
+- [x] Prix par personne (déjà affiché)
+- [x] Mention location raquettes 3€ ajoutée sous les cartes de prix
 
 ### URLs App Stores (corriger constants)
 - [x] App Store : `https://apps.apple.com/fr/app/pasio-padel-club/id6752693886`

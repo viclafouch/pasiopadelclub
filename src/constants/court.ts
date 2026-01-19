@@ -25,26 +25,26 @@ export const COURT_TYPE_OPTIONS_EXTENDED = [
 export const LOCATION_OPTIONS = [
   { value: 'all', label: 'Tous les lieux' },
   { value: 'indoor', label: 'Intérieur' },
-  { value: 'outdoor', label: 'Extérieur' }
+  { value: 'outdoor', label: 'Semi-couvert' }
 ] as const satisfies FilterOption<Court['location'] | 'all'>[]
 
 export const LOCATION_OPTIONS_EXTENDED = [
   { value: 'all', label: 'Tous les lieux' },
   { value: 'indoor', label: 'Intérieur (couvert)' },
-  { value: 'outdoor', label: 'Extérieur (semi-couvert)' }
+  { value: 'outdoor', label: 'Semi-couvert' }
 ] as const satisfies FilterOption<Court['location'] | 'all'>[]
 
 export const LOCATION_LABELS = {
   indoor: 'Intérieur',
-  outdoor: 'Extérieur',
-  both: 'Intérieur & Extérieur'
+  outdoor: 'Semi-couvert',
+  both: 'Intérieur & Semi-couvert'
 } as const satisfies Record<Court['location'] | 'both', string>
 
 export const COURT_TYPE_ORDER: Court['type'][] = ['double', 'simple', 'kids']
 
 export const COURT_TYPE_LABELS = {
   double: 'Terrains Double',
-  simple: 'Terrain Simple',
+  simple: 'Terrains Simple',
   kids: 'Terrain Kids'
 } as const satisfies Record<Court['type'], string>
 

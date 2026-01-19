@@ -55,6 +55,15 @@ const courtsData = [
     isActive: true
   },
   {
+    name: 'Simple Initiation',
+    type: 'simple' as const,
+    location: 'indoor' as const,
+    capacity: 2,
+    duration: 60,
+    price: 3000,
+    isActive: true
+  },
+  {
     name: 'Court Kids',
     type: 'kids' as const,
     location: 'indoor' as const,
