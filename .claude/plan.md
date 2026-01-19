@@ -2,7 +2,7 @@
 
 ## Vue d'ensemble
 
-Site de réservation de terrains de padel pour le club Pasio Padel Club situé à **Anglet** (20 rue Alfred de Vigny, 64600 Anglet). L'objectif est de permettre aux utilisateurs de réserver et payer un créneau en ligne, avec un SEO optimisé pour la visibilité locale.
+Site de réservation de terrains de padel pour le club Pasio Padel Club situé à **Bayonne** (24 rue Arnaud Detroyat, 64100 Bayonne). L'objectif est de permettre aux utilisateurs de réserver et payer un créneau en ligne, avec un SEO optimisé pour la visibilité locale.
 
 **Domaine de production :** pasiopadelclub.fr
 
@@ -337,8 +337,36 @@ Système de prépaiement par crédits avec bonus et expiration.
 - [x] Timezone serveur (Paris)
 - [x] Package-lock.json sync
 - [x] Invalidation cache TanStack Query après paiement
-- [ ] Supprimer env vars Polar sur Railway (POLAR_ACCESS_TOKEN, POLAR_WEBHOOK_SECRET)
-- [ ] Configurer webhook URL Stripe sur Dashboard (production)
+- [x] Supprimer env vars Polar sur Railway (POLAR_ACCESS_TOKEN, POLAR_WEBHOOK_SECRET)
+- [x] Configurer webhook URL Stripe sur Dashboard (production)
+
+---
+
+## Milestone 8.5 : Contenu manquant (vs ancien site)
+
+Éléments présents sur pasiopadelclub.com à ajouter :
+
+### Footer complet ✅
+- [x] Adresse complète : **24 rue Arnaud Detroyat, 64100 Bayonne, France**
+- [x] Téléphone : **05.59.42.81.33**
+- [x] Email : **pasio.padel.club@gmail.com**
+- [x] Lien Facebook : **https://www.facebook.com/profile.php?id=61582670787439**
+- [x] Lien Instagram : **https://www.instagram.com/pasio_padel_club/**
+
+### Homepage - Section "À Propos"
+Texte exact à utiliser :
+> Le PASIO PADEL CLUB est un club de padel qui vise à offrir un espace de qualité pour les amateurs & pro de padel. Notre engagement est d'offrir des installations modernes et des événements passionnants pour tous les niveaux de joueurs. Rejoignez notre communauté et découvrez la passion du padel.
+>
+> Nous louons des raquettes sur place au prix de 3€, accessoires et boîtes de balles.
+
+### Page Tarifs - Informations manquantes
+- [x] Prix par personne ✅ déjà affiché ("X € par joueur" calculé automatiquement)
+- [ ] Ajouter mention : **"Nous louons des raquettes sur place au prix de 3€, accessoires et boîtes de balles."**
+  - Note : La FAQ mentionne déjà la location de raquettes mais sans le prix de 3€
+
+### URLs App Stores (corriger constants)
+- [x] App Store : `https://apps.apple.com/fr/app/pasio-padel-club/id6752693886`
+- [x] Google Play : `https://play.google.com/store/apps/details?id=com.livexperience.pasiopadelclub`
 
 ---
 
@@ -348,6 +376,24 @@ Système de prépaiement par crédits avec bonus et expiration.
 - **M11** : SEO (Schema.org, Google My Business)
 - **M12** : Tests (Vitest)
 - **M13** : RGPD (anonymisation, suppression compte)
+
+---
+
+## Milestones futures (post-lancement)
+
+- **M14** : Page Enseignement/Cours (lancement prévu 12/2025)
+  - **Titre** : "Cours de Padel À Venir 12/2025"
+  - **Sous-titre** : "Pour les enfants et les adultes"
+  - **Description** : "Au club, on vous propose des super profs de padel, passionnés et pédagogues, pour tous les niveaux : que vous soyez débutant ou joueur confirmé, nos coachs s'adaptent à votre jeu et à vos objectifs. Cours d'initiation, perfectionnement ou entraînement intensif. Leur objectif : vous faire progresser tout en prenant plaisir sur le terrain."
+  - **Slogan** : "Prendre des cours c'est la base !!"
+  - **Section "Notre équipe"** : 6 placeholders "Futur(e) prof ?" avec liens sociaux (Facebook, Twitter, LinkedIn)
+  - **Section "Nos clients"** (partenaires) : balle de match, CA Pyrénées Gascogne, NOTED, GOAN, MOWI
+- **M15** : Newsletter (inscription footer + emails marketing)
+  - **Titre** : "Restons Connectés"
+  - **Champs** : Email (requis) + Checkbox "Yes, subscribe me to your newsletter." (requis)
+  - **Bouton** : "Subscribe"
+- **M16** : Section partenaires/sponsors (peut être intégrée à M14)
+  - Logos : balle de match, CA Pyrénées Gascogne, NOTED, GOAN, MOWI
 
 ---
 

@@ -1,3 +1,4 @@
+import { CLUB_INFO } from '@/constants/app'
 import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -40,56 +41,52 @@ const MentionsLegalesPage = () => {
           <div className="mx-auto max-w-3xl">
             <LegalSection title="1. Éditeur du site">
               <p>
-                Le présent site est édité par <strong>Pasio Padel Club</strong>.
+                Le présent site est édité par <strong>{CLUB_INFO.name}</strong>.
               </p>
               <p>
-                <strong>Adresse :</strong> 20 rue Alfred de Vigny, 64600 Anglet,
-                France
+                <strong>Adresse :</strong> {CLUB_INFO.address.full},{' '}
+                {CLUB_INFO.address.country}
               </p>
               <p>
                 <strong>Téléphone :</strong>{' '}
                 <a
-                  href="tel:+33971117928"
+                  href={CLUB_INFO.phone.href}
                   className="text-primary hover:underline"
                 >
-                  09 71 11 79 28
+                  {CLUB_INFO.phone.display}
                 </a>
               </p>
               <p>
                 <strong>Email :</strong>{' '}
                 <a
-                  href="mailto:contact@pasiopadelclub.fr"
+                  href={`mailto:${CLUB_INFO.email}`}
                   className="text-primary hover:underline"
                 >
-                  contact@pasiopadelclub.fr
+                  {CLUB_INFO.email}
                 </a>
               </p>
             </LegalSection>
 
             <LegalSection title="2. Directeur de la publication">
               <p>
-                Le directeur de la publication est le représentant légal de
-                Pasio Padel Club.
+                Le directeur de la publication est le représentant légal de{' '}
+                {CLUB_INFO.name}.
               </p>
             </LegalSection>
 
             <LegalSection title="3. Hébergement">
               <p>
-                Le site est hébergé par <strong>Vercel Inc.</strong>
-              </p>
-              <p>
-                <strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA
-                91789, États-Unis
+                Le site est hébergé par <strong>Railway Corporation</strong>
               </p>
               <p>
                 <strong>Site web :</strong>{' '}
                 <a
-                  href="https://vercel.com"
+                  href="https://railway.app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  vercel.com
+                  railway.app
                 </a>
               </p>
             </LegalSection>
@@ -97,8 +94,8 @@ const MentionsLegalesPage = () => {
             <LegalSection title="4. Propriété intellectuelle">
               <p>
                 L&apos;ensemble du contenu du site (textes, images, vidéos,
-                logos, graphismes, icônes, etc.) est la propriété exclusive de
-                Pasio Padel Club ou de ses partenaires et est protégé par les
+                logos, graphismes, icônes, etc.) est la propriété exclusive de{' '}
+                {CLUB_INFO.name} ou de ses partenaires et est protégé par les
                 lois françaises et internationales relatives à la propriété
                 intellectuelle.
               </p>
@@ -106,7 +103,7 @@ const MentionsLegalesPage = () => {
                 Toute reproduction, représentation, modification, publication,
                 adaptation de tout ou partie des éléments du site, quel que soit
                 le moyen ou le procédé utilisé, est interdite, sauf autorisation
-                écrite préalable de Pasio Padel Club.
+                écrite préalable de {CLUB_INFO.name}.
               </p>
             </LegalSection>
 
@@ -125,10 +122,10 @@ const MentionsLegalesPage = () => {
               <p>
                 Pour exercer vos droits, contactez-nous à{' '}
                 <a
-                  href="mailto:contact@pasiopadelclub.fr"
+                  href={`mailto:${CLUB_INFO.email}`}
                   className="text-primary hover:underline"
                 >
-                  contact@pasiopadelclub.fr
+                  {CLUB_INFO.email}
                 </a>
                 .
               </p>
@@ -145,14 +142,14 @@ const MentionsLegalesPage = () => {
 
             <LegalSection title="7. Limitation de responsabilité">
               <p>
-                Pasio Padel Club s&apos;efforce d&apos;assurer l&apos;exactitude
+                {CLUB_INFO.name} s&apos;efforce d&apos;assurer l&apos;exactitude
                 et la mise à jour des informations diffusées sur ce site.
-                Toutefois, Pasio Padel Club ne peut garantir l&apos;exactitude,
+                Toutefois, {CLUB_INFO.name} ne peut garantir l&apos;exactitude,
                 la précision ou l&apos;exhaustivité des informations
                 disponibles.
               </p>
               <p>
-                En conséquence, Pasio Padel Club décline toute responsabilité
+                En conséquence, {CLUB_INFO.name} décline toute responsabilité
                 pour toute imprécision, inexactitude ou omission portant sur des
                 informations disponibles sur ce site.
               </p>
@@ -178,8 +175,7 @@ export const Route = createFileRoute('/_public__root/mentions-legales/')({
     return {
       meta: seo({
         title: 'Mentions légales',
-        description:
-          "Mentions légales de Pasio Padel Club à Anglet. Informations sur l'éditeur, l'hébergement et la protection des données personnelles.",
+        description: `Mentions légales de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Informations sur l'éditeur, l'hébergement et la protection des données personnelles.`,
         pathname: '/mentions-legales'
       })
     }

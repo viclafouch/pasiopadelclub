@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { CLUB_INFO } from '@/constants/app'
 import { getErrorMessage } from '@/helpers/error'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -257,9 +258,10 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Adresse</p>
                         <p className="text-muted-foreground">
-                          20 rue Alfred de Vigny
+                          {CLUB_INFO.address.street}
                           <br />
-                          64600 Anglet
+                          {CLUB_INFO.address.postalCode}{' '}
+                          {CLUB_INFO.address.city}
                         </p>
                       </div>
                     </div>
@@ -273,10 +275,10 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Téléphone</p>
                         <a
-                          href="tel:+33971117928"
+                          href={CLUB_INFO.phone.href}
                           className="text-muted-foreground transition-colors hover:text-primary"
                         >
-                          09 71 11 79 28
+                          {CLUB_INFO.phone.display}
                         </a>
                       </div>
                     </div>
@@ -290,10 +292,10 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Email</p>
                         <a
-                          href="mailto:contact@pasiopadelclub.fr"
+                          href={`mailto:${CLUB_INFO.email}`}
                           className="text-muted-foreground transition-colors hover:text-primary"
                         >
-                          contact@pasiopadelclub.fr
+                          {CLUB_INFO.email}
                         </a>
                       </div>
                     </div>
@@ -307,10 +309,10 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Horaires</p>
                         <p className="text-muted-foreground">
-                          Tous les jours
+                          {CLUB_INFO.hours.days}
                           <br />
                           <span className="font-medium text-primary">
-                            8h00 — 22h00
+                            {CLUB_INFO.hours.open}00 — {CLUB_INFO.hours.close}00
                           </span>
                         </p>
                       </div>
@@ -319,11 +321,11 @@ const ContactPage = () => {
                 </div>
                 <div className="overflow-hidden rounded-2xl border border-border/50">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2894.5400183835977!2d-1.496321923788685!3d43.49106897111039!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd514182cba36089%3A0xe20604785805f73!2sPASIO%20PADEL%20CLUB!5e0!3m2!1sfr!2sfr!4v1767301750127!5m2!1sfr!2sfr"
+                    src={CLUB_INFO.address.googleMapsUrl}
                     width="100%"
                     height="300"
                     allowFullScreen
-                    title="Pasio Padel Club - Localisation"
+                    title={`${CLUB_INFO.name} - Localisation`}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     className="border-0"
@@ -344,8 +346,7 @@ export const Route = createFileRoute('/_public__root/contact/')({
     return {
       meta: seo({
         title: 'Contact',
-        description:
-          'Contactez Pasio Padel Club à Anglet. Adresse : 20 rue Alfred de Vigny, 64600 Anglet. Téléphone : 09 71 11 79 28. Ouvert 7j/7 de 8h à 22h.',
+        description: `Contactez ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Adresse : ${CLUB_INFO.address.full}. Téléphone : ${CLUB_INFO.phone.display}. Ouvert 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`,
         pathname: '/contact'
       })
     }

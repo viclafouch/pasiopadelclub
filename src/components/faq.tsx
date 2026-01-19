@@ -1,4 +1,4 @@
-import React from 'react'
+import { CLUB_INFO } from '@/constants/app'
 
 type FaqItem = {
   question: string
@@ -28,8 +28,7 @@ const FAQ_ITEMS = [
   },
   {
     question: 'Comment réserver un terrain de padel ?',
-    answer:
-      'La réservation est simple et rapide. Vous pouvez réserver directement en ligne via notre système de réservation ou nous appeler au 09 71 11 79 28. Nous sommes ouverts tous les jours de 8h à 22h.'
+    answer: `La réservation est simple et rapide. Vous pouvez réserver directement en ligne via notre système de réservation ou nous appeler au ${CLUB_INFO.phone.display}. Nous sommes ouverts ${CLUB_INFO.hours.days.toLowerCase()} de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`
   },
   {
     question: 'Proposez-vous des cours de padel ?',

@@ -1,3 +1,4 @@
+import { CLUB_INFO } from '@/constants/app'
 import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -41,7 +42,7 @@ const CgvPage = () => {
             <LegalSection title="1. Objet">
               <p>
                 Les présentes Conditions Générales de Vente (CGV) régissent les
-                relations contractuelles entre Pasio Padel Club et ses clients
+                relations contractuelles entre {CLUB_INFO.name} et ses clients
                 pour toute réservation de court de padel et services associés.
               </p>
               <p>
@@ -51,7 +52,7 @@ const CgvPage = () => {
             </LegalSection>
 
             <LegalSection title="2. Services proposés">
-              <p>Pasio Padel Club propose les services suivants :</p>
+              <p>{CLUB_INFO.name} propose les services suivants :</p>
               <ul className="ml-6 list-disc space-y-2">
                 <li>
                   <strong>Court Double (90 min)</strong> : 60€ pour 4 joueurs
@@ -73,13 +74,13 @@ const CgvPage = () => {
             <LegalSection title="3. Réservation">
               <p>
                 Les réservations peuvent être effectuées via notre site
-                internet, l&apos;application mobile &quot;Pasio Padel Club&quot;
+                internet, l&apos;application mobile &quot;{CLUB_INFO.name}&quot;
                 ou par téléphone au{' '}
                 <a
-                  href="tel:+33971117928"
+                  href={CLUB_INFO.phone.href}
                   className="text-primary hover:underline"
                 >
-                  09 71 11 79 28
+                  {CLUB_INFO.phone.display}
                 </a>
                 .
               </p>
@@ -88,7 +89,10 @@ const CgvPage = () => {
                 le paiement effectué. Un email de confirmation est envoyé au
                 client.
               </p>
-              <p>Le club est ouvert tous les jours de 8h00 à 22h00.</p>
+              <p>
+                Le club est ouvert {CLUB_INFO.hours.days.toLowerCase()} de{' '}
+                {CLUB_INFO.hours.open}00 à {CLUB_INFO.hours.close}00.
+              </p>
             </LegalSection>
 
             <LegalSection title="4. Tarifs et paiement">
@@ -120,7 +124,7 @@ const CgvPage = () => {
                 <li>En cas de non-présentation : aucun remboursement</li>
               </ul>
               <p className="mt-4">
-                <strong>Annulation par Pasio Padel Club :</strong>
+                <strong>Annulation par {CLUB_INFO.name} :</strong>
               </p>
               <p>
                 En cas d&apos;annulation de notre fait (problème technique,
@@ -149,7 +153,7 @@ const CgvPage = () => {
 
             <LegalSection title="7. Responsabilité">
               <p>
-                Pasio Padel Club met à disposition des installations conformes
+                {CLUB_INFO.name} met à disposition des installations conformes
                 aux normes de sécurité en vigueur. Cependant, la pratique du
                 padel se fait sous la responsabilité des joueurs.
               </p>
@@ -158,7 +162,7 @@ const CgvPage = () => {
                 assurance personnelle couvrant la pratique sportive.
               </p>
               <p>
-                Pasio Padel Club décline toute responsabilité en cas de vol ou
+                {CLUB_INFO.name} décline toute responsabilité en cas de vol ou
                 de perte d&apos;objets personnels dans l&apos;enceinte du club.
               </p>
             </LegalSection>
@@ -184,20 +188,20 @@ const CgvPage = () => {
 
             <LegalSection title="9. Réclamations">
               <p>
-                Pour toute réclamation, le client peut contacter Pasio Padel
-                Club par email à{' '}
+                Pour toute réclamation, le client peut contacter{' '}
+                {CLUB_INFO.name} par email à{' '}
                 <a
-                  href="mailto:contact@pasiopadelclub.fr"
+                  href={`mailto:${CLUB_INFO.email}`}
                   className="text-primary hover:underline"
                 >
-                  contact@pasiopadelclub.fr
+                  {CLUB_INFO.email}
                 </a>{' '}
                 ou par téléphone au{' '}
                 <a
-                  href="tel:+33971117928"
+                  href={CLUB_INFO.phone.href}
                   className="text-primary hover:underline"
                 >
-                  09 71 11 79 28
+                  {CLUB_INFO.phone.display}
                 </a>
                 .
               </p>
@@ -215,30 +219,30 @@ const CgvPage = () => {
               </p>
               <p>
                 À défaut d&apos;accord amiable, les tribunaux compétents seront
-                ceux du ressort du siège social de Pasio Padel Club.
+                ceux du ressort du siège social de {CLUB_INFO.name}.
               </p>
             </LegalSection>
 
             <div className="mt-12 rounded-xl border border-border/50 bg-card/50 p-6">
               <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">Pasio Padel Club</strong>
+                <strong className="text-foreground">{CLUB_INFO.name}</strong>
                 <br />
-                20 rue Alfred de Vigny, 64600 Anglet
+                {CLUB_INFO.address.full}
                 <br />
                 Téléphone :{' '}
                 <a
-                  href="tel:+33971117928"
+                  href={CLUB_INFO.phone.href}
                   className="text-primary hover:underline"
                 >
-                  09 71 11 79 28
+                  {CLUB_INFO.phone.display}
                 </a>
                 <br />
                 Email :{' '}
                 <a
-                  href="mailto:contact@pasiopadelclub.fr"
+                  href={`mailto:${CLUB_INFO.email}`}
                   className="text-primary hover:underline"
                 >
-                  contact@pasiopadelclub.fr
+                  {CLUB_INFO.email}
                 </a>
               </p>
             </div>
@@ -255,8 +259,7 @@ export const Route = createFileRoute('/_public__root/cgv/')({
     return {
       meta: seo({
         title: 'Conditions Générales de Vente',
-        description:
-          "Conditions Générales de Vente de Pasio Padel Club à Anglet. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.",
+        description: `Conditions Générales de Vente de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.`,
         pathname: '/cgv'
       })
     }

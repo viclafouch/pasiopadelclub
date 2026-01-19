@@ -49,7 +49,7 @@ export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
               <Text className="m-0 text-center text-xs leading-5 text-slate-400">
                 Pasio Padel Club
                 <br />
-                20 rue Alfred de Vigny, 64600 Anglet
+                24 rue Arnaud Detroyat, 64100 Bayonne
               </Text>
               <Text className="m-0 mt-3 text-center text-xs text-slate-500">
                 <Link

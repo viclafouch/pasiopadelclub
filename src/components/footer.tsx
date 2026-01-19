@@ -1,8 +1,15 @@
 import { getYear } from 'date-fns'
+import { Clock, Mail, MapPin, Phone } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { CLUB_INFO, SOCIAL_LINKS } from '@/constants/app'
 import { Link } from '@tanstack/react-router'
 
-const InstagramIcon = ({ className }: { className?: string }) => {
+type IconProps = {
+  className?: string
+}
+
+const InstagramIcon = ({ className }: IconProps) => {
   return (
     <svg
       className={className}
@@ -19,68 +26,187 @@ const InstagramIcon = ({ className }: { className?: string }) => {
   )
 }
 
+const FacebookIcon = ({ className }: IconProps) => {
+  return (
+    <svg
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        fillRule="evenodd"
+        d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+        clipRule="evenodd"
+      />
+    </svg>
+  )
+}
+
+type SocialIconMap = Record<
+  'instagram' | 'facebook',
+  ({ className }: IconProps) => React.JSX.Element
+>
+
+const SOCIAL_ICONS = {
+  instagram: InstagramIcon,
+  facebook: FacebookIcon
+} as const satisfies SocialIconMap
+
+type NavLink = {
+  to: string
+  label: string
+}
+
+const NAV_LINKS = [
+  { to: '/tarifs', label: 'Nos tarifs' },
+  { to: '/galerie', label: 'Galerie photos' },
+  { to: '/credits', label: 'Packs de crédits' },
+  { to: '/application', label: 'Application mobile' }
+] as const satisfies NavLink[]
+
 const Footer = () => {
   return (
-    <footer>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 max-md:flex-col sm:px-6 sm:py-6 md:gap-6 md:py-8">
-        <Link to="/">
-          <div className="flex items-center gap-3">
-            <img width={40} src="/logo.webp" alt="Pasio Padel Club" />
+    <footer className="bg-muted/30">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+          <div>
+            <Link to="/" className="inline-block">
+              <img
+                width={48}
+                height={48}
+                src="/logo.webp"
+                alt="Pasio Padel Club"
+                className="h-12 w-12"
+              />
+            </Link>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Votre club de padel à Bayonne, ouvert tous les jours de 8h à 22h.
+            </p>
+            <div className="mt-6 flex gap-4">
+              {SOCIAL_LINKS.map((social) => {
+                const Icon = SOCIAL_ICONS[social.platform]
+
+                return (
+                  <a
+                    key={social.platform}
+                    href={social.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={social.label}
+                    className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                  >
+                    <Icon className="size-5" />
+                  </a>
+                )
+              })}
+            </div>
           </div>
-        </Link>
-        <div className="flex items-center gap-5 whitespace-nowrap">
-          <Link
-            to="/tarifs"
-            className="opacity-80 transition-opacity duration-300 hover:opacity-100"
-          >
-            Tarifs
-          </Link>
-          <Link
-            to="/galerie"
-            className="opacity-80 transition-opacity duration-300 hover:opacity-100"
-          >
-            Galerie
-          </Link>
-          <Link
-            to="/application"
-            className="opacity-80 transition-opacity duration-300 hover:opacity-100"
-          >
-            Application
-          </Link>
-          <Link
-            to="/contact"
-            className="opacity-80 transition-opacity duration-300 hover:opacity-100"
-          >
-            Contact
-          </Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <a
-            href="https://www.instagram.com/pasio_padel_club/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <InstagramIcon className="size-5" />
-          </a>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Découvrir</h3>
+            <ul className="mt-4 space-y-3">
+              {NAV_LINKS.map((link) => {
+                return (
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Contact</h3>
+            <ul className="mt-4 space-y-3">
+              <li>
+                <a
+                  href={CLUB_INFO.phone.href}
+                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <Phone className="size-4 shrink-0" aria-hidden="true" />
+                  {CLUB_INFO.phone.display}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${CLUB_INFO.email}`}
+                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <Mail className="size-4 shrink-0" aria-hidden="true" />
+                  {CLUB_INFO.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CLUB_INFO.address.full)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <MapPin
+                    className="mt-0.5 size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    {CLUB_INFO.address.street}
+                    <br />
+                    {CLUB_INFO.address.postalCode} {CLUB_INFO.address.city}
+                  </span>
+                </a>
+              </li>
+              <li>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="size-4 shrink-0" aria-hidden="true" />
+                  <span>
+                    Tous les jours,{' '}
+                    <span className="font-medium text-primary">8h — 22h</span>
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              Réservez maintenant
+            </h3>
+            <p className="mt-4 text-sm text-muted-foreground">
+              6 terrains disponibles, réservation en ligne 24h/24.
+            </p>
+            <Button asChild className="mt-4 w-full">
+              <Link to="/reservation">Réserver un terrain</Link>
+            </Button>
+            <Link
+              to="/contact"
+              className="mt-3 block text-center text-sm text-muted-foreground transition-colors hover:text-primary"
+            >
+              Une question ? Contactez-nous
+            </Link>
+          </div>
         </div>
       </div>
       <Separator />
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-8 sm:px-6">
-        <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-          <Link
-            to="/mentions-legales"
-            className="transition-colors hover:text-foreground"
-          >
-            Mentions légales
-          </Link>
-          <span className="hidden sm:inline">·</span>
-          <Link to="/cgv" className="transition-colors hover:text-foreground">
-            CGV
-          </Link>
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+            <Link
+              to="/mentions-legales"
+              className="transition-colors hover:text-foreground"
+            >
+              Mentions légales
+            </Link>
+            <span className="hidden sm:inline">·</span>
+            <Link to="/cgv" className="transition-colors hover:text-foreground">
+              CGV
+            </Link>
+          </div>
+          <p className="text-center text-sm text-muted-foreground">
+            © {getYear(new Date())} {CLUB_INFO.name} — Tous droits réservés
+          </p>
         </div>
-        <p className="text-center text-sm font-medium text-balance">
-          {`© ${getYear(new Date())}`} Pasio Padel Club - Tous droits réservés
-        </p>
       </div>
     </footer>
   )
