@@ -232,6 +232,16 @@ const ReservationPage = () => {
 export const Route = createFileRoute('/_public__root/reservation/')({
   component: ReservationPage,
   validateSearch: searchSchema,
+  loaderDeps: ({ search }) => {
+    return { date: search.date }
+  },
+  loader: async ({ context, deps }) => {
+    const selectedDate =
+      deps.date ?? getDefaultBookingDateKey(CLOSING_HOUR, MIN_SESSION_MINUTES)
+    await context.queryClient.ensureQueryData(
+      getSlotsByDateQueryOpts(selectedDate)
+    )
+  },
   head: () => {
     return {
       meta: seo({
