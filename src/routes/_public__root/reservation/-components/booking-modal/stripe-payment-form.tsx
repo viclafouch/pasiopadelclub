@@ -26,21 +26,36 @@ type StripeFormState = {
 type StripePaymentFormProps = {
   onSuccess: () => void
   onStateChange: (state: StripeFormState) => void
+  onEscape: () => void
 }
 
 export const StripePaymentForm = ({
   onSuccess,
-  onStateChange
+  onStateChange,
+  onEscape
 }: StripePaymentFormProps) => {
   const stripe = useStripe()
   const elements = useElements()
   const [isReady, setIsReady] = React.useState(false)
   const [isProcessing, setIsProcessing] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+  const [loadError, setLoadError] = React.useState<string | null>(null)
 
   const handleReady = () => {
     setIsReady(true)
     onStateChange({ isReady: true, isProcessing: false })
+  }
+
+  const handleChange = () => {
+    if (error) {
+      setError(null)
+    }
+  }
+
+  const handleLoadError = () => {
+    setLoadError(
+      'Impossible de charger le formulaire de paiement. Vérifiez votre connexion.'
+    )
   }
 
   const resetProcessingState = (errorMessage: string) => {
@@ -120,11 +135,18 @@ export const StripePaymentForm = ({
         >
           <PaymentElement
             onReady={handleReady}
+            onChange={handleChange}
+            onEscape={onEscape}
+            onLoadError={handleLoadError}
             options={PAYMENT_ELEMENT_OPTIONS}
           />
         </div>
       </div>
-      {error ? (
+      {loadError ? (
+        <Alert variant="destructive" className="mt-4">
+          <AlertDescription>{loadError}</AlertDescription>
+        </Alert>
+      ) : error ? (
         <Alert variant="destructive" className="mt-4">
           <AlertDescription className="break-words">{error}</AlertDescription>
         </Alert>

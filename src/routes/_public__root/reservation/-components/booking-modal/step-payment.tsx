@@ -42,6 +42,7 @@ type StepPaymentProps = {
   onPaymentMethodChange: (method: PaymentMethod) => void
   onStripeStateChange: (state: StripeFormState) => void
   onCreditProcessingChange: (isProcessing: boolean) => void
+  onEscape: () => void
 }
 
 export const StepPayment = ({
@@ -50,7 +51,8 @@ export const StepPayment = ({
   paymentMethod,
   onPaymentMethodChange,
   onStripeStateChange,
-  onCreditProcessingChange
+  onCreditProcessingChange,
+  onEscape
 }: StepPaymentProps) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -127,6 +129,7 @@ export const StepPayment = ({
               <StripePaymentForm
                 onSuccess={handleStripeSuccess}
                 onStateChange={onStripeStateChange}
+                onEscape={onEscape}
               />
             </Elements>
           ) : (

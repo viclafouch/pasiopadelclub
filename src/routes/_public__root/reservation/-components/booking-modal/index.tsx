@@ -186,6 +186,7 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
                   onPaymentMethodChange={setPaymentMethod}
                   onStripeStateChange={setStripeFormState}
                   onCreditProcessingChange={setIsCreditProcessing}
+                  onEscape={handleClose}
                 />
               </motion.div>
             </AnimatePresence>
