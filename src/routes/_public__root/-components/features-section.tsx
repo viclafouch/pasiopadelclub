@@ -147,9 +147,9 @@ const CourtStat = ({
         </span>
         <p className="text-xs sm:text-sm font-medium text-white/80">{label}</p>
       </div>
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
         <AvatarGroup type={avatarType} size={isSmall ? 'sm' : 'md'} />
-        <span className="text-[10px] sm:text-xs text-white/60">
+        <span className="whitespace-nowrap text-[10px] sm:text-xs text-white/60">
           {players} {players > 1 ? 'joueurs' : 'joueur'}
         </span>
       </div>
@@ -284,15 +284,23 @@ export const FeaturesSection = () => {
       <div className="container relative">
         <SectionHeader />
         <div className="mx-auto max-w-5xl">
-          <div className="grid gap-4 lg:grid-cols-3">
-            <MainFeatureCard className="lg:col-span-2 lg:row-span-2" />
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+            <MainFeatureCard className="col-span-2 lg:row-span-2" />
             {FEATURES.slice(0, 2).map((feature) => {
               return <FeatureCard key={feature.title} feature={feature} />
             })}
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.slice(2).map((feature) => {
-              return <FeatureCard key={feature.title} feature={feature} />
+          <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">
+            {FEATURES.slice(2).map((feature, index, array) => {
+              const isLast = index === array.length - 1
+
+              return (
+                <FeatureCard
+                  key={feature.title}
+                  feature={feature}
+                  className={isLast ? 'col-span-2 lg:col-span-1' : undefined}
+                />
+              )
             })}
           </div>
         </div>
