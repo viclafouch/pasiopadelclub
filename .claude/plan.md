@@ -317,7 +317,7 @@ Système de prépaiement par crédits avec bonus et expiration.
 - [x] Templates React Email: vérification, bienvenue, confirmation, rappel 24h, annulation
 - [x] Intégration Better Auth (vérification email, bienvenue après validation)
 - [x] Intégration booking (confirmation webhook, annulation)
-- [ ] Cron rappel 24h avant créneaux
+- [x] Cron rappel 24h avant créneaux
 - [ ] Email contact (formulaire)
 
 ---

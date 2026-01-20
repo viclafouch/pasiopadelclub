@@ -163,7 +163,9 @@ const Footer = () => {
                   <Clock className="size-4 shrink-0" aria-hidden="true" />
                   <span>
                     Tous les jours,{' '}
-                    <span className="font-medium text-primary">8h — 22h</span>
+                    <span className="font-medium text-primary">
+                      8h00 — 22h00
+                    </span>
                   </span>
                 </div>
               </li>

@@ -1,3 +1,4 @@
+import { CLUB_INFO } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -66,7 +67,7 @@ export const BookingReminderEmail = ({
       </Section>
       <Section className="mt-8 rounded-lg border border-slate-700 p-4">
         <Text className="m-0 text-sm leading-6 text-slate-300">
-          📍 <strong>Adresse :</strong> 20 rue Alfred de Vigny, 64600 Anglet
+          📍 <strong>Adresse :</strong> {CLUB_INFO.address.full}
         </Text>
         <Text className="m-0 mt-2 text-sm leading-6 text-slate-300">
           ⏰ <strong>Arrivée :</strong> 10 minutes avant le créneau

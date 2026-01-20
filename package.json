@@ -24,7 +24,8 @@
     "db:seed": "npx tsx src/db/seed.ts",
     "db:seed:credit-packs": "npx tsx src/db/seed-credit-packs.ts",
     "email:dev": "email dev --dir src/emails --port 3001",
-    "email:export": "email export --dir src/emails --outDir dist/emails"
+    "email:export": "email export --dir src/emails --outDir dist/emails",
+    "cron:reminder": "vite-node --config vite.config.cron.ts cron/reminder.ts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.4.1",

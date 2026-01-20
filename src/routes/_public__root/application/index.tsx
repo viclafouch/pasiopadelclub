@@ -113,26 +113,6 @@ const ApplicationPage = () => {
           </div>
         </div>
       </section>
-      <section className="py-20">
-        <div className="container">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
-              Prêt à jouer ?
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              Téléchargez l&apos;application et réservez votre premier match
-            </p>
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <StoreBadge store="apple" size="large" className="ios-first" />
-              <StoreBadge
-                store="google"
-                size="large"
-                className="android-first"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   )
 }
