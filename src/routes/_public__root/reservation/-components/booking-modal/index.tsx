@@ -41,10 +41,10 @@ type StripeFormState = {
   isProcessing: boolean
 }
 
-const INITIAL_STRIPE_FORM_STATE: StripeFormState = {
+const INITIAL_STRIPE_FORM_STATE = {
   isReady: false,
   isProcessing: false
-}
+} as const satisfies StripeFormState
 
 const SLIDE_VARIANTS = {
   enter: (direction: number) => {
@@ -121,14 +121,6 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
     contentRef.current?.focus()
   }
 
-  const handleStripeStateChange = (state: StripeFormState) => {
-    setStripeFormState(state)
-  }
-
-  const handleCreditProcessingChange = (isProcessing: boolean) => {
-    setIsCreditProcessing(isProcessing)
-  }
-
   const slideVariants = shouldReduceMotion
     ? REDUCED_MOTION_VARIANTS
     : SLIDE_VARIANTS
@@ -151,8 +143,8 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
 
   const paymentButtonLabel =
     paymentMethod === 'card'
-      ? `Payer ${formatCentsToEuros(selectedSlot.court.price, { minimumFractionDigits: 2 })}`
-      : `Payer ${formatCentsToEuros(selectedSlot.court.price)} avec mes crédits`
+      ? `Payer ${formatCentsToEuros(selectedSlot.court.price)}`
+      : `Utiliser ${formatCentsToEuros(selectedSlot.court.price)} de crédits`
 
   return (
     <Dialog open onOpenChange={handleClose}>
@@ -170,40 +162,36 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
           tabIndex={-1}
           className="min-h-0 flex-1 overflow-y-auto p-6 outline-none"
         >
-          <div className="mb-4">
-            <BookingSummary selectedSlot={selectedSlot} />
-          </div>
-          <AnimatePresence
-            mode="wait"
-            custom={directionRef.current}
-            initial={false}
-          >
-            <motion.div
-              key={isPaymentStep ? 'payment' : 'recap'}
-              custom={directionRef.current}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                duration: animationDuration,
-                ease: animationEasing
-              }}
-            >
-              {isPaymentStep ? (
+          {isPaymentStep ? (
+            <AnimatePresence mode="wait" custom={directionRef.current}>
+              <motion.div
+                key="payment"
+                custom={directionRef.current}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  duration: animationDuration,
+                  ease: animationEasing
+                }}
+              >
+                <div className="mb-2">
+                  <BookingSummary selectedSlot={selectedSlot} />
+                </div>
                 <StepPayment
                   selectedSlot={selectedSlot}
                   paymentIntentMutation={paymentIntentMutation}
                   paymentMethod={paymentMethod}
                   onPaymentMethodChange={setPaymentMethod}
-                  onStripeStateChange={handleStripeStateChange}
-                  onCreditProcessingChange={handleCreditProcessingChange}
+                  onStripeStateChange={setStripeFormState}
+                  onCreditProcessingChange={setIsCreditProcessing}
                 />
-              ) : (
-                <StepRecap />
-              )}
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <StepRecap selectedSlot={selectedSlot} />
+          )}
         </div>
         <DialogFooter className="flex-row justify-between gap-2 border-t bg-muted/30 px-6 py-4">
           <Button

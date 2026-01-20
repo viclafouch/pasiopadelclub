@@ -2,6 +2,7 @@ import { CreditCardIcon, LoaderIcon, WalletIcon } from 'lucide-react'
 import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
 import type { UseQueryResult } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import type { PaymentMethod } from './constants'
 
 type BalanceQueryResult = UseQueryResult<number>
@@ -49,7 +50,7 @@ export const PaymentMethodSelector = ({
       return 'credits-error'
     }
 
-    if (!hasEnoughCredits && (balanceQuery.data ?? 0) > 0) {
+    if (!hasEnoughCredits) {
       return 'credits-insufficient'
     }
 
@@ -62,7 +63,7 @@ export const PaymentMethodSelector = ({
       <div
         role="radiogroup"
         aria-label="Mode de paiement"
-        className="grid grid-cols-2 gap-3"
+        className="grid gap-2 sm:grid-cols-2"
       >
         <button
           type="button"
@@ -127,12 +128,21 @@ export const PaymentMethodSelector = ({
         </button>
       </div>
       {balanceQuery.isError ? (
-        <p id="credits-error" className="text-xs text-destructive">
+        <p id="credits-error" role="alert" className="text-xs text-destructive">
           Impossible de charger vos crédits. Utilisez la carte bancaire.
         </p>
-      ) : !hasEnoughCredits && (balanceQuery.data ?? 0) > 0 ? (
+      ) : !hasEnoughCredits ? (
         <p id="credits-insufficient" className="text-xs text-muted-foreground">
-          Solde insuffisant pour payer en crédits
+          {(balanceQuery.data ?? 0) > 0
+            ? 'Solde insuffisant.'
+            : 'Aucun crédit disponible.'}{' '}
+          <Link
+            to="/mon-compte"
+            search={{ tab: 'credits' }}
+            className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            Acheter des crédits
+          </Link>
         </p>
       ) : null}
     </fieldset>

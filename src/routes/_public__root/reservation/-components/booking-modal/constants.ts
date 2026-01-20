@@ -1,40 +1,40 @@
 import type { Appearance } from '@stripe/stripe-js'
 
-export type Amenity = {
-  icon: 'racket' | 'ball' | 'shower' | 'drink' | 'location'
+export type PaymentMethod = 'card' | 'credit'
+
+export type SummaryItem = {
+  emoji: string
+  bg: string
   title: string
-  description: string
+  subtitle: string
 }
 
-export const CLUB_AMENITIES = [
+export const AMENITIES = [
   {
-    icon: 'racket',
+    emoji: '🎾',
+    bg: 'bg-amber-100/60',
     title: 'Location de raquettes',
-    description: 'À partir de 3€'
+    subtitle: 'À partir de 3€'
   },
   {
-    icon: 'ball',
+    emoji: '⚽',
+    bg: 'bg-orange-100/60',
     title: 'Balles disponibles',
-    description: 'Sur place'
+    subtitle: 'Sur place'
   },
   {
-    icon: 'shower',
+    emoji: '🚿',
+    bg: 'bg-cyan-100/60',
     title: 'Vestiaires & douches',
-    description: 'Accès inclus'
+    subtitle: 'Accès inclus'
   },
   {
-    icon: 'drink',
+    emoji: '🍹',
+    bg: 'bg-pink-100/60',
     title: 'Bar & espace détente',
-    description: 'Boissons et snacks'
-  },
-  {
-    icon: 'location',
-    title: '24 rue Arnaud Detroyat',
-    description: '64100 Bayonne'
+    subtitle: 'Boissons et snacks'
   }
-] as const satisfies Amenity[]
-
-export type PaymentMethod = 'card' | 'credit'
+] as const satisfies SummaryItem[]
 
 export const STRIPE_FORM_ID = 'stripe-payment-form' as const
 export const CREDIT_FORM_ID = 'credit-payment-form' as const
@@ -82,7 +82,7 @@ export const STRIPE_APPEARANCE = {
       borderRadius: '10px'
     },
     '.AccordionItem--selected': {
-      border: '2px solid hsl(165 40% 28%)'
+      border: '1px solid hsl(265 5% 85%)'
     }
   }
 } as const satisfies Appearance

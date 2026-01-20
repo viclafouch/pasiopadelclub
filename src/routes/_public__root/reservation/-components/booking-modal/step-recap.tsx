@@ -1,42 +1,97 @@
-import { type Amenity, CLUB_AMENITIES } from './constants'
+import { motion, type Variants } from 'motion/react'
+import { CLUB_INFO } from '@/constants/app'
+import { LOCATION_LABELS } from '@/constants/court'
+import type { SelectedSlot } from '@/constants/types'
+import { formatDateFr, formatTimeFr } from '@/helpers/date'
+import { formatCentsToEuros } from '@/helpers/number'
+import { AMENITIES, ANIMATION_EASING, type SummaryItem } from './constants'
 
-const AMENITY_ICONS = {
-  racket: '🎾',
-  ball: '⚽',
-  shower: '🚿',
-  drink: '🍹'
-} as const satisfies Record<Exclude<Amenity['icon'], 'location'>, string>
+type StepRecapProps = {
+  selectedSlot: SelectedSlot
+}
 
-const DISPLAY_AMENITIES = CLUB_AMENITIES.filter((amenity) => {
-  return amenity.icon !== 'location'
-})
+const CONTAINER_VARIANTS = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.06
+    }
+  }
+} as const satisfies Variants
 
-export const StepRecap = () => {
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, translateY: 10 },
+  visible: {
+    opacity: 1,
+    translateY: 0,
+    transition: {
+      duration: 0.25,
+      ease: ANIMATION_EASING
+    }
+  }
+} as const satisfies Variants
+
+export const StepRecap = ({ selectedSlot }: StepRecapProps) => {
+  const { court, slot } = selectedSlot
+  const startDate = new Date(slot.startAt)
+  const endDate = new Date(slot.endAt)
+
+  const bookingItems: SummaryItem[] = [
+    {
+      emoji: '🏟️',
+      bg: 'bg-violet-100/60',
+      title: court.name,
+      subtitle: formatCentsToEuros(court.price)
+    },
+    {
+      emoji: '📅',
+      bg: 'bg-blue-100/60',
+      title: formatDateFr(startDate),
+      subtitle: `${formatTimeFr(startDate)} - ${formatTimeFr(endDate)} (${court.duration} min)`
+    },
+    {
+      emoji: '👥',
+      bg: 'bg-emerald-100/60',
+      title: `${court.capacity} joueurs`,
+      subtitle: `Terrain ${LOCATION_LABELS[court.location].toLowerCase()}`
+    },
+    {
+      emoji: '📍',
+      bg: 'bg-red-100/60',
+      title: CLUB_INFO.address.city,
+      subtitle: CLUB_INFO.address.street
+    }
+  ]
+
+  const allItems = [...bookingItems, ...AMENITIES]
+
   return (
-    <div className="space-y-4">
-      <ul
-        className="grid grid-cols-2 gap-2"
-        aria-label="Services disponibles au club"
-      >
-        {DISPLAY_AMENITIES.map((amenity) => {
-          return (
-            <li
-              key={amenity.title}
-              className="flex items-center gap-2.5 rounded-lg border bg-muted/20 px-3 py-2"
+    <motion.div
+      className="grid gap-2 sm:grid-cols-2"
+      variants={CONTAINER_VARIANTS}
+      initial="hidden"
+      animate="visible"
+    >
+      {allItems.map((item) => {
+        return (
+          <motion.div
+            key={item.title}
+            variants={ITEM_VARIANTS}
+            className="flex items-center gap-3 rounded-xl border bg-muted/30 p-3"
+          >
+            <div
+              className={`flex size-9 shrink-0 items-center justify-center rounded-full ${item.bg}`}
+              aria-hidden="true"
             >
-              <span className="text-base" aria-hidden="true">
-                {AMENITY_ICONS[amenity.icon]}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm">{amenity.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {amenity.description}
-                </p>
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+              <span className="text-lg">{item.emoji}</span>
+            </div>
+            <div className="text-sm">
+              <p className="font-medium">{item.title}</p>
+              <p className="text-muted-foreground">{item.subtitle}</p>
+            </div>
+          </motion.div>
+        )
+      })}
+    </motion.div>
   )
 }

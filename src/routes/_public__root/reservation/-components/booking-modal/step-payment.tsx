@@ -106,7 +106,7 @@ export const StepPayment = ({
       : undefined
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <PaymentMethodSelector
         selectedMethod={paymentMethod}
         onMethodChange={onPaymentMethodChange}
@@ -152,7 +152,7 @@ export const StepPayment = ({
             </p>
           </div>
           {creditMutation.error ? (
-            <Alert variant="destructive" className="mt-4">
+            <Alert variant="destructive" className="mt-2">
               <AlertDescription>
                 {getErrorMessage(creditMutation.error)}
               </AlertDescription>
@@ -161,25 +161,32 @@ export const StepPayment = ({
           <form id={CREDIT_FORM_ID} onSubmit={handleCreditSubmit} />
         </div>
       )}
-      <div className="space-y-2 border-t pt-4">
-        <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <LockIcon className="size-3.5" aria-hidden="true" />
+      <div className="space-y-2 text-center text-xs text-muted-foreground">
+        <p>
+          <LockIcon
+            className="mr-1.5 inline-block size-3.5 align-text-bottom"
+            aria-hidden="true"
+          />
           Paiement sécurisé par Stripe
         </p>
-        <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <MailIcon className="size-3.5" aria-hidden="true" />
-          <span>
-            Confirmation envoyée à{' '}
-            <span className="font-medium text-foreground">
-              {authUserQuery.data?.email}
-            </span>
+        <p>
+          <MailIcon
+            className="mr-1.5 inline-block size-3.5 align-text-bottom"
+            aria-hidden="true"
+          />
+          Confirmation envoyée à{' '}
+          <span className="font-medium text-foreground">
+            {authUserQuery.data?.email}
           </span>
         </p>
-        <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <InfoIcon className="size-3.5" aria-hidden="true" />
+        <p>
+          <InfoIcon
+            className="mr-1.5 inline-block size-3.5 align-text-bottom"
+            aria-hidden="true"
+          />
           Annulation gratuite jusqu&apos;à 24h avant
         </p>
-        <p className="text-center text-xs text-muted-foreground">
+        <p>
           En payant, vous acceptez nos{' '}
           <Link to="/cgv" className="underline hover:text-foreground">
             conditions générales de vente
