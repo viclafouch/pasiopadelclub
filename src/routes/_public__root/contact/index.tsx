@@ -1,44 +1,127 @@
 import React from 'react'
-import { CheckCircle2, Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
-import { z } from 'zod/v3'
+import { flushSync } from 'react-dom'
+import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
+import { motion, useReducedMotion, type Variants } from 'motion/react'
+import { FormField, FormTextareaField } from '@/components/form-field'
+import { LoadingButton } from '@/components/loading-button'
+import { SuccessCheckmark } from '@/components/success-checkmark'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { CLUB_INFO } from '@/constants/app'
+import { contactFormSchema } from '@/constants/schemas'
 import { getErrorMessage } from '@/helpers/error'
+import { submitContactFormFn } from '@/server/contact'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
-import { createFileRoute } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute, useRouteContext } from '@tanstack/react-router'
 
-const contactSchema = z.object({
-  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  email: z.string().email('Veuillez entrer une adresse email valide'),
-  message: z.string().min(10, 'Le message doit contenir au moins 10 caractères')
-})
+const CONTAINER_VARIANTS = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2
+    }
+  }
+} as const satisfies Variants
+
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, translateY: 16 },
+  visible: {
+    opacity: 1,
+    translateY: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 12
+    }
+  }
+} as const satisfies Variants
+
+type SuccessStateProps = {
+  successRef: React.RefObject<HTMLDivElement | null>
+  onReset: () => void
+}
+
+const SuccessState = ({ successRef, onReset }: SuccessStateProps) => {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      ref={successRef}
+      tabIndex={-1}
+      role="status"
+      aria-live="polite"
+      variants={shouldReduceMotion ? undefined : CONTAINER_VARIANTS}
+      initial={shouldReduceMotion ? 'visible' : 'hidden'}
+      animate="visible"
+      className="flex flex-col items-center py-10 text-center outline-none"
+    >
+      <motion.div
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mb-6"
+      >
+        <SuccessCheckmark shouldReduceMotion={shouldReduceMotion} />
+      </motion.div>
+      <motion.h3
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mb-2 font-display text-xl font-semibold text-foreground"
+      >
+        Message envoyé !
+      </motion.h3>
+      <motion.p
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="text-muted-foreground"
+      >
+        Nous vous répondrons dans les plus brefs délais.
+      </motion.p>
+      <motion.div variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}>
+        <Button className="mt-6" variant="outline" onClick={onReset}>
+          Envoyer un autre message
+        </Button>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 const ContactPage = () => {
+  const { user } = useRouteContext({ from: '/_public__root' })
   const [isSubmitted, setIsSubmitted] = React.useState(false)
+  const successRef = React.useRef<HTMLDivElement>(null)
+
+  const submitMutation = useMutation({
+    mutationFn: submitContactFormFn,
+    onSuccess: () => {
+      flushSync(() => {
+        setIsSubmitted(true)
+      })
+      successRef.current?.focus()
+    }
+  })
+
+  const defaultName = user ? `${user.firstName} ${user.lastName}` : ''
+  const defaultEmail = user?.email ?? ''
 
   const form = useForm({
     defaultValues: {
-      name: '',
-      email: '',
+      name: defaultName,
+      email: defaultEmail,
+      subject: '',
       message: ''
     },
     validators: {
-      onChange: contactSchema
+      onSubmit: contactFormSchema
     },
-    onSubmit: async () => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000)
-      })
-      setIsSubmitted(true)
+    onSubmit: async ({ value }) => {
+      await submitMutation.mutateAsync({ data: value })
     }
   })
 
   const resetForm = () => {
     setIsSubmitted(false)
+    submitMutation.reset()
     form.reset()
   }
 
@@ -65,30 +148,7 @@ const ContactPage = () => {
             <div className="order-2 lg:order-1">
               <div className="rounded-2xl border border-border/50 bg-card/50 p-8 backdrop-blur-sm">
                 {isSubmitted ? (
-                  <div
-                    role="status"
-                    className="flex flex-col items-center py-12 text-center"
-                  >
-                    <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                      <CheckCircle2
-                        className="h-8 w-8 text-primary"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <h3 className="mb-2 font-display text-xl font-semibold text-foreground">
-                      Message envoyé !
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Nous vous répondrons dans les plus brefs délais.
-                    </p>
-                    <Button
-                      className="mt-6"
-                      variant="outline"
-                      onClick={resetForm}
-                    >
-                      Envoyer un autre message
-                    </Button>
-                  </div>
+                  <SuccessState successRef={successRef} onReset={resetForm} />
                 ) : (
                   <form
                     onSubmit={(event) => {
@@ -99,144 +159,78 @@ const ContactPage = () => {
                     className="space-y-6"
                     noValidate
                   >
+                    {submitMutation.isError ? (
+                      <Alert variant="destructive">
+                        <AlertDescription>
+                          {getErrorMessage(submitMutation.error)}
+                        </AlertDescription>
+                      </Alert>
+                    ) : null}
                     <form.Field name="name">
                       {(field) => {
-                        const hasError = field.state.meta.errors.length > 0
-                        const errorId = `${field.name}-error`
-
                         return (
-                          <div className="space-y-2">
-                            <Label htmlFor={field.name}>Nom complet</Label>
-                            <Input
-                              type="text"
-                              id={field.name}
-                              name={field.name}
-                              value={field.state.value}
-                              onBlur={field.handleBlur}
-                              onChange={(event) => {
-                                return field.handleChange(event.target.value)
-                              }}
-                              autoComplete="name"
-                              aria-invalid={hasError}
-                              aria-describedby={hasError ? errorId : undefined}
-                              className="h-11"
-                              placeholder="Jean Dupont"
-                            />
-                            {hasError ? (
-                              <p
-                                id={errorId}
-                                role="alert"
-                                className="text-sm text-destructive"
-                              >
-                                {getErrorMessage(field.state.meta.errors[0])}
-                              </p>
-                            ) : null}
-                          </div>
+                          <FormField
+                            field={field}
+                            label="Nom complet"
+                            placeholder="Jean Dupont"
+                            autoComplete="name"
+                            required
+                            className="h-11"
+                          />
                         )
                       }}
                     </form.Field>
                     <form.Field name="email">
                       {(field) => {
-                        const hasError = field.state.meta.errors.length > 0
-                        const errorId = `${field.name}-error`
-
                         return (
-                          <div className="space-y-2">
-                            <Label htmlFor={field.name}>Adresse email</Label>
-                            <Input
-                              type="email"
-                              id={field.name}
-                              name={field.name}
-                              value={field.state.value}
-                              onBlur={field.handleBlur}
-                              onChange={(event) => {
-                                return field.handleChange(event.target.value)
-                              }}
-                              autoComplete="email"
-                              aria-invalid={hasError}
-                              aria-describedby={hasError ? errorId : undefined}
-                              className="h-11"
-                              placeholder="jean@exemple.fr"
-                            />
-                            {hasError ? (
-                              <p
-                                id={errorId}
-                                role="alert"
-                                className="text-sm text-destructive"
-                              >
-                                {getErrorMessage(field.state.meta.errors[0])}
-                              </p>
-                            ) : null}
-                          </div>
+                          <FormField
+                            field={field}
+                            label="Adresse email"
+                            type="email"
+                            placeholder="jean@exemple.fr"
+                            autoComplete="email"
+                            required
+                            className="h-11"
+                          />
+                        )
+                      }}
+                    </form.Field>
+                    <form.Field name="subject">
+                      {(field) => {
+                        return (
+                          <FormField
+                            field={field}
+                            label="Objet"
+                            placeholder="Demande de renseignements"
+                            required
+                            className="h-11"
+                          />
                         )
                       }}
                     </form.Field>
                     <form.Field name="message">
                       {(field) => {
-                        const hasError = field.state.meta.errors.length > 0
-                        const errorId = `${field.name}-error`
-
                         return (
-                          <div className="space-y-2">
-                            <Label htmlFor={field.name}>Message</Label>
-                            <Textarea
-                              id={field.name}
-                              name={field.name}
-                              value={field.state.value}
-                              onBlur={field.handleBlur}
-                              onChange={(event) => {
-                                return field.handleChange(event.target.value)
-                              }}
-                              rows={5}
-                              aria-invalid={hasError}
-                              aria-describedby={hasError ? errorId : undefined}
-                              placeholder="Votre message..."
-                            />
-                            {hasError ? (
-                              <p
-                                id={errorId}
-                                role="alert"
-                                className="text-sm text-destructive"
-                              >
-                                {getErrorMessage(field.state.meta.errors[0])}
-                              </p>
-                            ) : null}
-                          </div>
+                          <FormTextareaField
+                            field={field}
+                            label="Message"
+                            placeholder="Votre message..."
+                            required
+                            className="min-h-40 field-sizing-fixed"
+                          />
                         )
                       }}
                     </form.Field>
-                    <form.Subscribe
-                      selector={(state) => {
-                        return state.isSubmitting
-                      }}
+                    <LoadingButton
+                      type="submit"
+                      size="lg"
+                      className="w-full"
+                      isLoading={submitMutation.isPending}
+                      loadingText="Envoi en cours..."
                     >
-                      {(isSubmitting) => {
-                        return (
-                          <Button
-                            type="submit"
-                            size="lg"
-                            className="w-full"
-                            disabled={isSubmitting}
-                            aria-busy={isSubmitting}
-                          >
-                            {isSubmitting ? (
-                              <span className="flex items-center gap-2">
-                                <span
-                                  className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                                  aria-hidden="true"
-                                />
-                                Envoi en cours...
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-2">
-                                <Send className="h-4 w-4" aria-hidden="true" />
-                                Envoyer le message
-                              </span>
-                            )}
-                          </Button>
-                        )
-                      }}
-                    </form.Subscribe>
+                      <Send className="size-4" aria-hidden="true" />
+                      Envoyer le message
+                    </LoadingButton>
                   </form>
                 )}
               </div>

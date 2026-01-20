@@ -1,8 +1,32 @@
+import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js/min'
 import { z } from 'zod'
 
-export const updateProfileSchema = z.object({
+const DEFAULT_COUNTRY = 'FR'
+
+const optionalPhoneSchema = z
+  .string()
+  .refine(
+    (value) => {
+      return value === '' || isValidPhoneNumber(value, DEFAULT_COUNTRY)
+    },
+    { message: 'Format de téléphone invalide' }
+  )
+  .transform((value) => {
+    return value === ''
+      ? ''
+      : parsePhoneNumber(value, DEFAULT_COUNTRY).format('E.164')
+  })
+
+const profileBaseSchema = z.object({
   firstName: z.string().nonempty().max(50),
-  lastName: z.string().nonempty().max(50),
+  lastName: z.string().nonempty().max(50)
+})
+
+export const profileFormSchema = profileBaseSchema.extend({
+  phone: optionalPhoneSchema
+})
+
+export const updateProfileSchema = profileBaseSchema.extend({
   phone: z.string().max(20).optional()
 })
 
@@ -43,4 +67,11 @@ export const bookingMetadataSchema = z.object({
   userId: z.uuid(),
   startAt: toDate,
   endAt: toDate
+})
+
+export const contactFormSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.email().max(254),
+  subject: z.string().min(3).max(200),
+  message: z.string().min(10).max(5000)
 })

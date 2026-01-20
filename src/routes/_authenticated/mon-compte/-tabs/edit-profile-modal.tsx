@@ -1,3 +1,5 @@
+import { FormField } from '@/components/form-field'
+import { LoadingButton } from '@/components/loading-button'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { getAuthUserQueryOpts } from '@/constants/queries'
-import { profileFormSchema } from '@/constants/validation'
+import { profileFormSchema } from '@/constants/schemas'
 import { getErrorMessage } from '@/helpers/error'
 import { updateProfileFn } from '@/server/users'
 import { useForm } from '@tanstack/react-form'
@@ -108,107 +110,39 @@ export const EditProfileModal = ({
           <div className="grid grid-cols-2 gap-4">
             <form.Field name="firstName">
               {(field) => {
-                const hasError = field.state.meta.errors.length > 0
-                const errorId = `${field.name}-error`
-
                 return (
-                  <div className="space-y-2">
-                    <Label htmlFor={field.name}>Prénom</Label>
-                    <Input
-                      type="text"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => {
-                        return field.handleChange(event.target.value)
-                      }}
-                      autoComplete="given-name"
-                      aria-invalid={hasError}
-                      aria-describedby={hasError ? errorId : undefined}
-                      placeholder="Prénom"
-                    />
-                    {hasError ? (
-                      <p
-                        id={errorId}
-                        role="alert"
-                        className="text-sm text-destructive"
-                      >
-                        {getErrorMessage(field.state.meta.errors[0])}
-                      </p>
-                    ) : null}
-                  </div>
+                  <FormField
+                    field={field}
+                    label="Prénom"
+                    placeholder="Prénom"
+                    autoComplete="given-name"
+                  />
                 )
               }}
             </form.Field>
             <form.Field name="lastName">
               {(field) => {
-                const hasError = field.state.meta.errors.length > 0
-                const errorId = `${field.name}-error`
-
                 return (
-                  <div className="space-y-2">
-                    <Label htmlFor={field.name}>Nom</Label>
-                    <Input
-                      type="text"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => {
-                        return field.handleChange(event.target.value)
-                      }}
-                      autoComplete="family-name"
-                      aria-invalid={hasError}
-                      aria-describedby={hasError ? errorId : undefined}
-                      placeholder="Nom"
-                    />
-                    {hasError ? (
-                      <p
-                        id={errorId}
-                        role="alert"
-                        className="text-sm text-destructive"
-                      >
-                        {getErrorMessage(field.state.meta.errors[0])}
-                      </p>
-                    ) : null}
-                  </div>
+                  <FormField
+                    field={field}
+                    label="Nom"
+                    placeholder="Nom"
+                    autoComplete="family-name"
+                  />
                 )
               }}
             </form.Field>
           </div>
           <form.Field name="phone">
             {(field) => {
-              const hasError = field.state.meta.errors.length > 0
-              const errorId = `${field.name}-error`
-
               return (
-                <div className="space-y-2">
-                  <Label htmlFor={field.name}>Téléphone</Label>
-                  <Input
-                    type="tel"
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => {
-                      return field.handleChange(event.target.value)
-                    }}
-                    autoComplete="tel"
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? errorId : undefined}
-                    placeholder="06 12 34 56 78"
-                  />
-                  {hasError ? (
-                    <p
-                      id={errorId}
-                      role="alert"
-                      className="text-sm text-destructive"
-                    >
-                      {getErrorMessage(field.state.meta.errors[0])}
-                    </p>
-                  ) : null}
-                </div>
+                <FormField
+                  field={field}
+                  label="Téléphone"
+                  type="tel"
+                  placeholder="06 12 34 56 78"
+                  autoComplete="tel"
+                />
               )
             }}
           </form.Field>
@@ -226,15 +160,13 @@ export const EditProfileModal = ({
             >
               Annuler
             </Button>
-            <Button
+            <LoadingButton
               type="submit"
-              disabled={updateProfileMutation.isPending}
-              aria-busy={updateProfileMutation.isPending}
+              isLoading={updateProfileMutation.isPending}
+              loadingText="Enregistrement..."
             >
-              {updateProfileMutation.isPending
-                ? 'Enregistrement...'
-                : 'Enregistrer'}
-            </Button>
+              Enregistrer
+            </LoadingButton>
           </DialogFooter>
         </form>
       </DialogContent>

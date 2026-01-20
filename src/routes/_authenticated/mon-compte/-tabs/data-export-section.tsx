@@ -1,5 +1,5 @@
 import { DownloadIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { LoadingButton } from '@/components/loading-button'
 import { formatDateKey } from '@/helpers/date'
 import { downloadJson } from '@/helpers/download'
 import { getErrorMessage } from '@/helpers/error'
@@ -26,18 +26,18 @@ export const DataExportSection = () => {
             Téléchargez une copie de vos données personnelles au format JSON.
           </p>
         </div>
-        <Button
+        <LoadingButton
           variant="outline"
           onClick={() => {
             return exportMutation.mutate()
           }}
-          disabled={exportMutation.isPending}
-          aria-busy={exportMutation.isPending}
+          isLoading={exportMutation.isPending}
+          loadingText="Préparation..."
           className="shrink-0"
         >
           <DownloadIcon className="size-4" aria-hidden="true" />
-          {exportMutation.isPending ? 'Préparation...' : 'Exporter mes données'}
-        </Button>
+          Exporter mes données
+        </LoadingButton>
       </div>
       {exportMutation.isError ? (
         <p role="alert" className="pt-4 text-sm text-destructive">

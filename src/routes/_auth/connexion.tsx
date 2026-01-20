@@ -1,7 +1,8 @@
 import { AlertCircle } from 'lucide-react'
 import { z } from 'zod'
+import { FormField } from '@/components/form-field'
+import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,8 +11,6 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
@@ -30,8 +29,8 @@ const searchSchema = z.object({
 })
 
 const loginSchema = z.object({
-  email: z.email('Email invalide'),
-  password: z.string().min(8, '8 caractères minimum')
+  email: z.email(),
+  password: z.string().min(8)
 })
 
 const ConnexionPage = () => {
@@ -98,70 +97,26 @@ const ConnexionPage = () => {
             <form.Field name="email">
               {(field) => {
                 return (
-                  <div className="space-y-2">
-                    <Label htmlFor={field.name}>Email</Label>
-                    <Input
-                      id={field.name}
-                      type="email"
-                      placeholder="votre@email.com"
-                      autoComplete="email"
-                      value={field.state.value}
-                      onChange={(event) => {
-                        return field.handleChange(event.target.value)
-                      }}
-                      onBlur={field.handleBlur}
-                      aria-invalid={field.state.meta.errors.length > 0}
-                      aria-describedby={
-                        field.state.meta.errors.length > 0
-                          ? `${field.name}-error`
-                          : undefined
-                      }
-                    />
-                    {field.state.meta.errors.length > 0 ? (
-                      <p
-                        id={`${field.name}-error`}
-                        className="text-sm text-destructive"
-                        role="alert"
-                      >
-                        {String(field.state.meta.errors[0])}
-                      </p>
-                    ) : null}
-                  </div>
+                  <FormField
+                    field={field}
+                    label="Email"
+                    type="email"
+                    placeholder="votre@email.com"
+                    autoComplete="email"
+                  />
                 )
               }}
             </form.Field>
             <form.Field name="password">
               {(field) => {
                 return (
-                  <div className="space-y-2">
-                    <Label htmlFor={field.name}>Mot de passe</Label>
-                    <Input
-                      id={field.name}
-                      type="password"
-                      placeholder="••••••••"
-                      autoComplete="current-password"
-                      value={field.state.value}
-                      onChange={(event) => {
-                        return field.handleChange(event.target.value)
-                      }}
-                      onBlur={field.handleBlur}
-                      aria-invalid={field.state.meta.errors.length > 0}
-                      aria-describedby={
-                        field.state.meta.errors.length > 0
-                          ? `${field.name}-error`
-                          : undefined
-                      }
-                    />
-                    {field.state.meta.errors.length > 0 ? (
-                      <p
-                        id={`${field.name}-error`}
-                        className="text-sm text-destructive"
-                        role="alert"
-                      >
-                        {String(field.state.meta.errors[0])}
-                      </p>
-                    ) : null}
-                  </div>
+                  <FormField
+                    field={field}
+                    label="Mot de passe"
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                  />
                 )
               }}
             </form.Field>
@@ -175,13 +130,14 @@ const ConnexionPage = () => {
             ) : null}
           </CardContent>
           <CardFooter className="flex flex-col gap-4 pt-6">
-            <Button
+            <LoadingButton
               type="submit"
               className="w-full"
-              aria-busy={signInMutation.isPending}
+              isLoading={signInMutation.isPending}
+              loadingText="Connexion..."
             >
-              {signInMutation.isPending ? 'Connexion...' : 'Se connecter'}
-            </Button>
+              Se connecter
+            </LoadingButton>
             <p className="text-sm text-muted-foreground">
               Pas encore de compte ?{' '}
               <Link

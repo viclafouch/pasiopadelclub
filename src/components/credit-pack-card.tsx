@@ -1,14 +1,8 @@
-import {
-  CheckIcon,
-  Crown,
-  GiftIcon,
-  LoaderIcon,
-  WalletIcon
-} from 'lucide-react'
+import { CheckIcon, Crown, GiftIcon, WalletIcon } from 'lucide-react'
 import type { CreditPack } from '@/constants/types'
 import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
-import { Button } from './ui/button'
+import { LoadingButton } from './loading-button'
 
 type FeatureCheckProps = {
   label: string
@@ -175,10 +169,9 @@ export const CreditPackCard = ({
           />
         </div>
         <div className="mt-auto">
-          <Button
+          <LoadingButton
             onClick={onPurchase}
-            disabled={isPending}
-            aria-busy={isPending}
+            isLoading={isPending}
             size="lg"
             className={cn(
               'w-full',
@@ -186,11 +179,8 @@ export const CreditPackCard = ({
             )}
             variant={isPopular ? 'secondary' : 'default'}
           >
-            {isPending ? (
-              <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
-            ) : null}
             Acheter
-          </Button>
+          </LoadingButton>
         </div>
       </div>
     </div>

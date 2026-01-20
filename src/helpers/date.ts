@@ -100,3 +100,7 @@ export const matchIsToday = (date: Date) => {
 export const parseDateKey = (dateKey: string) => {
   return parse(dateKey, 'yyyy-MM-dd', nowParis())
 }
+
+export const formatDateTimeLongFr = (date: Date) => {
+  return format(toParisDate(date), "EEEE d MMMM yyyy 'à' HH:mm", FR_LOCALE)
+}

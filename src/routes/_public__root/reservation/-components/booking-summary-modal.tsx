@@ -4,11 +4,11 @@ import {
   ClockIcon,
   CreditCardIcon,
   InfoIcon,
-  LoaderIcon,
   MapPinIcon,
   UsersIcon,
   WalletIcon
 } from 'lucide-react'
+import { LoadingButton } from '@/components/loading-button'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -246,19 +246,15 @@ export const BookingSummaryModal = ({
           >
             Annuler
           </Button>
-          <Button
+          <LoadingButton
             type="button"
             onClick={handlePayClick}
-            disabled={isPending}
-            aria-busy={isPending}
+            isLoading={isPending}
           >
-            {isPending ? (
-              <LoaderIcon className="size-4 animate-spin" aria-hidden="true" />
-            ) : null}
             {paymentMethod === 'credit'
               ? `Utiliser ${formatCentsToEuros(court.price)} de crédits`
               : `Payer ${formatCentsToEuros(court.price)}`}
-          </Button>
+          </LoadingButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>
