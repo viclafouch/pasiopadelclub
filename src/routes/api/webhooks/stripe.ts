@@ -26,12 +26,6 @@ import { stripe } from '@/lib/stripe.server'
 import { safeRefund } from '@/utils/stripe'
 import { createFileRoute } from '@tanstack/react-router'
 
-function maskEmail(email: string) {
-  const [local, domain] = email.split('@')
-
-  return `${local?.[0] ?? '?'}***@${domain}`
-}
-
 function maskId(id: string) {
   return `${id.slice(0, 8)}...`
 }
@@ -155,22 +149,27 @@ async function handleCreditPackPurchase(
     })
 }
 
-async function handleCheckoutCompleted(
-  session: Stripe.Checkout.Session
-): Promise<void> {
-  const { customer_email: customerEmail, amount_total: amountPaid } = session
-  const paymentIntentId = session.payment_intent as string | null
+type CreateBookingFromPaymentParams = {
+  paymentIntentId: string
+  amountPaid: number
+  metadata: unknown
+  source: 'payment_intent' | 'checkout'
+}
 
-  if (!paymentIntentId) {
-    console.error('[Webhook] Missing payment_intent')
-
-    return
-  }
-
-  const parsed = bookingMetadataSchema.safeParse(session.metadata)
+async function createBookingFromPayment({
+  paymentIntentId,
+  amountPaid,
+  metadata,
+  source
+}: CreateBookingFromPaymentParams): Promise<void> {
+  const parsed = bookingMetadataSchema.safeParse(metadata)
 
   if (!parsed.success) {
-    console.error('[Webhook] Invalid booking metadata:', parsed.error.message)
+    const message =
+      source === 'payment_intent'
+        ? '[Webhook] PaymentIntent without booking metadata, skipping'
+        : `[Webhook] Invalid booking metadata: ${parsed.error.message}`
+    console.log(message)
 
     return
   }
@@ -183,10 +182,7 @@ async function handleCheckoutCompleted(
   ])
 
   if (!userData) {
-    console.error(
-      '[Webhook] User not found:',
-      customerEmail ? maskEmail(customerEmail) : 'unknown'
-    )
+    console.error('[Webhook] User not found:', maskId(userId))
 
     return
   }
@@ -197,7 +193,7 @@ async function handleCheckoutCompleted(
     return
   }
 
-  if (!amountPaid || amountPaid !== courtData.price) {
+  if (amountPaid !== courtData.price) {
     console.error('[Webhook] Price mismatch:', {
       expected: courtData.price,
       paid: amountPaid
@@ -270,6 +266,44 @@ async function handleCheckoutCompleted(
     .catch(console.error)
 }
 
+async function handlePaymentIntentSucceeded(
+  paymentIntent: Stripe.PaymentIntent
+): Promise<void> {
+  await createBookingFromPayment({
+    paymentIntentId: paymentIntent.id,
+    amountPaid: paymentIntent.amount,
+    metadata: paymentIntent.metadata,
+    source: 'payment_intent'
+  })
+}
+
+async function handleCheckoutCompleted(
+  session: Stripe.Checkout.Session
+): Promise<void> {
+  const paymentIntentId = session.payment_intent as string | null
+
+  if (!paymentIntentId) {
+    console.error('[Webhook] Missing payment_intent')
+
+    return
+  }
+
+  const amountPaid = session.amount_total
+
+  if (!amountPaid) {
+    console.error('[Webhook] Missing amount_total')
+
+    return
+  }
+
+  await createBookingFromPayment({
+    paymentIntentId,
+    amountPaid,
+    metadata: session.metadata,
+    source: 'checkout'
+  })
+}
+
 async function webhookHandler({
   request
 }: {
@@ -309,6 +343,13 @@ async function webhookHandler({
         } else {
           await handleCheckoutCompleted(session)
         }
+
+        break
+      }
+
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
+        await handlePaymentIntentSucceeded(paymentIntent)
 
         break
       }

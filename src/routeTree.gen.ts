@@ -18,6 +18,7 @@ import { Route as AuthInscriptionRouteImport } from './routes/_auth/inscription'
 import { Route as AuthConnexionRouteImport } from './routes/_auth/connexion'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
 import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
+import { Route as Public__rootPolitiqueConfidentialiteIndexRouteImport } from './routes/_public__root/politique-confidentialite/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
 import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
 import { Route as Public__rootCreditsIndexRouteImport } from './routes/_public__root/credits/index'
@@ -71,6 +72,12 @@ const Public__rootReservationIndexRoute =
   Public__rootReservationIndexRouteImport.update({
     id: '/reservation/',
     path: '/reservation/',
+    getParentRoute: () => Public__rootRouteRoute,
+  } as any)
+const Public__rootPolitiqueConfidentialiteIndexRoute =
+  Public__rootPolitiqueConfidentialiteIndexRouteImport.update({
+    id: '/politique-confidentialite/',
+    path: '/politique-confidentialite/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
 const Public__rootMentionsLegalesIndexRoute =
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/credits/': typeof Public__rootCreditsIndexRoute
   '/galerie/': typeof Public__rootGalerieIndexRoute
   '/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
+  '/politique-confidentialite/': typeof Public__rootPolitiqueConfidentialiteIndexRoute
   '/reservation/': typeof Public__rootReservationIndexRoute
   '/tarifs/': typeof Public__rootTarifsIndexRoute
 }
@@ -177,6 +185,7 @@ export interface FileRoutesByTo {
   '/credits': typeof Public__rootCreditsIndexRoute
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
+  '/politique-confidentialite': typeof Public__rootPolitiqueConfidentialiteIndexRoute
   '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
@@ -201,6 +210,7 @@ export interface FileRoutesById {
   '/_public__root/credits/': typeof Public__rootCreditsIndexRoute
   '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
+  '/_public__root/politique-confidentialite/': typeof Public__rootPolitiqueConfidentialiteIndexRoute
   '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
   '/_public__root/tarifs/': typeof Public__rootTarifsIndexRoute
 }
@@ -222,6 +232,7 @@ export interface FileRouteTypes {
     | '/credits/'
     | '/galerie/'
     | '/mentions-legales/'
+    | '/politique-confidentialite/'
     | '/reservation/'
     | '/tarifs/'
   fileRoutesByTo: FileRoutesByTo
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/credits'
     | '/galerie'
     | '/mentions-legales'
+    | '/politique-confidentialite'
     | '/reservation'
     | '/tarifs'
   id:
@@ -264,6 +276,7 @@ export interface FileRouteTypes {
     | '/_public__root/credits/'
     | '/_public__root/galerie/'
     | '/_public__root/mentions-legales/'
+    | '/_public__root/politique-confidentialite/'
     | '/_public__root/reservation/'
     | '/_public__root/tarifs/'
   fileRoutesById: FileRoutesById
@@ -340,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/reservation'
       fullPath: '/reservation/'
       preLoaderRoute: typeof Public__rootReservationIndexRouteImport
+      parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_public__root/politique-confidentialite/': {
+      id: '/_public__root/politique-confidentialite/'
+      path: '/politique-confidentialite'
+      fullPath: '/politique-confidentialite/'
+      preLoaderRoute: typeof Public__rootPolitiqueConfidentialiteIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/mentions-legales/': {
@@ -476,6 +496,7 @@ interface Public__rootRouteRouteChildren {
   Public__rootCreditsIndexRoute: typeof Public__rootCreditsIndexRoute
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
+  Public__rootPolitiqueConfidentialiteIndexRoute: typeof Public__rootPolitiqueConfidentialiteIndexRoute
   Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
   Public__rootTarifsIndexRoute: typeof Public__rootTarifsIndexRoute
 }
@@ -490,6 +511,8 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootCreditsIndexRoute: Public__rootCreditsIndexRoute,
   Public__rootGalerieIndexRoute: Public__rootGalerieIndexRoute,
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
+  Public__rootPolitiqueConfidentialiteIndexRoute:
+    Public__rootPolitiqueConfidentialiteIndexRoute,
   Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
   Public__rootTarifsIndexRoute: Public__rootTarifsIndexRoute,
 }

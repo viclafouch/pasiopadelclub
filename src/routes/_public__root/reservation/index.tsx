@@ -24,7 +24,7 @@ import {
   useNavigate,
   useRouteContext
 } from '@tanstack/react-router'
-import { BookingSummaryModal } from './-components/booking-summary-modal'
+import { BookingModal } from './-components/booking-modal'
 import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
 import { LimitBanner } from './-components/limit-banner'
@@ -178,12 +178,13 @@ const ReservationContent = () => {
           />
         </React.Suspense>
       </div>
-      <BookingSummaryModal
-        key={selectedSlot?.slot.startAt}
-        isOpen={selectedSlot !== null}
-        onClose={handleCloseModal}
-        selectedSlot={selectedSlot}
-      />
+      {selectedSlot !== null ? (
+        <BookingModal
+          key={selectedSlot.slot.startAt}
+          onClose={handleCloseModal}
+          selectedSlot={selectedSlot}
+        />
+      ) : null}
       <LimitReachedDialog
         isOpen={isLimitDialogOpen}
         onClose={handleCloseLimitDialog}

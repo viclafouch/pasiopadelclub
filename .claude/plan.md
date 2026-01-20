@@ -377,7 +377,14 @@ Système de prépaiement par crédits avec bonus et expiration.
 - **M9-10** : Dashboard admin (stats, blocage créneaux/users, réservations manuelles)
 - **M11** : SEO (Schema.org, Google My Business)
 - **M12** : Tests (Vitest)
-- **M13** : RGPD (anonymisation, suppression compte)
+- **M13** : RGPD (compléments)
+  - [x] Anonymisation compte (implémenté)
+  - [x] Suppression compte (implémenté)
+  - [x] Export données JSON (implémenté) ⚠️ **À maintenir à jour** si nouvelles données ajoutées
+  - [x] Page politique de confidentialité
+  - [ ] Cron suppression automatique données > 3 ans (data retention)
+  - [ ] Vérifier région Railway = Europe (ou documenter transferts hors-UE)
+  - [ ] Vérifier région Neon = Europe (ou documenter transferts hors-UE)
 
 ---
 
@@ -396,6 +403,46 @@ Système de prépaiement par crédits avec bonus et expiration.
   - **Bouton** : "Subscribe"
 - **M16** : Section partenaires/sponsors (peut être intégrée à M14)
   - Logos : balle de match, CA Pyrénées Gascogne, NOTED, GOAN, MOWI
+
+---
+
+## Sécurité - Audit Janvier 2026
+
+### Issues corrigées ✅
+
+| Issue | Fichiers | Statut |
+|-------|----------|--------|
+| Limite 2 réservations non vérifiée server-side | `payment-intent.ts`, `credit-payment.ts` | ✅ Corrigé |
+| Limite 10 jours non vérifiée server-side | `payment-intent.ts`, `credit-payment.ts` | ✅ Corrigé |
+
+### Issues connues (non critiques en pratique)
+
+#### Race condition sur les créneaux (différée)
+
+**Situation** : Deux utilisateurs peuvent théoriquement créer un PaymentIntent pour le même créneau simultanément. Le second sera remboursé automatiquement par le webhook.
+
+**Pourquoi différée** :
+- Avec ~20 utilisateurs, la probabilité que deux paient le même créneau à la même seconde est quasi nulle
+- Le système actuel gère ce cas via auto-refund dans le webhook
+- Impact = mauvaise UX pour le second user + frais Stripe refund
+
+**Solution si problème avéré** :
+1. Créer une réservation `status='pending'` AVANT le PaymentIntent
+2. Le webhook passe à `status='confirmed'`
+3. Cron nettoie les pending > 15 min
+
+**Fichiers à modifier** : `payment-intent.ts`, `webhooks/stripe.ts`, nouveau cron
+
+**À surveiller** : Logs webhook pour détecter des refunds "duplicate slot"
+
+---
+
+### Améliorations recommandées (basse priorité)
+
+- [ ] Rate limiting sur endpoints paiement (5 req/min/user)
+- [ ] Security headers (CSP, HSTS, X-Frame-Options)
+- [ ] IP allowlist webhook Stripe
+- [ ] Alerting email admin sur refund échoué
 
 ---
 

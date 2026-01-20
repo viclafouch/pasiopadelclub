@@ -204,6 +204,13 @@ const Footer = () => {
             <Link to="/cgv" className="transition-colors hover:text-foreground">
               CGV
             </Link>
+            <span className="hidden sm:inline">·</span>
+            <Link
+              to="/politique-confidentialite"
+              className="transition-colors hover:text-foreground"
+            >
+              Politique de confidentialité
+            </Link>
           </div>
           <p className="text-center text-sm text-muted-foreground">
             © {getYear(new Date())} {CLUB_INFO.name} — Tous droits réservés

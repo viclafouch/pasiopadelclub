@@ -236,3 +236,11 @@
     order: -1;
   }
 }
+
+@utility min-h-stripe-form {
+  min-height: 180px;
+}
+
+@utility max-h-modal {
+  max-height: 90vh;
+}

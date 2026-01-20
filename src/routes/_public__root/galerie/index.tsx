@@ -150,7 +150,7 @@ const Lightbox = ({
         <ChevronRight className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="relative max-h-[90vh] max-w-[90vw]">
+      <div className="relative max-h-modal max-w-[90vw]">
         <img
           src={currentImage.src}
           alt={currentImage.alt}

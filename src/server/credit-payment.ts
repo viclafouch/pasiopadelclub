@@ -1,4 +1,6 @@
-import { and, eq, gt, isNull, lt, or, sum } from 'drizzle-orm'
+import { addDays } from 'date-fns'
+import { and, count, eq, gt, isNull, lt, or, sum } from 'drizzle-orm'
+import { DAYS_TO_SHOW, MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
@@ -22,6 +24,15 @@ export const payBookingWithCreditsFn = createServerFn({ method: 'POST' })
     if (startDate <= now) {
       setResponseStatus(400)
       throw new Error('Impossible de réserver dans le passé')
+    }
+
+    const maxAdvanceDate = addDays(now, DAYS_TO_SHOW)
+
+    if (startDate > maxAdvanceDate) {
+      setResponseStatus(400)
+      throw new Error(
+        `Impossible de réserver plus de ${DAYS_TO_SHOW} jours à l'avance`
+      )
     }
 
     if (endDate <= startDate) {
@@ -48,6 +59,24 @@ export const payBookingWithCreditsFn = createServerFn({ method: 'POST' })
           throw new Error('Durée de réservation invalide')
         }
 
+        const txNow = nowParis()
+        const [activeBookingsResult] = await tx
+          .select({ count: count() })
+          .from(booking)
+          .where(
+            and(
+              eq(booking.userId, userId),
+              gt(booking.endAt, txNow),
+              eq(booking.status, 'confirmed')
+            )
+          )
+
+        if ((activeBookingsResult?.count ?? 0) >= MAX_ACTIVE_BOOKINGS) {
+          throw new Error(
+            `Vous avez atteint la limite de ${MAX_ACTIVE_BOOKINGS} réservations actives`
+          )
+        }
+
         const [existingBooking] = await tx
           .select({ id: booking.id })
           .from(booking)
@@ -65,7 +94,6 @@ export const payBookingWithCreditsFn = createServerFn({ method: 'POST' })
           throw new Error('Créneau déjà réservé')
         }
 
-        const txNow = nowParis()
         const [balanceResult] = await tx
           .select({ balance: sum(walletTransaction.amountCents) })
           .from(walletTransaction)
