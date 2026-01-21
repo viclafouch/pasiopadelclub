@@ -3,6 +3,7 @@ import { CalendarIcon } from 'lucide-react'
 import { z } from 'zod'
 import {
   CLOSING_HOUR,
+  DAYS_TO_SHOW,
   MAX_ACTIVE_BOOKINGS,
   MIN_SESSION_MINUTES
 } from '@/constants/booking'
@@ -12,7 +13,7 @@ import {
   getSlotsByDateQueryOpts
 } from '@/constants/queries'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
-import { getDefaultBookingDateKey } from '@/helpers/date'
+import { getValidBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
 import {
   useQuery,
@@ -109,8 +110,12 @@ const ReservationContent = () => {
   const [isLimitDialogOpen, setIsLimitDialogOpen] = React.useState(false)
 
   const isAuthenticated = Boolean(user)
-  const selectedDate =
-    date ?? getDefaultBookingDateKey(CLOSING_HOUR, MIN_SESSION_MINUTES)
+  const selectedDate = getValidBookingDateKey({
+    maxDays: DAYS_TO_SHOW,
+    closingHour: CLOSING_HOUR,
+    minSessionMinutes: MIN_SESSION_MINUTES,
+    urlDate: date
+  })
 
   const activeCountQuery = useQuery({
     ...getActiveBookingCountQueryOpts(),

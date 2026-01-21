@@ -3,8 +3,10 @@ import {
   format,
   getHours,
   getMinutes,
+  isBefore,
   isSameDay,
   isToday,
+  isValid,
   parse,
   startOfDay
 } from 'date-fns'
@@ -56,6 +58,49 @@ export const getDefaultBookingDateKey = (
   const hasRemainingSlots = currentMinutes < lastSlotStartMinutes
 
   return hasRemainingSlots ? getTodayDateKey() : getTomorrowDateKey()
+}
+
+type GetValidBookingDateKeyParams = {
+  maxDays: number
+  closingHour: number
+  minSessionMinutes: number
+  urlDate?: string
+}
+
+export const getValidBookingDateKey = ({
+  maxDays,
+  closingHour,
+  minSessionMinutes,
+  urlDate
+}: GetValidBookingDateKeyParams) => {
+  const defaultDateKey = getDefaultBookingDateKey(
+    closingHour,
+    minSessionMinutes
+  )
+
+  if (!urlDate) {
+    return defaultDateKey
+  }
+
+  const requestedDate = parse(urlDate, 'yyyy-MM-dd', nowParis())
+
+  if (!isValid(requestedDate)) {
+    return defaultDateKey
+  }
+
+  const today = getToday()
+  const firstValidDate = parseDateKey(defaultDateKey)
+  const lastValidDate = addDays(today, maxDays - 1)
+
+  if (isBefore(requestedDate, firstValidDate)) {
+    return defaultDateKey
+  }
+
+  if (isBefore(lastValidDate, requestedDate)) {
+    return formatDateKey(lastValidDate)
+  }
+
+  return urlDate
 }
 
 export const getToday = () => {
