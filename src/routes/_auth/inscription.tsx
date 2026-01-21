@@ -214,7 +214,7 @@ export const Route = createFileRoute('/_auth/inscription')({
   component: InscriptionPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Inscription | Créez votre compte',
         description:
           'Créez votre compte Pasio Padel Club et réservez vos créneaux de padel en ligne à Bayonne. 7 terrains disponibles, réservation simplifiée.',

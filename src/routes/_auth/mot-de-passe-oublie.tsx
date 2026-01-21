@@ -144,7 +144,7 @@ export const Route = createFileRoute('/_auth/mot-de-passe-oublie')({
   component: ForgotPasswordPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Mot de passe oublié | Réinitialisation',
         description:
           'Réinitialisez votre mot de passe Pasio Padel Club. Recevez un lien par email pour définir un nouveau mot de passe.',

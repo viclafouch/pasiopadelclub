@@ -2,6 +2,7 @@
 
 import Footer from '@/components/footer'
 import { Navbar } from '@/components/navbar'
+import { LOCAL_BUSINESS_JSON_LD } from '@/constants/json-ld'
 import {
   getAuthUserQueryOpts,
   getCreditPacksQueryOpts
@@ -55,6 +56,11 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
     <html lang="fr" data-os="other" suppressHydrationWarning>
       <head>
         <ScriptOnce>{OS_DETECTION_SCRIPT}</ScriptOnce>
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: LOCAL_BUSINESS_JSON_LD }}
+        />
         <link
           rel="preload"
           href="/fonts/pasio-body.woff2"
@@ -106,34 +112,44 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
       meta: [
         { charSet: 'utf-8' },
         {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, viewport-fit=cover'
+        },
+        {
           name: 'theme-color',
-          content: '#009869'
+          content: '#009869',
+          media: '(prefers-color-scheme: light)'
         },
         {
-          name: 'color-scheme',
-          content: 'light'
+          name: 'theme-color',
+          content: '#006644',
+          media: '(prefers-color-scheme: dark)'
         },
-        {
-          name: 'robots',
-          content: 'index,follow,noai,noimageai'
-        },
-        {
-          httpEquiv: 'Content-Language',
-          content: 'fr'
-        },
-        {
-          httpEquiv: 'X-Robots-Tag',
-          content: 'noai,noimageai'
-        },
-        {
-          name: 'mobile-web-app-capable',
-          content: 'yes'
-        },
+        { name: 'color-scheme', content: 'light' },
+        { name: 'robots', content: 'index,follow,noai,noimageai' },
+        { httpEquiv: 'Content-Language', content: 'fr' },
+        { httpEquiv: 'X-Robots-Tag', content: 'noai,noimageai' },
+        { name: 'application-name', content: 'Pasio Padel Club' },
+        { name: 'apple-mobile-web-app-title', content: 'Pasio Padel' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'msapplication-TileColor', content: '#009869' },
+        {
+          name: 'msapplication-TileImage',
+          content: '/android-chrome-192x192.png'
+        },
+        { name: 'author', content: 'Pasio Padel Club' },
+        { name: 'copyright', content: 'Pasio Padel Club' },
+        { name: 'geo.region', content: 'FR-64' },
+        { name: 'geo.placename', content: 'Bayonne' },
+        { name: 'geo.position', content: '43.491073;-1.496322' },
+        { name: 'ICBM', content: '43.491073, -1.496322' }
       ],
       links: [
         { rel: 'stylesheet', href: appCss },
+        { rel: 'manifest', href: '/manifest.webmanifest' },
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         {
           rel: 'icon',
@@ -147,7 +163,11 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
           sizes: '16x16',
           type: 'image/png'
         },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        {
+          rel: 'apple-touch-icon',
+          href: '/apple-touch-icon.png',
+          sizes: '180x180'
+        },
         {
           rel: 'icon',
           href: '/android-chrome-192x192.png',
@@ -159,7 +179,9 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
           href: '/android-chrome-512x512.png',
           sizes: '512x512',
           type: 'image/png'
-        }
+        },
+        { rel: 'preconnect', href: 'https://js.stripe.com' },
+        { rel: 'dns-prefetch', href: 'https://js.stripe.com' }
       ]
     }
   },

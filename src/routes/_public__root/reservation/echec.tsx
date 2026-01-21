@@ -42,7 +42,7 @@ const ReservationEchecPage = () => {
 export const Route = createFileRoute('/_public__root/reservation/echec')({
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Paiement échoué',
         description: 'Le paiement de votre réservation a échoué.'
       })

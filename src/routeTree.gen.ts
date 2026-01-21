@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
+import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as AuthReinitialiserMotDePasseRouteImport } from './routes/_auth/reinitialiser-mot-de-passe'
 import { Route as AuthMotDePasseOublieRouteImport } from './routes/_auth/mot-de-passe-oublie'
 import { Route as AuthInscriptionRouteImport } from './routes/_auth/inscription'
@@ -54,6 +55,11 @@ const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => Public__rootRouteRoute,
+} as any)
+const ApiOgRoute = ApiOgRouteImport.update({
+  id: '/api/og',
+  path: '/api/og',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthReinitialiserMotDePasseRoute =
   AuthReinitialiserMotDePasseRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/inscription': typeof AuthInscriptionRoute
   '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
   '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
+  '/api/og': typeof ApiOgRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/inscription': typeof AuthInscriptionRoute
   '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
   '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
+  '/api/og': typeof ApiOgRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_auth/inscription': typeof AuthInscriptionRoute
   '/_auth/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
   '/_auth/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
+  '/api/og': typeof ApiOgRoute
   '/_public__root/': typeof Public__rootIndexRoute
   '/_public__root/reservation/echec': typeof Public__rootReservationEchecRoute
   '/_public__root/reservation/success': typeof Public__rootReservationSuccessRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/inscription'
     | '/mot-de-passe-oublie'
     | '/reinitialiser-mot-de-passe'
+    | '/api/og'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/inscription'
     | '/mot-de-passe-oublie'
     | '/reinitialiser-mot-de-passe'
+    | '/api/og'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/_auth/inscription'
     | '/_auth/mot-de-passe-oublie'
     | '/_auth/reinitialiser-mot-de-passe'
+    | '/api/og'
     | '/_public__root/'
     | '/_public__root/reservation/echec'
     | '/_public__root/reservation/success'
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
+  ApiOgRoute: typeof ApiOgRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiWebhooksStripeRoute: typeof ApiWebhooksStripeRoute
 }
@@ -351,6 +364,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
+    }
+    '/api/og': {
+      id: '/api/og'
+      path: '/api/og'
+      fullPath: '/api/og'
+      preLoaderRoute: typeof ApiOgRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/reinitialiser-mot-de-passe': {
       id: '/_auth/reinitialiser-mot-de-passe'
@@ -568,6 +588,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
+  ApiOgRoute: ApiOgRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiWebhooksStripeRoute: ApiWebhooksStripeRoute,
 }

@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_admin/admin/')({
   component: AdminPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Administration',
         description: "Panneau d'administration de Pasio Padel Club.",
         pathname: '/admin'

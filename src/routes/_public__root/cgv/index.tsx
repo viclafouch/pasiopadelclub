@@ -257,7 +257,7 @@ export const Route = createFileRoute('/_public__root/cgv/')({
   component: CgvPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Conditions Générales de Vente',
         description: `Conditions Générales de Vente de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.`,
         pathname: '/cgv'

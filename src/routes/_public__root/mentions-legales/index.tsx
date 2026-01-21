@@ -173,7 +173,7 @@ export const Route = createFileRoute('/_public__root/mentions-legales/')({
   component: MentionsLegalesPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Mentions légales',
         description: `Mentions légales de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Informations sur l'éditeur, l'hébergement et la protection des données personnelles.`,
         pathname: '/mentions-legales'

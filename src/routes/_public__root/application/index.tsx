@@ -121,7 +121,7 @@ export const Route = createFileRoute('/_public__root/application/')({
   component: ApplicationPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Application mobile',
         description:
           "Téléchargez l'application Pasio Padel Club pour réserver vos terrains de padel en quelques secondes. Disponible sur iOS et Android.",

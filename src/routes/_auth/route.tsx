@@ -1,6 +1,6 @@
 import { Clock, MapPin } from 'lucide-react'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { AUTH_BACKGROUND_IMAGE, FEATURES } from './constants'
+import { AUTH_BACKGROUND_IMAGE, FEATURES } from './-constants'
 
 const AuthLayout = () => {
   return (

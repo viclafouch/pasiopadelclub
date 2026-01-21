@@ -151,10 +151,12 @@ export const Route = createFileRoute('/_public__root/credits/')({
   component: CreditsPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Packs de crédits',
         description:
           'Achetez des packs de crédits et économisez sur vos réservations de padel. Bonus exclusifs sur nos packs Starter, Pro et Premium.',
+        keywords:
+          'pack crédits padel, abonnement padel bayonne, forfait padel pays basque, réduction padel',
         pathname: '/credits'
       })
     }

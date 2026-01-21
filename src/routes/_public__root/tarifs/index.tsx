@@ -324,9 +324,11 @@ export const Route = createFileRoute('/_public__root/tarifs/')({
   component: TarifsPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Tarifs',
         description: `Découvrez les tarifs de ${CLUB_INFO.name} à ${CLUB_INFO.address.city} : terrains Double (60€/90min), Simple (30€/60min) et Kids (15€/60min). Location de raquettes à 3€. Réservez en ligne 7j/7.`,
+        keywords:
+          'tarif padel bayonne, prix location terrain padel, padel pas cher pays basque, tarif court padel 64',
         pathname: '/tarifs'
       })
     }

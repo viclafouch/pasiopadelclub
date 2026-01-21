@@ -283,7 +283,7 @@ export const Route = createFileRoute(
   component: PolitiqueConfidentialitePage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Politique de confidentialité',
         description: `Politique de confidentialité de ${CLUB_INFO.name}. Découvrez comment nous collectons, utilisons et protégeons vos données personnelles conformément au RGPD.`,
         pathname: '/politique-confidentialite'

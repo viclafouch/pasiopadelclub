@@ -1,2 +1,12 @@
+# Pasio Padel Club - robots.txt
+# https://pasiopadelclub-production.up.railway.app
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Admin et API
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://pasiopadelclub-production.up.railway.app/sitemap.xml

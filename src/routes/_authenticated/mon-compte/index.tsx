@@ -115,7 +115,7 @@ export const Route = createFileRoute('/_authenticated/mon-compte/')({
   component: MonComptePage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Mon compte',
         description:
           'Gérez vos réservations de padel, consultez votre historique et modifiez vos informations personnelles.',

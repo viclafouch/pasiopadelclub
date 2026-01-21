@@ -504,7 +504,7 @@ const ReservationSuccessPage = () => {
 export const Route = createFileRoute('/_public__root/reservation/success')({
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Réservation confirmée',
         description: 'Votre réservation a été confirmée avec succès.'
       })

@@ -155,7 +155,7 @@ export const Route = createFileRoute('/_auth/connexion')({
   component: ConnexionPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Connexion | Accédez à votre compte',
         description:
           'Connectez-vous à votre compte Pasio Padel Club pour réserver vos créneaux de padel à Bayonne. Accédez à vos réservations et à votre historique.',

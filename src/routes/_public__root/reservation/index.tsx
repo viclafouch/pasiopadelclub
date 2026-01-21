@@ -237,10 +237,12 @@ export const Route = createFileRoute('/_public__root/reservation/')({
   validateSearch: searchSchema,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Réservation',
         description:
           'Réservez votre court de padel en ligne à Pasio Padel Club Bayonne. Choisissez votre créneau parmi nos 7 terrains disponibles 7j/7.',
+        keywords:
+          'réserver terrain padel, booking padel bayonne, réservation court padel en ligne, padel bayonne réservation',
         pathname: '/reservation'
       }),
       links: [

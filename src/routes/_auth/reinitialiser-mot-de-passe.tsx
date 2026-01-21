@@ -222,7 +222,7 @@ export const Route = createFileRoute('/_auth/reinitialiser-mot-de-passe')({
   component: ResetPasswordPage,
   head: () => {
     return {
-      meta: seo({
+      ...seo({
         title: 'Réinitialiser le mot de passe',
         description:
           'Définissez un nouveau mot de passe pour votre compte Pasio Padel Club.',

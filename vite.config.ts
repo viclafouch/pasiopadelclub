@@ -14,6 +14,12 @@ const config = defineConfig({
   server: {
     allowedHosts: true
   },
+  ssr: {
+    external: ['@resvg/resvg-js']
+  },
+  optimizeDeps: {
+    exclude: ['@resvg/resvg-js']
+  },
   plugins: [
     devtools(),
     viteTsConfigPaths({
