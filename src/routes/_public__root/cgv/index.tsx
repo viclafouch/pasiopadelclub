@@ -21,7 +21,7 @@ const LegalSection = ({ title, children }: LegalSectionProps) => {
 const CgvPage = () => {
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative overflow-hidden py-16 lg:py-20">
+      <section className="section-py relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
 
         <div className="container relative">
@@ -36,7 +36,7 @@ const CgvPage = () => {
         </div>
       </section>
 
-      <section className="pb-20">
+      <section className="section-pb">
         <div className="container">
           <div className="mx-auto max-w-3xl">
             <LegalSection title="1. Objet">

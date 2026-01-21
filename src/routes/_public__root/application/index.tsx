@@ -35,7 +35,7 @@ const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
 const ApplicationPage = () => {
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative overflow-hidden py-20 lg:py-32">
+      <section className="section-py relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-1/3 -right-1/4 size-[800px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-1/3 -left-1/4 size-[600px] rounded-full bg-primary/10 blur-3xl" />
@@ -87,7 +87,7 @@ const ApplicationPage = () => {
           </div>
         </div>
       </section>
-      <section className="border-t border-border/50 bg-muted/30 py-20">
+      <section className="section-py border-t border-border/50 bg-muted/30">
         <div className="container">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="mb-4 font-display text-3xl font-bold tracking-tight md:text-4xl">

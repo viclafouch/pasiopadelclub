@@ -2,7 +2,7 @@ import { CLUB_INFO } from '@/constants/app'
 
 export const LocationSection = () => {
   return (
-    <section className="bg-muted/50 py-16 lg:py-24">
+    <section className="section-py bg-muted/50">
       <div className="container">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col justify-center">

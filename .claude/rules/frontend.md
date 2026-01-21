@@ -88,6 +88,14 @@ paths: "**/*.{ts,tsx}"
 - If a value is used more than once, it should be a utility class or CSS variable
 - **Prefer `gap`/`space-y`/`space-x`** over `mt-*`/`mb-*` for spacing between siblings
 
+### Hover & Interaction Consistency
+- **No custom hover effects** that don't exist elsewhere on the site
+- **Forbidden hover effects**: `hover:scale-*`, `hover:rotate-*`, `hover:-translate-y-*` (lift effects)
+- **Allowed hover effects**: `hover:bg-*`, `hover:text-*`, `hover:border-*` (color transitions only)
+- Buttons already have built-in hover states via shadcn - don't override with custom transforms
+- Links use `hover:text-primary` or `hover:text-foreground` - keep it simple
+- **Consistency over creativity**: match existing patterns, don't invent new interactions
+
 ### Animations (Framer Motion)
 - **Use Framer Motion** for all UI animations - no CSS transitions for interactive elements
 - **AnimatePresence** for enter/exit animations (notifications, modals, toasts)

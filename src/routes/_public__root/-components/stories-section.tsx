@@ -63,7 +63,7 @@ const PLACEHOLDER_STORIES = [
 
 export const StoriesSection = () => {
   return (
-    <section className="bg-muted/30 py-16">
+    <section className="section-py bg-muted/30">
       <div className="container">
         <h2 className="mb-8 font-display text-xl font-bold md:text-2xl">
           Moments au club

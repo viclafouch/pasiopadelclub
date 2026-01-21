@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { PageHeader } from '@/components/page-header'
 import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -209,24 +210,19 @@ const GaleriePage = () => {
   return (
     <>
       <main className="min-h-screen bg-background">
-        <section className="relative overflow-hidden py-20 lg:py-28">
+        <section className="section-py relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
           <div className="absolute top-0 left-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
 
           <div className="container relative">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-                Notre Galerie
-              </h1>
-              <p className="mt-6 text-lg text-muted-foreground">
-                Découvrez nos installations, nos événements et l&apos;ambiance
-                unique de Pasio Padel Club.
-              </p>
-            </div>
+            <PageHeader
+              title="Notre Galerie"
+              description="Découvrez nos installations, nos événements et l'ambiance unique de Pasio Padel Club."
+            />
           </div>
         </section>
 
-        <section className="pb-20 lg:pb-28">
+        <section className="section-pb">
           <div className="container">
             <div className="mb-10 flex flex-wrap justify-center gap-3">
               {categories.map((category) => {

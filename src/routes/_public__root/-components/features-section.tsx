@@ -278,7 +278,7 @@ export const FeaturesSection = () => {
   return (
     <section
       aria-labelledby="features-heading"
-      className="relative overflow-hidden bg-section-dark py-12 sm:py-20 lg:py-32"
+      className="section-py relative overflow-hidden bg-section-dark"
     >
       <BackgroundBlobs />
       <div className="container relative">

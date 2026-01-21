@@ -1,8 +1,9 @@
 import React from 'react'
 import { z } from 'zod'
 import { AnimatedNotification } from '@/components/animated-notification'
+import { BookingCta } from '@/components/booking-cta'
 import { CreditPackCard } from '@/components/credit-pack-card'
-import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getCreditPacksQueryOpts } from '@/constants/queries'
 import { getErrorMessage } from '@/helpers/error'
@@ -11,7 +12,6 @@ import { seo } from '@/utils/seo'
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import {
   createFileRoute,
-  Link,
   useNavigate,
   useRouteContext
 } from '@tanstack/react-router'
@@ -26,7 +26,7 @@ const POPULAR_PACK_NAME = 'Pro'
 const CreditsPageSkeleton = () => {
   return (
     <main className="min-h-screen bg-background">
-      <section className="py-20 lg:py-28">
+      <section className="section-py">
         <div className="container space-y-16">
           <div className="mx-auto max-w-3xl text-center">
             <Skeleton className="mx-auto h-12 w-64 md:h-14 lg:h-16" />
@@ -70,17 +70,12 @@ const CreditsPageContent = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="py-20 lg:py-28">
+      <section className="section-py">
         <div className="container space-y-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Packs de crédits
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground">
-              Économisez sur vos réservations avec nos packs de crédits. Plus
-              vous achetez, plus vous gagnez.
-            </p>
-          </div>
+          <PageHeader
+            title="Packs de crédits"
+            description="Économisez sur vos réservations avec nos packs de crédits. Plus vous achetez, plus vous gagnez."
+          />
           <div className="mx-auto max-w-5xl space-y-8">
             <AnimatedNotification
               show={success === true}
@@ -134,25 +129,11 @@ const CreditsPageContent = () => {
           </div>
         </div>
       </section>
-      <section className="relative overflow-hidden border-t border-border/50 bg-background py-16">
-        <div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"
-          aria-hidden="true"
-        />
-        <div className="container relative">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-xl font-bold text-foreground md:text-2xl">
-              Pas encore convaincu ?
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Réservez directement un terrain et payez à la séance.
-            </p>
-            <Button asChild size="lg" className="mt-8">
-              <Link to="/reservation">Réserver un terrain</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <BookingCta
+        eyebrow="Pas de crédits ? Pas de problème"
+        title="Pas encore convaincu ?"
+        description="Réservez directement un terrain et payez à la séance. Simple, flexible, sans engagement."
+      />
     </main>
   )
 }

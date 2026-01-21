@@ -245,3 +245,15 @@
 @utility max-h-modal {
   max-height: 90vh;
 }
+
+@utility section-py {
+  padding-block: 4rem;
+}
+
+@utility section-pt {
+  padding-block-start: 4rem;
+}
+
+@utility section-pb {
+  padding-block-end: 4rem;
+}

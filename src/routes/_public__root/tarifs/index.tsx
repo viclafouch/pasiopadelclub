@@ -1,4 +1,6 @@
 import { Clock, Crown, Info, Users } from 'lucide-react'
+import { BookingCta } from '@/components/booking-cta'
+import { PageHeader } from '@/components/page-header'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -258,17 +260,12 @@ const PricingCard = ({
 const TarifsPage = () => {
   return (
     <main className="min-h-screen bg-background">
-      <section className="py-20 lg:py-28">
+      <section className="section-py">
         <div className="container space-y-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Nos Tarifs
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground">
-              Des terrains de qualité professionnelle accessibles à tous.
-              Choisissez la formule qui vous convient.
-            </p>
-          </div>
+          <PageHeader
+            title="Nos Tarifs"
+            description="Des terrains de qualité professionnelle accessibles à tous. Choisissez la formule qui vous convient."
+          />
           <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-3 lg:items-center">
             <PricingCard
               title="Simple"
@@ -315,23 +312,10 @@ const TarifsPage = () => {
           </div>
         </div>
       </section>
-      <section className="relative overflow-hidden border-t border-border/50 bg-background py-16">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
-        <div className="container relative">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-xl font-bold text-foreground md:text-2xl">
-              Prêt à jouer ?
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Réservez votre créneau en quelques clics et profitez de nos
-              installations.
-            </p>
-            <Button asChild size="lg" className="mt-8">
-              <Link to="/reservation">Réserver un terrain</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <BookingCta
+        title="Prêt à jouer ?"
+        description="Réservez votre créneau en quelques clics et profitez de nos installations."
+      />
     </main>
   )
 }

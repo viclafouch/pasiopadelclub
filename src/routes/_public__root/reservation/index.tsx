@@ -223,7 +223,7 @@ const ReservationPage = () => {
           </p>
         </div>
       </section>
-      <section className="pt-6 pb-20">
+      <section className="section-pb pt-6">
         <div className="container">
           <ReservationContent />
         </div>

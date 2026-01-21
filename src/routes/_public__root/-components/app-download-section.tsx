@@ -4,7 +4,7 @@ import { StoreBadge } from '@/components/app/store-badge'
 
 export const AppDownloadSection = () => {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">
+    <section className="section-py relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/4 -right-1/4 size-[600px] rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute -bottom-1/4 -left-1/4 size-[400px] rounded-full bg-primary/10 blur-3xl" />

@@ -4,6 +4,7 @@ import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 import { FormField, FormTextareaField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
+import { PageHeader } from '@/components/page-header'
 import { SuccessCheckmark } from '@/components/success-checkmark'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -127,22 +128,17 @@ const ContactPage = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative overflow-hidden py-20 lg:py-28">
+      <section className="section-py relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
         <div className="absolute top-0 right-0 h-[500px] w-[500px] -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
         <div className="container relative">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              Contactez-nous
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground">
-              Une question sur nos terrains ou nos services ? Notre équipe vous
-              répond sous 24h.
-            </p>
-          </div>
+          <PageHeader
+            title="Contactez-nous"
+            description="Une question sur nos terrains ou nos services ? Notre équipe vous répond sous 24h."
+          />
         </div>
       </section>
-      <section className="pb-20 lg:pb-28">
+      <section className="section-pb">
         <div className="container">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="order-1 lg:order-1">

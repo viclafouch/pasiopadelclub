@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 export const BookingSection = () => {
   return (
-    <section className="py-20">
+    <section className="section-py">
       <div className="container">
         <h2 className="mb-12 font-display text-center font-bold text-xl md:text-2xl lg:text-3xl">
           Réservez Votre Terrain de Padel

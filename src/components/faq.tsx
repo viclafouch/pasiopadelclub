@@ -42,7 +42,7 @@ export const Faq = () => {
     <section
       itemScope
       itemType="https://schema.org/FAQPage"
-      className="container flex flex-col gap-8"
+      className="container section-py flex flex-col gap-8"
     >
       <h2 className="font-display text-left text-xl md:text-2xl lg:text-3xl">
         FAQ
@@ -55,7 +55,7 @@ export const Faq = () => {
               itemScope
               itemProp="mainEntity"
               itemType="https://schema.org/Question"
-              className="border-b border-border last:border-b-0 flex flex-col gap-y-4 py-6 first:pt-0 md:nth-2:pt-0 last:pb-0"
+              className="flex flex-col gap-y-4 border-b border-border py-6 first:pt-0 last:border-b-0 last:pb-0 md:nth-2:pt-0 md:[&:nth-last-child(2)]:border-b-0 md:[&:nth-last-child(2)]:pb-0"
             >
               <h3
                 itemProp="name"
