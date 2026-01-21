@@ -1,5 +1,8 @@
+import { AlertCircle } from 'lucide-react'
 import { getErrorMessage } from '@/helpers/error'
 import type { AnyFieldApi } from '@tanstack/react-form'
+import { Alert, AlertDescription } from './ui/alert'
+import { Checkbox } from './ui/checkbox'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Textarea } from './ui/textarea'
@@ -25,18 +28,45 @@ type FormTextareaFieldProps = {
   required?: boolean
 } & Omit<React.ComponentProps<typeof Textarea>, OmittedFieldProps>
 
-const FieldError = ({ field }: { field: AnyFieldApi }) => {
-  const hasError = field.state.meta.errors.length > 0
+type FormCheckboxFieldProps = {
+  field: AnyFieldApi
+  label: React.ReactNode
+  required?: boolean
+}
 
-  return hasError ? (
-    <p
-      id={`${field.name}-error`}
-      role="alert"
-      className="text-sm text-destructive"
-    >
-      {getErrorMessage(field.state.meta.errors[0])}
+type FormErrorAlertProps = {
+  message: string
+}
+
+export const RequiredIndicator = () => {
+  return (
+    <span aria-hidden="true" className="text-destructive">
+      {' '}
+      *
+    </span>
+  )
+}
+
+type FieldErrorProps = {
+  id: string
+  message: string
+}
+
+export const FieldError = ({ id, message }: FieldErrorProps) => {
+  return (
+    <p id={id} role="alert" className="text-sm text-destructive">
+      {message}
     </p>
-  ) : null
+  )
+}
+
+export const FormErrorAlert = ({ message }: FormErrorAlertProps) => {
+  return (
+    <Alert variant="destructive">
+      <AlertCircle className="size-4" aria-hidden="true" />
+      <AlertDescription>{message}</AlertDescription>
+    </Alert>
+  )
 }
 
 function getFieldAriaProps(field: AnyFieldApi) {
@@ -55,11 +85,13 @@ export const FormField = ({
   required = false,
   ...props
 }: FormFieldProps) => {
+  const hasError = field.state.meta.errors.length > 0
+
   return (
     <div className="space-y-2">
       <Label htmlFor={field.name}>
         {label}
-        {required ? <span aria-hidden="true"> *</span> : null}
+        {required ? <RequiredIndicator /> : null}
       </Label>
       <Input
         {...props}
@@ -75,7 +107,12 @@ export const FormField = ({
         aria-required={required}
         {...getFieldAriaProps(field)}
       />
-      <FieldError field={field} />
+      {hasError ? (
+        <FieldError
+          id={`${field.name}-error`}
+          message={getErrorMessage(field.state.meta.errors[0])}
+        />
+      ) : null}
     </div>
   )
 }
@@ -86,11 +123,13 @@ export const FormTextareaField = ({
   required = false,
   ...props
 }: FormTextareaFieldProps) => {
+  const hasError = field.state.meta.errors.length > 0
+
   return (
     <div className="space-y-2">
       <Label htmlFor={field.name}>
         {label}
-        {required ? <span aria-hidden="true"> *</span> : null}
+        {required ? <RequiredIndicator /> : null}
       </Label>
       <Textarea
         {...props}
@@ -105,7 +144,53 @@ export const FormTextareaField = ({
         aria-required={required}
         {...getFieldAriaProps(field)}
       />
-      <FieldError field={field} />
+      {hasError ? (
+        <FieldError
+          id={`${field.name}-error`}
+          message={getErrorMessage(field.state.meta.errors[0])}
+        />
+      ) : null}
+    </div>
+  )
+}
+
+export const FormCheckboxField = ({
+  field,
+  label,
+  required = false
+}: FormCheckboxFieldProps) => {
+  const hasError =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-start gap-3">
+        <Checkbox
+          id={field.name}
+          className="mt-0.5"
+          checked={field.state.value}
+          onCheckedChange={(checked) => {
+            field.handleChange(checked === true)
+          }}
+          onBlur={field.handleBlur}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${field.name}-error` : undefined}
+          aria-required={required}
+        />
+        <Label
+          htmlFor={field.name}
+          className="block text-sm leading-relaxed font-normal text-muted-foreground"
+        >
+          {label}
+          {required ? <RequiredIndicator /> : null}
+        </Label>
+      </div>
+      {hasError ? (
+        <FieldError
+          id={`${field.name}-error`}
+          message={getErrorMessage(field.state.meta.errors[0])}
+        />
+      ) : null}
     </div>
   )
 }

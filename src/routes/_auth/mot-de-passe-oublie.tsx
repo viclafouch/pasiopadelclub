@@ -1,7 +1,7 @@
 import React from 'react'
-import { AlertCircle, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
 import { z } from 'zod'
-import { FormField } from '@/components/form-field'
+import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
@@ -96,6 +96,7 @@ const ForgotPasswordPage = () => {
           form.handleSubmit()
         }}
         className="space-y-5"
+        noValidate
       >
         <form.Field name="email">
           {(field) => {
@@ -106,17 +107,15 @@ const ForgotPasswordPage = () => {
                 type="email"
                 placeholder="jean.dupont@email.com"
                 autoComplete="email"
+                required
               />
             )
           }}
         </form.Field>
         {requestResetMutation.error ? (
-          <Alert variant="destructive">
-            <AlertCircle className="size-4" aria-hidden="true" />
-            <AlertDescription>
-              {getAuthErrorMessage(requestResetMutation.error.message)}
-            </AlertDescription>
-          </Alert>
+          <FormErrorAlert
+            message={getAuthErrorMessage(requestResetMutation.error.message)}
+          />
         ) : null}
         <LoadingButton
           type="submit"

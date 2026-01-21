@@ -99,7 +99,7 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
       <div className="space-y-6">
         <div className="space-y-4 rounded-lg border p-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-sans text-xl font-bold">
+            <h3 className="text-base font-semibold">
               Informations personnelles
             </h3>
             <Button
@@ -116,19 +116,19 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium">{user.email}</p>
+              <p className="text-sm">{user.email}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Prénom</p>
-              <p className="font-medium">{user.firstName || 'Non renseigné'}</p>
+              <p className="text-sm">{user.firstName || 'Non renseigné'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Nom</p>
-              <p className="font-medium">{user.lastName || 'Non renseigné'}</p>
+              <p className="text-sm">{user.lastName || 'Non renseigné'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Téléphone</p>
-              <p className="font-medium">{user.phone ?? 'Non renseigné'}</p>
+              <p className="text-sm">{user.phone ?? 'Non renseigné'}</p>
             </div>
           </div>
         </div>

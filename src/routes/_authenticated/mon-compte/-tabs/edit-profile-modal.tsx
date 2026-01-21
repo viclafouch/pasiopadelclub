@@ -1,4 +1,4 @@
-import { FormField } from '@/components/form-field'
+import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Button } from '@/components/ui/button'
 import {
@@ -107,7 +107,7 @@ export const EditProfileModal = ({
               L&apos;email ne peut pas être modifié ici.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 xs:grid-cols-2">
             <form.Field name="firstName">
               {(field) => {
                 return (
@@ -116,6 +116,7 @@ export const EditProfileModal = ({
                     label="Prénom"
                     placeholder="Prénom"
                     autoComplete="given-name"
+                    required
                   />
                 )
               }}
@@ -128,6 +129,7 @@ export const EditProfileModal = ({
                     label="Nom"
                     placeholder="Nom"
                     autoComplete="family-name"
+                    required
                   />
                 )
               }}
@@ -146,10 +148,10 @@ export const EditProfileModal = ({
               )
             }}
           </form.Field>
-          {updateProfileMutation.isError ? (
-            <p role="alert" className="text-sm text-destructive">
-              {getErrorMessage(updateProfileMutation.error)}
-            </p>
+          {updateProfileMutation.error ? (
+            <FormErrorAlert
+              message={getErrorMessage(updateProfileMutation.error)}
+            />
           ) : null}
           <DialogFooter>
             <Button

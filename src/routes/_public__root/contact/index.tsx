@@ -2,11 +2,14 @@ import React from 'react'
 import { flushSync } from 'react-dom'
 import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
-import { FormField, FormTextareaField } from '@/components/form-field'
+import {
+  FormErrorAlert,
+  FormField,
+  FormTextareaField
+} from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { PageHeader } from '@/components/page-header'
 import { SuccessCheckmark } from '@/components/success-checkmark'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { CLUB_INFO } from '@/constants/app'
 import { contactFormSchema } from '@/constants/schemas'
@@ -152,16 +155,9 @@ const ContactPage = () => {
                       event.stopPropagation()
                       form.handleSubmit()
                     }}
-                    className="space-y-6"
+                    className="space-y-5"
                     noValidate
                   >
-                    {submitMutation.isError ? (
-                      <Alert variant="destructive">
-                        <AlertDescription>
-                          {getErrorMessage(submitMutation.error)}
-                        </AlertDescription>
-                      </Alert>
-                    ) : null}
                     <form.Field name="name">
                       {(field) => {
                         return (
@@ -171,7 +167,6 @@ const ContactPage = () => {
                             placeholder="Jean Dupont"
                             autoComplete="name"
                             required
-                            className="h-11"
                           />
                         )
                       }}
@@ -186,7 +181,6 @@ const ContactPage = () => {
                             placeholder="jean@exemple.fr"
                             autoComplete="email"
                             required
-                            className="h-11"
                           />
                         )
                       }}
@@ -199,7 +193,6 @@ const ContactPage = () => {
                             label="Objet"
                             placeholder="Demande de renseignements"
                             required
-                            className="h-11"
                           />
                         )
                       }}
@@ -217,6 +210,11 @@ const ContactPage = () => {
                         )
                       }}
                     </form.Field>
+                    {submitMutation.error ? (
+                      <FormErrorAlert
+                        message={getErrorMessage(submitMutation.error)}
+                      />
+                    ) : null}
                     <LoadingButton
                       type="submit"
                       size="lg"

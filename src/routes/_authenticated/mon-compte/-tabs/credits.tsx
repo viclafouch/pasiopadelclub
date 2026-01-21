@@ -121,7 +121,7 @@ export const CreditsTab = () => {
         ) : null}
       </div>
       <div className="space-y-3">
-        <h3 className="font-sans text-lg font-bold">Historique</h3>
+        <h3 className="text-base font-semibold">Historique</h3>
         {transactionsQuery.data.length === 0 ? (
           <p className="py-8 text-center text-muted-foreground">
             Aucune transaction pour le moment

@@ -1,13 +1,7 @@
 import React from 'react'
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle,
-  XCircle
-} from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle, XCircle } from 'lucide-react'
 import { z } from 'zod'
-import { FormField } from '@/components/form-field'
+import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { strongPasswordSchema } from '@/constants/schemas'
@@ -160,6 +154,7 @@ const ResetPasswordPage = () => {
           form.handleSubmit()
         }}
         className="space-y-5"
+        noValidate
       >
         <form.Field name="password">
           {(field) => {
@@ -170,6 +165,7 @@ const ResetPasswordPage = () => {
                 type="password"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                required
               />
             )
           }}
@@ -183,17 +179,15 @@ const ResetPasswordPage = () => {
                 type="password"
                 placeholder="••••••••"
                 autoComplete="new-password"
+                required
               />
             )
           }}
         </form.Field>
         {resetPasswordMutation.error ? (
-          <Alert variant="destructive">
-            <AlertCircle className="size-4" aria-hidden="true" />
-            <AlertDescription>
-              {getAuthErrorMessage(resetPasswordMutation.error.message)}
-            </AlertDescription>
-          </Alert>
+          <FormErrorAlert
+            message={getAuthErrorMessage(resetPasswordMutation.error.message)}
+          />
         ) : null}
         <LoadingButton
           type="submit"

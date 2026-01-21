@@ -1,14 +1,14 @@
-import { AlertCircle, ArrowRight, Check } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { z } from 'zod'
-import { FormField } from '@/components/form-field'
+import {
+  FormCheckboxField,
+  FormErrorAlert,
+  FormField
+} from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { strongPasswordSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
-import { getErrorMessage } from '@/helpers/error'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -115,6 +115,7 @@ const InscriptionPage = () => {
           form.handleSubmit()
         }}
         className="space-y-5"
+        noValidate
       >
         <div className="grid gap-4 xs:grid-cols-2">
           <form.Field name="firstName">
@@ -125,6 +126,7 @@ const InscriptionPage = () => {
                   label="Prénom"
                   placeholder="Jean"
                   autoComplete="given-name"
+                  required
                 />
               )
             }}
@@ -137,6 +139,7 @@ const InscriptionPage = () => {
                   label="Nom"
                   placeholder="Dupont"
                   autoComplete="family-name"
+                  required
                 />
               )
             }}
@@ -151,6 +154,7 @@ const InscriptionPage = () => {
                 type="email"
                 placeholder="jean.dupont@email.com"
                 autoComplete="email"
+                required
               />
             )
           }}
@@ -164,34 +168,19 @@ const InscriptionPage = () => {
                 type="password"
                 placeholder="Min 8 car., 1 majuscule, 1 chiffre"
                 autoComplete="new-password"
+                required
               />
             )
           }}
         </form.Field>
         <form.Field name="acceptTerms">
           {(field) => {
-            const hasError =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0
-
             return (
-              <div className="space-y-2">
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="accept-terms"
-                    className="mt-0.5"
-                    checked={field.state.value}
-                    onCheckedChange={(checked) => {
-                      field.handleChange(checked === true)
-                    }}
-                    onBlur={field.handleBlur}
-                    aria-invalid={hasError}
-                    aria-describedby={hasError ? 'terms-error' : undefined}
-                    aria-required="true"
-                  />
-                  <Label
-                    htmlFor="accept-terms"
-                    className="block text-sm leading-relaxed font-normal text-muted-foreground"
-                  >
+              <FormCheckboxField
+                field={field}
+                required
+                label={
+                  <>
                     J&apos;ai lu et j&apos;accepte les{' '}
                     <Link
                       to="/cgv"
@@ -206,29 +195,16 @@ const InscriptionPage = () => {
                     >
                       politique de confidentialité
                     </Link>
-                    <span className="text-destructive"> *</span>
-                  </Label>
-                </div>
-                {hasError ? (
-                  <p
-                    id="terms-error"
-                    role="alert"
-                    className="text-sm text-destructive"
-                  >
-                    {getErrorMessage(field.state.meta.errors[0])}
-                  </p>
-                ) : null}
-              </div>
+                  </>
+                }
+              />
             )
           }}
         </form.Field>
         {signUpMutation.error ? (
-          <Alert variant="destructive">
-            <AlertCircle className="size-4" aria-hidden="true" />
-            <AlertDescription>
-              {getAuthErrorMessage(signUpMutation.error.message)}
-            </AlertDescription>
-          </Alert>
+          <FormErrorAlert
+            message={getAuthErrorMessage(signUpMutation.error.message)}
+          />
         ) : null}
         <LoadingButton
           type="submit"

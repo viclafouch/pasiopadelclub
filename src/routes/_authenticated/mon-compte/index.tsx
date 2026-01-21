@@ -59,7 +59,8 @@ const MonComptePage = () => {
     navigate({
       search: { tab: value as Tab },
       to: '.',
-      replace: true
+      replace: true,
+      resetScroll: false
     })
   }
 

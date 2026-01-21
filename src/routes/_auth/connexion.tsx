@@ -1,8 +1,7 @@
-import { AlertCircle, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
-import { FormField } from '@/components/form-field'
+import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { getSafeRedirect } from '@/helpers/url'
@@ -81,6 +80,7 @@ const ConnexionPage = () => {
           form.handleSubmit()
         }}
         className="space-y-5"
+        noValidate
       >
         <form.Field name="email">
           {(field) => {
@@ -91,6 +91,7 @@ const ConnexionPage = () => {
                 type="email"
                 placeholder="jean.dupont@email.com"
                 autoComplete="email"
+                required
               />
             )
           }}
@@ -104,6 +105,7 @@ const ConnexionPage = () => {
                 type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"
+                required
               />
             )
           }}
@@ -117,12 +119,9 @@ const ConnexionPage = () => {
           </Link>
         </div>
         {signInMutation.error ? (
-          <Alert variant="destructive">
-            <AlertCircle className="size-4" aria-hidden="true" />
-            <AlertDescription>
-              {getAuthErrorMessage(signInMutation.error.message)}
-            </AlertDescription>
-          </Alert>
+          <FormErrorAlert
+            message={getAuthErrorMessage(signInMutation.error.message)}
+          />
         ) : null}
         <LoadingButton
           type="submit"

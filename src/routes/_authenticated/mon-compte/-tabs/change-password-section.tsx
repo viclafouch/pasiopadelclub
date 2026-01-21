@@ -1,7 +1,7 @@
 import React from 'react'
 import { KeyIcon } from 'lucide-react'
 import { AnimatedNotification } from '@/components/animated-notification'
-import { FormField } from '@/components/form-field'
+import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Button } from '@/components/ui/button'
 import {
@@ -84,7 +84,7 @@ export const ChangePasswordSection = () => {
       <div className="rounded-lg border p-6">
         <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
           <div>
-            <h3 className="font-sans text-xl font-bold">Mot de passe</h3>
+            <h3 className="text-base font-semibold">Mot de passe</h3>
             <p className="text-sm text-muted-foreground">
               Modifiez votre mot de passe de connexion.
             </p>
@@ -156,12 +156,12 @@ export const ChangePasswordSection = () => {
                   Le mot de passe doit contenir au moins 8 caractères, une
                   majuscule, une minuscule et un chiffre.
                 </p>
-                {changePasswordMutation.isError ? (
-                  <p role="alert" className="text-sm text-destructive">
-                    {getChangePasswordErrorMessage(
+                {changePasswordMutation.error ? (
+                  <FormErrorAlert
+                    message={getChangePasswordErrorMessage(
                       changePasswordMutation.error.message
                     )}
-                  </p>
+                  />
                 ) : null}
                 <DialogFooter>
                   <Button
