@@ -295,14 +295,14 @@ const TarifsPage = () => {
             />
           </div>
           <div className="space-y-4 text-center">
-            <p className="text-muted-foreground text-balance">
+            <p className="text-muted-foreground">
               Tous les terrains sont disponibles de{' '}
               <span className="font-semibold text-primary">8h à 22h</span>,{' '}
               <span className="font-semibold text-foreground">
                 7 jours sur 7
               </span>
             </p>
-            <p className="text-muted-foreground text-balance">
+            <p className="text-muted-foreground">
               <span className="font-medium text-foreground">
                 Location de matériel :
               </span>{' '}

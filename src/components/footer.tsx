@@ -82,7 +82,7 @@ const Footer = () => {
                 className="size-12"
               />
             </Link>
-            <p className="text-sm text-muted-foreground text-balance">
+            <p className="text-sm text-muted-foreground">
               Votre club de padel à Bayonne, ouvert tous les jours de 8h à 22h.
             </p>
             <ul className="flex gap-4" aria-label="Réseaux sociaux">
@@ -167,7 +167,7 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-foreground">
               Réservez maintenant
             </h3>
-            <p className="text-sm text-muted-foreground text-balance">
+            <p className="text-sm text-muted-foreground">
               7 terrains disponibles, réservation en ligne simplifiée.
             </p>
             <div className="space-y-3">

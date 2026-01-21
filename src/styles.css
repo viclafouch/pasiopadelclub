@@ -175,6 +175,9 @@
   html {
     @apply font-sans;
   }
+  p {
+    text-wrap: balance;
+  }
 }
 
 @utility scrollbar-hide {
