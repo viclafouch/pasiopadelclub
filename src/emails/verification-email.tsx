@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -8,7 +9,7 @@ type VerificationEmailProps = {
 
 export const VerificationEmail = ({
   firstName = 'Marie',
-  verificationUrl = 'https://pasiopadelclub.fr/auth/verify?token=abc123'
+  verificationUrl = `${SITE_URL}/auth/verify?token=abc123`
 }: VerificationEmailProps) => {
   return (
     <EmailLayout preview="Confirmez votre adresse email - Pasio Padel Club">

@@ -1,13 +1,21 @@
+import { SITE_URL } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
 type WelcomeEmailProps = {
   firstName: string
+  baseUrl?: string
 }
 
-export const WelcomeEmail = ({ firstName = 'Marie' }: WelcomeEmailProps) => {
+export const WelcomeEmail = ({
+  firstName = 'Marie',
+  baseUrl = SITE_URL
+}: WelcomeEmailProps) => {
   return (
-    <EmailLayout preview="Votre compte est prêt - Pasio Padel Club">
+    <EmailLayout
+      preview="Votre compte est prêt - Pasio Padel Club"
+      baseUrl={baseUrl}
+    >
       <Section className="mb-6 rounded-lg bg-brand p-6 text-center">
         <Text className="m-0 text-4xl">🎾</Text>
         <Text className="m-0 mt-2 text-lg font-semibold text-white">
@@ -69,7 +77,7 @@ export const WelcomeEmail = ({ firstName = 'Marie' }: WelcomeEmailProps) => {
       </Section>
       <Section className="text-center">
         <Button
-          href="https://pasiopadelclub.fr/reservation"
+          href={`${baseUrl}/reservation`}
           className="inline-block rounded-lg bg-brand-light px-8 py-4 text-center text-base font-semibold text-slate-900 no-underline"
         >
           Réserver un terrain

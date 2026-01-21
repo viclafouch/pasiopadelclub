@@ -5,6 +5,7 @@ import { and, eq, gt, lt } from 'drizzle-orm'
 import { db } from '@/db'
 import { booking, court, user } from '@/db/schema'
 import { BookingReminderEmail } from '@/emails'
+import { serverEnv } from '@/env/server'
 import {
   formatDateTimeFr,
   formatFullDateLabel,
@@ -54,7 +55,8 @@ async function sendReminderEmail(
         courtName,
         date: formatFullDateLabel(startAt),
         startTime: formatTimeFr(startAt),
-        endTime: formatTimeFr(endAt)
+        endTime: formatTimeFr(endAt),
+        baseUrl: serverEnv.VITE_SITE_URL
       })
     })
 

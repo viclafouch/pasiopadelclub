@@ -1,3 +1,5 @@
+export const SITE_URL = 'https://pasiopadelclub-production.up.railway.app'
+
 type ClubInfo = {
   name: string
   address: {
@@ -74,7 +76,7 @@ export const APP_STORE_URL =
 export const PLAY_STORE_URL =
   'https://play.google.com/store/apps/details?id=com.livexperience.pasiopadelclub'
 
-export const APP_DOWNLOAD_URL = 'https://pasiopadelclub.fr/application'
+export const APP_DOWNLOAD_URL = `${SITE_URL}/application`
 
 type AppFeature = {
   title: string

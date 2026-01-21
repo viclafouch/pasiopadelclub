@@ -138,7 +138,8 @@ async function handleCreditPackPurchase(
         packName: packData.name,
         creditsAmount: formatCentsToEuros(creditsCents),
         totalPaid: formatCentsToEuros(packData.priceCents),
-        expiresAt: formatDateFr(expiresAt)
+        expiresAt: formatDateFr(expiresAt),
+        baseUrl: serverEnv.VITE_SITE_URL
       })
     })
     .then(() => {
@@ -260,7 +261,8 @@ async function createBookingFromPayment({
         date: formatDateFr(startAt),
         startTime: formatTimeFr(startAt),
         endTime: formatTimeFr(endAt),
-        price: formatCentsToEuros(courtData.price)
+        price: formatCentsToEuros(courtData.price),
+        baseUrl: serverEnv.VITE_SITE_URL
       })
     })
     .catch(console.error)

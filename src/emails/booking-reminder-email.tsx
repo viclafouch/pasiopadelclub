@@ -1,4 +1,4 @@
-import { CLUB_INFO } from '@/constants/app'
+import { CLUB_INFO, SITE_URL } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -8,6 +8,7 @@ type BookingReminderEmailProps = {
   date: string
   startTime: string
   endTime: string
+  baseUrl?: string
 }
 
 export const BookingReminderEmail = ({
@@ -15,10 +16,14 @@ export const BookingReminderEmail = ({
   courtName = 'Court N°1',
   date = 'Dimanche 26 janvier 2025',
   startTime = '10:00',
-  endTime = '11:30'
+  endTime = '11:30',
+  baseUrl = SITE_URL
 }: BookingReminderEmailProps) => {
   return (
-    <EmailLayout preview={`Rappel : ${courtName} demain à ${startTime}`}>
+    <EmailLayout
+      preview={`Rappel : ${courtName} demain à ${startTime}`}
+      baseUrl={baseUrl}
+    >
       <Section className="mb-6 rounded-lg bg-brand p-6 text-center">
         <Text className="m-0 text-4xl">⏰</Text>
         <Text className="m-0 mt-2 text-lg font-semibold text-white">
@@ -75,7 +80,7 @@ export const BookingReminderEmail = ({
       </Section>
       <Section className="mt-8 text-center">
         <Button
-          href="https://pasiopadelclub.fr/mon-compte"
+          href={`${baseUrl}/mon-compte`}
           className="inline-block rounded-lg bg-brand-light px-8 py-4 text-center text-base font-semibold text-slate-900 no-underline"
         >
           Gérer ma réservation

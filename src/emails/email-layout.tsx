@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/constants/app'
 import {
   Body,
   Container,
@@ -13,9 +14,14 @@ import {
 type EmailLayoutProps = {
   preview: string
   children: React.ReactNode
+  baseUrl?: string
 }
 
-export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
+export const EmailLayout = ({
+  preview,
+  children,
+  baseUrl = SITE_URL
+}: EmailLayoutProps) => {
   return (
     <Html>
       <Head>
@@ -52,10 +58,7 @@ export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
                 24 rue Arnaud Detroyat, 64100 Bayonne
               </Text>
               <Text className="m-0 mt-3 text-center text-xs text-slate-500">
-                <Link
-                  href="https://pasiopadelclub.fr"
-                  className="text-brand-light underline"
-                >
+                <Link href={baseUrl} className="text-brand-light underline">
                   pasiopadelclub.fr
                 </Link>
               </Text>

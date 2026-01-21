@@ -173,7 +173,8 @@ export const auth = betterAuth({
                 to: getEmailRecipient(email),
                 subject: 'Bienvenue chez Pasio Padel Club !',
                 react: WelcomeEmail({
-                  firstName: extractFirstName(name)
+                  firstName: extractFirstName(name),
+                  baseUrl: serverEnv.VITE_SITE_URL
                 })
               })
               // eslint-disable-next-line no-console

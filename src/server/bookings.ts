@@ -3,6 +3,7 @@ import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
 import { BookingCancellationEmail } from '@/emails'
+import { serverEnv } from '@/env/server'
 import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { extractFirstName } from '@/helpers/string'
@@ -201,7 +202,8 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
           courtName: courtData.name,
           date: formatDateFr(bookingData.startAt),
           startTime: formatTimeFr(bookingData.startAt),
-          price: formatCentsToEuros(bookingData.price)
+          price: formatCentsToEuros(bookingData.price),
+          baseUrl: serverEnv.VITE_SITE_URL
         })
       })
       // eslint-disable-next-line no-console

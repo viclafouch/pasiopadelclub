@@ -89,7 +89,9 @@ Remplacer le site Wix actuel (pasiopadelclub.com) qui est un one-page non respon
 | **Resend** | Emails transactionnels |
 
 ### Environnement
-- **Production** : pasiopadelclub.fr (Railway)
+- **Staging (actuel)** : https://pasiopadelclub-production.up.railway.app (Railway)
+  > ⚠️ TEMPORAIRE : Pré-production pour remplacer l'ancien site Wix. Sera migré vers pasiopadelclub.fr.
+- **Production (futur)** : pasiopadelclub.fr
 - **Dev** : localhost:3000
 - **Emails preview** : localhost:3001
 

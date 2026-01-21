@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -7,6 +8,7 @@ type CreditPackPurchaseEmailProps = {
   creditsAmount: string
   totalPaid: string
   expiresAt: string
+  baseUrl?: string
 }
 
 export const CreditPackPurchaseEmail = ({
@@ -14,10 +16,11 @@ export const CreditPackPurchaseEmail = ({
   packName = 'Pack Pro',
   creditsAmount = '150 €',
   totalPaid = '120 €',
-  expiresAt = '25 janvier 2026'
+  expiresAt = '25 janvier 2026',
+  baseUrl = SITE_URL
 }: CreditPackPurchaseEmailProps) => {
   return (
-    <EmailLayout preview={`Achat confirmé - ${packName}`}>
+    <EmailLayout preview={`Achat confirmé - ${packName}`} baseUrl={baseUrl}>
       <Section className="mb-6 rounded-lg bg-brand p-6 text-center">
         <Text className="m-0 text-4xl">💳</Text>
         <Text className="m-0 mt-2 text-lg font-semibold text-white">
@@ -86,7 +89,7 @@ export const CreditPackPurchaseEmail = ({
       </Section>
       <Section className="mt-8 text-center">
         <Button
-          href="https://pasiopadelclub.fr/reservation"
+          href={`${baseUrl}/reservation`}
           className="inline-block rounded-lg bg-brand-light px-8 py-4 text-center text-base font-semibold text-slate-900 no-underline"
         >
           Réserver un terrain

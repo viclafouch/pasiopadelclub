@@ -1,4 +1,4 @@
-import { CLUB_INFO } from '@/constants/app'
+import { CLUB_INFO, SITE_URL } from '@/constants/app'
 import { Button, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -9,6 +9,7 @@ type BookingConfirmationEmailProps = {
   startTime: string
   endTime: string
   price: string
+  baseUrl?: string
 }
 
 export const BookingConfirmationEmail = ({
@@ -17,10 +18,14 @@ export const BookingConfirmationEmail = ({
   date = 'Samedi 25 janvier 2025',
   startTime = '14:00',
   endTime = '15:30',
-  price = '60 €'
+  price = '60 €',
+  baseUrl = SITE_URL
 }: BookingConfirmationEmailProps) => {
   return (
-    <EmailLayout preview={`Réservation confirmée - ${courtName} le ${date}`}>
+    <EmailLayout
+      preview={`Réservation confirmée - ${courtName} le ${date}`}
+      baseUrl={baseUrl}
+    >
       <Section className="mb-6 rounded-lg bg-brand p-6 text-center">
         <Text className="m-0 text-4xl">✅</Text>
         <Text className="m-0 mt-2 text-lg font-semibold text-white">
@@ -97,7 +102,7 @@ export const BookingConfirmationEmail = ({
       </Section>
       <Section className="mt-8 text-center">
         <Button
-          href="https://pasiopadelclub.fr/mon-compte"
+          href={`${baseUrl}/mon-compte`}
           className="inline-block rounded-lg bg-brand-light px-8 py-4 text-center text-base font-semibold text-slate-900 no-underline"
         >
           Voir mes réservations
