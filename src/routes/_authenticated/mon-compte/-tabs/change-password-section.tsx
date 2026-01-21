@@ -98,7 +98,7 @@ export const ChangePasswordSection = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Modifier mon mot de passe</DialogTitle>
+                <DialogTitle>Modifier le mot de passe</DialogTitle>
                 <DialogDescription>
                   Entrez votre mot de passe actuel puis choisissez un nouveau
                   mot de passe.

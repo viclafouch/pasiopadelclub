@@ -46,11 +46,11 @@ export const DeleteAccountSection = () => {
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <div>
           <h3 className="text-base font-semibold text-destructive">
-            Supprimer mon compte
+            Suppression du compte
           </h3>
           <p className="text-sm text-muted-foreground">
-            Action irréversible. Données personnelles supprimées, historique
-            conservé anonymement.
+            Supprimez définitivement votre compte. Vos données personnelles
+            seront effacées, l&apos;historique sera conservé anonymement.
           </p>
         </div>
         <AlertDialog>
@@ -81,7 +81,7 @@ export const DeleteAccountSection = () => {
             ) : (
               <>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Supprimer votre compte ?</AlertDialogTitle>
+                  <AlertDialogTitle>Supprimer le compte</AlertDialogTitle>
                   <AlertDialogDescription>
                     Cette action est irréversible. Votre compte sera
                     définitivement supprimé et vous serez déconnecté. Votre

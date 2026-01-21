@@ -80,7 +80,7 @@ export const EditProfileModal = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Modifier mon profil</DialogTitle>
+          <DialogTitle>Modifier le profil</DialogTitle>
           <DialogDescription>
             Modifiez vos informations personnelles ci-dessous.
           </DialogDescription>
