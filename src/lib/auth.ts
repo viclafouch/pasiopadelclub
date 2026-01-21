@@ -23,12 +23,16 @@ export const auth = betterAuth({
   appName: 'Pasio Padel Club',
   baseURL: serverEnv.VITE_SITE_URL,
   secret: serverEnv.BETTER_AUTH_SECRET,
+  trustedOrigins: [
+    serverEnv.VITE_SITE_URL,
+    ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000'] : [])
+  ],
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema
   }),
   rateLimit: {
-    enabled: true,
+    enabled: process.env.NODE_ENV === 'production',
     window: 60,
     max: 100,
     customRules: {
@@ -55,6 +59,11 @@ export const auth = betterAuth({
     }
   },
   advanced: {
+    useSecureCookies: process.env.NODE_ENV === 'production',
+    defaultCookieAttributes: {
+      httpOnly: true,
+      sameSite: 'lax'
+    },
     database: {
       generateId: 'uuid'
     }
@@ -108,6 +117,7 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
     maxPasswordLength: 100,
+    resetPasswordTokenExpiresIn: 3600,
     sendResetPassword: async ({ user, url }) => {
       resend.emails
         .send({

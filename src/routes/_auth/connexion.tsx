@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { getAuthUserQueryOpts } from '@/constants/queries'
+import { emailSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { getSafeRedirect } from '@/helpers/url'
 import { authClient } from '@/lib/auth-client'
@@ -11,12 +12,8 @@ import { useForm } from '@tanstack/react-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 
-const searchSchema = z.object({
-  redirect: z.string().optional()
-})
-
 const loginSchema = z.object({
-  email: z.email(),
+  email: emailSchema,
   password: z.string().min(8)
 })
 
@@ -139,7 +136,6 @@ const ConnexionPage = () => {
 }
 
 export const Route = createFileRoute('/_auth/connexion')({
-  validateSearch: searchSchema,
   component: ConnexionPage,
   head: () => {
     return {

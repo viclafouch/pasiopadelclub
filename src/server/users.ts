@@ -1,11 +1,18 @@
 import { desc, eq } from 'drizzle-orm'
-import { updateProfileSchema } from '@/constants/schemas'
+import {
+  deleteAccountFormSchema,
+  updateProfileSchema
+} from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, session, user, walletTransaction } from '@/db/schema'
+import { auth } from '@/lib/auth'
 import { authMiddleware } from '@/lib/middleware'
 import { anonymizeUser } from '@/utils/user'
 import { createServerFn } from '@tanstack/react-start'
-import { setResponseStatus } from '@tanstack/react-start/server'
+import {
+  getRequestHeaders,
+  setResponseStatus
+} from '@tanstack/react-start/server'
 
 export const updateProfileFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
@@ -29,7 +36,20 @@ export const updateProfileFn = createServerFn({ method: 'POST' })
 
 export const anonymizeAccountFn = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
+  .inputValidator(deleteAccountFormSchema)
+  .handler(async ({ data, context }) => {
+    const headers = getRequestHeaders()
+
+    const verifyResult = await auth.api.verifyPassword({
+      body: { password: data.password },
+      headers
+    })
+
+    if (!verifyResult.status) {
+      setResponseStatus(401)
+      throw new Error('INVALID_PASSWORD')
+    }
+
     await anonymizeUser(context.session.user.id)
 
     return { success: true }

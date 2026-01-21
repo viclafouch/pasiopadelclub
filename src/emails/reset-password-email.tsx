@@ -29,7 +29,7 @@ export const ResetPasswordEmail = ({
         </Button>
       </Section>
       <Text className="text-sm leading-6 text-slate-400">
-        Ce lien expire dans 24 heures. Si vous n&apos;avez pas demandé cette
+        Ce lien expire dans 1 heure. Si vous n&apos;avez pas demandé cette
         réinitialisation, vous pouvez ignorer cet email. Votre mot de passe
         restera inchangé.
       </Text>

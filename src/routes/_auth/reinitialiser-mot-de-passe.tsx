@@ -86,7 +86,7 @@ const ResetPasswordPage = () => {
           <XCircle className="size-4" aria-hidden="true" />
           <AlertDescription>
             Le lien de réinitialisation n&apos;est plus valide. Les liens
-            expirent après 24 heures. Veuillez faire une nouvelle demande.
+            expirent après 1 heure. Veuillez faire une nouvelle demande.
           </AlertDescription>
         </Alert>
         <div className="space-y-3">

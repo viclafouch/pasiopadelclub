@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { emailSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
@@ -12,7 +13,7 @@ import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 const forgotPasswordSchema = z.object({
-  email: z.email('Veuillez entrer une adresse email valide')
+  email: emailSchema
 })
 
 const ForgotPasswordPage = () => {
@@ -63,8 +64,7 @@ const ForgotPasswordPage = () => {
           <CheckCircle className="size-4 text-green-600" aria-hidden="true" />
           <AlertDescription>
             Si un compte existe avec cette adresse email, vous recevrez un lien
-            pour réinitialiser votre mot de passe. Le lien expire dans 24
-            heures.
+            pour réinitialiser votre mot de passe. Le lien expire dans 1 heure.
           </AlertDescription>
         </Alert>
         <div className="space-y-3">

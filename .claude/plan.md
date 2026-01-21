@@ -407,6 +407,16 @@ Système de prépaiement par crédits avec bonus et expiration.
 
 ---
 
+## Décisions de sécurité (exceptions documentées)
+
+Ces décisions ont été prises volontairement et ne doivent pas être signalées lors des audits de sécurité :
+
+| Décision | Raison | Date |
+|----------|--------|------|
+| Pas de caractère spécial dans le mot de passe | UX simplifiée pour un site de réservation padel grand public | 2025-01 |
+
+---
+
 ## Milestones futures (post-lancement)
 
 - **M14** : Page Enseignement/Cours (lancement prévu 12/2025)

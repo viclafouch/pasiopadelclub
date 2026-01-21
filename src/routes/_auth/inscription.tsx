@@ -7,7 +7,12 @@ import {
 } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { getAuthUserQueryOpts } from '@/constants/queries'
-import { strongPasswordSchema } from '@/constants/schemas'
+import {
+  emailSchema,
+  firstNameSchema,
+  lastNameSchema,
+  strongPasswordSchema
+} from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
@@ -16,9 +21,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 
 const signUpSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-  email: z.email(),
+  firstName: firstNameSchema,
+  lastName: lastNameSchema,
+  email: emailSchema,
   password: strongPasswordSchema,
   acceptTerms: z.boolean().refine((accepted) => {
     return accepted

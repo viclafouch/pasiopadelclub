@@ -3,6 +3,22 @@ import { z } from 'zod'
 
 const DEFAULT_COUNTRY = 'FR'
 
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email('Adresse email invalide').max(254))
+
+export const firstNameSchema = z
+  .string()
+  .min(2, 'Le prénom doit contenir au moins 2 caractères')
+  .max(50, 'Le prénom est trop long')
+
+export const lastNameSchema = z
+  .string()
+  .min(2, 'Le nom doit contenir au moins 2 caractères')
+  .max(50, 'Le nom est trop long')
+
 const optionalPhoneSchema = z
   .string()
   .refine(
@@ -18,8 +34,8 @@ const optionalPhoneSchema = z
   })
 
 const profileBaseSchema = z.object({
-  firstName: z.string().nonempty().max(50),
-  lastName: z.string().nonempty().max(50)
+  firstName: firstNameSchema,
+  lastName: lastNameSchema
 })
 
 export const profileFormSchema = profileBaseSchema.extend({
@@ -71,7 +87,7 @@ export const bookingMetadataSchema = z.object({
 
 export const contactFormSchema = z.object({
   name: z.string().min(2).max(100),
-  email: z.email().max(254),
+  email: emailSchema,
   subject: z.string().min(3).max(200),
   message: z.string().min(10).max(5000)
 })
@@ -99,3 +115,7 @@ export const changePasswordFormSchema = z
       path: ['confirmPassword']
     }
   )
+
+export const deleteAccountFormSchema = z.object({
+  password: z.string().min(1, 'Le mot de passe est requis')
+})

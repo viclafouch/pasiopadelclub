@@ -1,44 +1,62 @@
 import React from 'react'
 import { CheckIcon, Trash2Icon } from 'lucide-react'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
+import { FormErrorAlert, FormField } from '@/components/form-field'
+import { LoadingButton } from '@/components/loading-button'
 import { Button } from '@/components/ui/button'
-import { getErrorMessage } from '@/helpers/error'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { deleteAccountFormSchema } from '@/constants/schemas'
+import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
 import { anonymizeAccountFn } from '@/server/users'
+import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
 
 const REDIRECT_DELAY_MS = 1500
 
 export const DeleteAccountSection = () => {
-  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = React.useState(false)
   const [showSuccess, setShowSuccess] = React.useState(false)
 
   const deleteAccountMutation = useMutation({
-    mutationFn: () => {
-      return anonymizeAccountFn()
+    mutationFn: async (values: { password: string }) => {
+      await anonymizeAccountFn({ data: { password: values.password } })
     },
     onSuccess: async () => {
       setShowSuccess(true)
       await authClient.signOut()
       setTimeout(() => {
-        navigate({ to: '/' })
+        window.location.href = '/'
       }, REDIRECT_DELAY_MS)
     }
   })
 
-  const handleDeleteAccount = () => {
-    deleteAccountMutation.mutate()
+  const form = useForm({
+    defaultValues: {
+      password: ''
+    },
+    validators: {
+      onSubmit: deleteAccountFormSchema
+    },
+    onSubmit: ({ value }) => {
+      deleteAccountMutation.mutate({ password: value.password })
+    }
+  })
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.reset()
+      deleteAccountMutation.reset()
+    }
+
+    setIsOpen(open)
   }
 
   return (
@@ -53,14 +71,14 @@ export const DeleteAccountSection = () => {
             seront effacées, l&apos;historique sera conservé anonymement.
           </p>
         </div>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+          <DialogTrigger asChild>
             <Button variant="destructive" className="w-full shrink-0 xs:w-auto">
               <Trash2Icon className="size-4" aria-hidden="true" />
               Supprimer
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
+          </DialogTrigger>
+          <DialogContent>
             {showSuccess ? (
               <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center">
                 <div className="rounded-full bg-green-100 p-3">
@@ -80,39 +98,68 @@ export const DeleteAccountSection = () => {
               </div>
             ) : (
               <>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Supprimer le compte</AlertDialogTitle>
-                  <AlertDialogDescription>
+                <DialogHeader>
+                  <DialogTitle>Supprimer le compte</DialogTitle>
+                  <DialogDescription>
                     Cette action est irréversible. Votre compte sera
                     définitivement supprimé et vous serez déconnecté. Votre
                     historique de réservations sera conservé de manière anonyme
                     pour nos statistiques.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                {deleteAccountMutation.isError ? (
-                  <p role="alert" className="text-sm text-destructive">
-                    {getErrorMessage(deleteAccountMutation.error)}
-                  </p>
-                ) : null}
-                <AlertDialogFooter>
-                  <AlertDialogCancel disabled={deleteAccountMutation.isPending}>
-                    Annuler
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDeleteAccount}
-                    disabled={deleteAccountMutation.isPending}
-                    aria-busy={deleteAccountMutation.isPending}
-                    className="bg-destructive text-white hover:bg-destructive/90"
-                  >
-                    {deleteAccountMutation.isPending
-                      ? 'Suppression...'
-                      : 'Supprimer définitivement'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
+                  </DialogDescription>
+                </DialogHeader>
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    form.handleSubmit()
+                  }}
+                  className="space-y-4"
+                  noValidate
+                >
+                  <form.Field name="password">
+                    {(field) => {
+                      return (
+                        <FormField
+                          field={field}
+                          label="Mot de passe actuel"
+                          type="password"
+                          autoComplete="off"
+                          required
+                        />
+                      )
+                    }}
+                  </form.Field>
+                  {deleteAccountMutation.error ? (
+                    <FormErrorAlert
+                      message={getAuthErrorMessage(
+                        deleteAccountMutation.error.message
+                      )}
+                    />
+                  ) : null}
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        return handleOpenChange(false)
+                      }}
+                    >
+                      Annuler
+                    </Button>
+                    <LoadingButton
+                      type="submit"
+                      variant="destructive"
+                      isLoading={deleteAccountMutation.isPending}
+                      loadingText="Suppression..."
+                    >
+                      Supprimer définitivement
+                    </LoadingButton>
+                  </DialogFooter>
+                </form>
               </>
             )}
-          </AlertDialogContent>
-        </AlertDialog>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
