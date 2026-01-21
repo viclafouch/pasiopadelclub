@@ -15,10 +15,10 @@ const config = defineConfig({
     allowedHosts: true
   },
   ssr: {
-    external: ['@resvg/resvg-js']
+    external: ['@resvg/resvg-js', 'ws']
   },
   optimizeDeps: {
-    exclude: ['@resvg/resvg-js']
+    exclude: ['@resvg/resvg-js', 'ws']
   },
   plugins: [
     devtools(),
@@ -28,6 +28,9 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
+      rollupConfig: {
+        external: ['@resvg/resvg-js', 'ws']
+      },
       routeRules: {
         '/**': {
           headers: {
