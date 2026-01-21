@@ -145,8 +145,8 @@ const ContactPage = () => {
       <section className="pb-20 lg:pb-28">
         <div className="container">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div className="order-2 lg:order-1">
-              <div className="rounded-2xl border border-border/50 bg-card/50 p-8 backdrop-blur-sm">
+            <div className="order-1 lg:order-1">
+              <div className="rounded-2xl border bg-card p-8 shadow-sm">
                 {isSubmitted ? (
                   <SuccessState successRef={successRef} onReset={resetForm} />
                 ) : (
@@ -235,13 +235,13 @@ const ContactPage = () => {
                 )}
               </div>
             </div>
-            <div className="order-1 lg:order-2">
-              <div className="space-y-8">
-                <div>
+            <div className="order-2 lg:order-2">
+              <div className="grid gap-8 md:grid-cols-1">
+                <div className="md:col-span-2">
                   <h2 className="mb-6 font-display text-2xl font-bold text-foreground">
                     Informations
                   </h2>
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <MapPin
@@ -252,8 +252,7 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Adresse</p>
                         <p className="text-muted-foreground">
-                          {CLUB_INFO.address.street}
-                          <br />
+                          {CLUB_INFO.address.street},{' '}
                           {CLUB_INFO.address.postalCode}{' '}
                           {CLUB_INFO.address.city}
                         </p>
@@ -303,21 +302,20 @@ const ContactPage = () => {
                       <div>
                         <p className="font-medium text-foreground">Horaires</p>
                         <p className="text-muted-foreground">
-                          {CLUB_INFO.hours.days}
-                          <br />
-                          <span className="font-medium text-primary">
-                            {CLUB_INFO.hours.open}00 — {CLUB_INFO.hours.close}00
-                          </span>
+                          {CLUB_INFO.hours.days} de {CLUB_INFO.hours.open}00
+                          {' à '}
+                          {CLUB_INFO.hours.close}00
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="overflow-hidden rounded-2xl border border-border/50">
+                <div className="overflow-hidden rounded-2xl border border-border/50 md:col-span-3 md:h-full md:min-h-[300px]">
                   <iframe
                     src={CLUB_INFO.address.googleMapsUrl}
                     width="100%"
-                    height="300"
+                    height="100%"
+                    style={{ minHeight: '300px' }}
                     allowFullScreen
                     title={`${CLUB_INFO.name} - Localisation`}
                     loading="lazy"

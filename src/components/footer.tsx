@@ -62,8 +62,8 @@ const LEGAL_LINKS = [
 
 const Footer = () => {
   return (
-    <footer className="bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
+    <footer className="border-t bg-muted/50">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid grid-cols-1 gap-8 xs:grid-cols-2 xs:gap-10 lg:grid-cols-4">
           <div className="space-y-4">
             <Link

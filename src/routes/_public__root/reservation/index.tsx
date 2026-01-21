@@ -223,7 +223,7 @@ const ReservationPage = () => {
           </p>
         </div>
       </section>
-      <section className="py-6">
+      <section className="pt-6 pb-20">
         <div className="container">
           <ReservationContent />
         </div>
