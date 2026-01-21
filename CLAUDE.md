@@ -194,13 +194,14 @@ Avant d'utiliser une librairie externe, TOUJOURS consulter Context7 :
 
 **Avant chaque tâche :**
 1. Vérifier `.claude/plan.md`
-2. Lire les `.claude/rules/*.md` pertinentes
+2. Lire, relire plusieurs fois s'il le fait les règles sur `.claude/rules/*.md`
 3. Consulter Context7 pour les libs externes
 
 **Après chaque tâche :**
 1. Lancer `code-simplifier:code-simplifier` (obligatoire)
-2. Lancer `npm run lint:fix`
-3. Mettre à jour le plan `[x]`
+2. Relire les règles du projet `.claude/rules/*.md` (obligatoire)
+3. Lancer `npm run lint:fix`
+4. Mettre à jour le plan `[x]` si nécessaire
 
 ---
 

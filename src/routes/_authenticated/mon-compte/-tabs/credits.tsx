@@ -87,10 +87,10 @@ export const CreditsTab = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3 rounded-lg border p-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="space-y-4 rounded-lg border p-6">
+        <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
               <WalletIcon className="size-6 text-primary" aria-hidden="true" />
             </div>
             <div>
@@ -100,7 +100,7 @@ export const CreditsTab = () => {
               </p>
             </div>
           </div>
-          <Button asChild>
+          <Button asChild className="w-full xs:w-auto">
             <Link to="/credits">Acheter des crédits</Link>
           </Button>
         </div>

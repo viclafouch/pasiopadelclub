@@ -103,6 +103,7 @@
 }
 
 @theme inline {
+  --breakpoint-xs: 500px;
   --font-sans: 'Pasio Body', sans-serif;
   --font-display: 'Pasio', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);

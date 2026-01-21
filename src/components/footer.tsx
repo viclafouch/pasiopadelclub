@@ -3,11 +3,10 @@ import { Clock, Mail, MapPin, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { CLUB_INFO, SOCIAL_LINKS } from '@/constants/app'
+import type { LinkOptions } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 
-type IconProps = {
-  className?: string
-}
+type IconProps = React.ComponentProps<'svg'>
 
 const InstagramIcon = ({ className }: IconProps) => {
   return (
@@ -43,68 +42,70 @@ const FacebookIcon = ({ className }: IconProps) => {
   )
 }
 
-type SocialIconMap = Record<
-  'instagram' | 'facebook',
-  ({ className }: IconProps) => React.JSX.Element
->
-
 const SOCIAL_ICONS = {
   instagram: InstagramIcon,
   facebook: FacebookIcon
-} as const satisfies SocialIconMap
-
-type NavLink = {
-  to: string
-  label: string
-}
+} as const
 
 const NAV_LINKS = [
   { to: '/tarifs', label: 'Nos tarifs' },
   { to: '/galerie', label: 'Galerie photos' },
   { to: '/credits', label: 'Packs de crédits' },
   { to: '/application', label: 'Application mobile' }
-] as const satisfies NavLink[]
+] as const satisfies readonly { to: LinkOptions['to']; label: string }[]
+
+const LEGAL_LINKS = [
+  { to: '/mentions-legales', label: 'Mentions légales' },
+  { to: '/cgv', label: 'CGV' },
+  { to: '/politique-confidentialite', label: 'Politique de confidentialité' }
+] as const satisfies readonly { to: LinkOptions['to']; label: string }[]
 
 const Footer = () => {
   return (
     <footer className="bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          <div>
-            <Link to="/" className="inline-block">
+        <div className="grid grid-cols-1 gap-8 xs:grid-cols-2 xs:gap-10 lg:grid-cols-4">
+          <div className="space-y-4">
+            <Link
+              to="/"
+              aria-label="Accueil Pasio Padel Club"
+              className="block"
+            >
               <img
                 width={48}
                 height={48}
                 src="/logo.webp"
-                alt="Pasio Padel Club"
-                className="h-12 w-12"
+                alt=""
+                aria-hidden="true"
+                className="size-12"
               />
             </Link>
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Votre club de padel à Bayonne, ouvert tous les jours de 8h à 22h.
             </p>
-            <div className="mt-6 flex gap-4">
+            <ul className="flex gap-4" aria-label="Réseaux sociaux">
               {SOCIAL_LINKS.map((social) => {
                 const Icon = SOCIAL_ICONS[social.platform]
 
                 return (
-                  <a
-                    key={social.platform}
-                    href={social.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={social.label}
-                    className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <Icon className="size-5" />
-                  </a>
+                  <li key={social.platform}>
+                    <a
+                      href={social.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={social.label}
+                      className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Icon className="size-5" />
+                    </a>
+                  </li>
                 )
               })}
-            </div>
+            </ul>
           </div>
-          <div>
+          <nav aria-label="Liens utiles" className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Découvrir</h3>
-            <ul className="mt-4 space-y-3">
+            <ul className="space-y-3">
               {NAV_LINKS.map((link) => {
                 return (
                   <li key={link.to}>
@@ -118,101 +119,89 @@ const Footer = () => {
                 )
               })}
             </ul>
-          </div>
-          <div>
+          </nav>
+          <div className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Contact</h3>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <a
-                  href={CLUB_INFO.phone.href}
-                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-                >
-                  <Phone className="size-4 shrink-0" aria-hidden="true" />
-                  {CLUB_INFO.phone.display}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${CLUB_INFO.email}`}
-                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-                >
-                  <Mail className="size-4 shrink-0" aria-hidden="true" />
-                  {CLUB_INFO.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CLUB_INFO.address.full)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-                >
-                  <MapPin
-                    className="mt-0.5 size-4 shrink-0"
-                    aria-hidden="true"
-                  />
-                  <span>
-                    {CLUB_INFO.address.street}
-                    <br />
-                    {CLUB_INFO.address.postalCode} {CLUB_INFO.address.city}
-                  </span>
-                </a>
-              </li>
-              <li>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="size-4 shrink-0" aria-hidden="true" />
-                  <span>
-                    Tous les jours,{' '}
-                    <span className="font-medium text-primary">
-                      8h00 — 22h00
-                    </span>
-                  </span>
-                </div>
-              </li>
-            </ul>
+            <address className="space-y-3 not-italic">
+              <a
+                href={CLUB_INFO.phone.href}
+                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Phone className="size-4 shrink-0" aria-hidden="true" />
+                {CLUB_INFO.phone.display}
+              </a>
+              <a
+                href={`mailto:${CLUB_INFO.email}`}
+                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Mail className="size-4 shrink-0" aria-hidden="true" />
+                {CLUB_INFO.email}
+              </a>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CLUB_INFO.address.full)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                <span>
+                  {CLUB_INFO.address.street}
+                  <br />
+                  {CLUB_INFO.address.postalCode} {CLUB_INFO.address.city}
+                </span>
+              </a>
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="size-4 shrink-0" aria-hidden="true" />
+                <span>
+                  Tous les jours,{' '}
+                  <time className="font-medium text-primary">8h00 — 22h00</time>
+                </span>
+              </p>
+            </address>
           </div>
-          <div>
+          <div className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">
               Réservez maintenant
             </h3>
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               6 terrains disponibles, réservation en ligne 24h/24.
             </p>
-            <Button asChild className="mt-4 w-full">
-              <Link to="/reservation">Réserver un terrain</Link>
-            </Button>
-            <Link
-              to="/contact"
-              className="mt-3 block text-center text-sm text-muted-foreground transition-colors hover:text-primary"
-            >
-              Une question ? Contactez-nous
-            </Link>
+            <div className="space-y-3">
+              <Button asChild>
+                <Link to="/reservation">Réserver un terrain</Link>
+              </Button>
+              <Link
+                to="/contact"
+                className="block text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                Une question ? Contactez-nous
+              </Link>
+            </div>
           </div>
         </div>
       </div>
       <Separator />
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-            <Link
-              to="/mentions-legales"
-              className="transition-colors hover:text-foreground"
-            >
-              Mentions légales
-            </Link>
-            <span className="hidden sm:inline">·</span>
-            <Link to="/cgv" className="transition-colors hover:text-foreground">
-              CGV
-            </Link>
-            <span className="hidden sm:inline">·</span>
-            <Link
-              to="/politique-confidentialite"
-              className="transition-colors hover:text-foreground"
-            >
-              Politique de confidentialité
-            </Link>
-          </div>
-          <p className="text-center text-sm text-muted-foreground">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <nav
+            aria-label="Mentions légales"
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground md:justify-start"
+          >
+            {LEGAL_LINKS.map((link, index) => {
+              return (
+                <span key={link.to} className="contents">
+                  {index > 0 ? <span aria-hidden="true">·</span> : null}
+                  <Link
+                    to={link.to}
+                    className="transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </span>
+              )
+            })}
+          </nav>
+          <p className="text-center text-sm text-muted-foreground md:text-right">
             © {getYear(new Date())} {CLUB_INFO.name} — Tous droits réservés
           </p>
         </div>

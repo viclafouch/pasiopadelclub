@@ -19,7 +19,7 @@ export const DataExportSection = () => {
 
   return (
     <div className="rounded-lg border p-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <div>
           <h3 className="font-sans text-xl font-bold">Mes données (RGPD)</h3>
           <p className="text-sm text-muted-foreground">
@@ -33,7 +33,7 @@ export const DataExportSection = () => {
           }}
           isLoading={exportMutation.isPending}
           loadingText="Préparation..."
-          className="shrink-0"
+          className="w-full shrink-0 xs:w-auto"
         >
           <DownloadIcon className="size-4" aria-hidden="true" />
           Exporter mes données
