@@ -20,13 +20,15 @@ type DaySelectorProps = {
   onDateHover?: (date: string) => void
 }
 
-const dates = generateDates(DAYS_TO_SHOW)
-
 export const DaySelector = ({
   selectedDate,
   onDateChange,
   onDateHover
 }: DaySelectorProps) => {
+  const dates = React.useMemo(() => {
+    return generateDates(DAYS_TO_SHOW)
+  }, [])
+
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const buttonRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map())
   const isUserScrollRef = React.useRef(false)
