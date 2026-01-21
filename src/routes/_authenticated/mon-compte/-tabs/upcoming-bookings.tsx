@@ -1,5 +1,6 @@
 import React from 'react'
 import { AlertCircleIcon, CalendarIcon } from 'lucide-react'
+import { AnimatedNotification } from '@/components/animated-notification'
 import { BookingCard } from '@/components/booking-card'
 import {
   AlertDialog,
@@ -15,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import {
   getActiveBookingCountQueryOpts,
+  getBookingHistoryQueryOpts,
   getUpcomingBookingsQueryOpts
 } from '@/constants/queries'
 import type { Booking } from '@/constants/types'
@@ -28,6 +30,8 @@ import {
   useSuspenseQuery
 } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+
+const SUCCESS_NOTIFICATION_DURATION_MS = 5000
 
 type CancelDescriptionProps = {
   booking: (Booking & { court: { name: string; duration: number } }) | undefined
@@ -92,6 +96,13 @@ const EmptyBookings = () => {
   )
 }
 
+type CancelledBookingInfo = {
+  courtName: string
+  date: string
+  time: string
+  isFullRefund: boolean
+}
+
 export const UpcomingBookingsTab = () => {
   const queryClient = useQueryClient()
   const upcomingBookingsQuery = useSuspenseQuery(getUpcomingBookingsQueryOpts())
@@ -100,14 +111,36 @@ export const UpcomingBookingsTab = () => {
     null
   )
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [showSuccess, setShowSuccess] = React.useState(false)
+  const [cancelledBookingInfo, setCancelledBookingInfo] =
+    React.useState<CancelledBookingInfo | null>(null)
 
   const cancelBookingMutation = useMutation({
     mutationFn: (bookingId: string) => {
       return cancelBookingFn({ data: { bookingId } })
     },
-    onSuccess: () => {
+    onSuccess: (_data, bookingId) => {
+      const cancelledBooking = upcomingBookingsQuery.data.find((booking) => {
+        return booking.id === bookingId
+      })
+
+      if (cancelledBooking) {
+        setCancelledBookingInfo({
+          courtName: cancelledBooking.court.name,
+          date: formatDateFr(new Date(cancelledBooking.startAt)),
+          time: formatTimeFr(new Date(cancelledBooking.startAt)),
+          isFullRefund: matchIsFullRefund(new Date(cancelledBooking.startAt))
+        })
+      }
+
+      setShowSuccess(true)
+      setTimeout(() => {
+        setShowSuccess(false)
+      }, SUCCESS_NOTIFICATION_DURATION_MS)
+
       queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
       queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
+      queryClient.invalidateQueries(getBookingHistoryQueryOpts())
     },
     onSettled: () => {
       setIsDialogOpen(false)
@@ -137,6 +170,26 @@ export const UpcomingBookingsTab = () => {
   return (
     <>
       <div className="space-y-6">
+        <AnimatedNotification show={showSuccess} variant="success">
+          {cancelledBookingInfo ? (
+            <span>
+              Réservation du terrain {cancelledBookingInfo.courtName} le{' '}
+              {cancelledBookingInfo.date} à {cancelledBookingInfo.time} annulée.
+              Remboursement{' '}
+              {cancelledBookingInfo.isFullRefund ? 'intégral' : 'à 50%'}{' '}
+              effectué.{' '}
+              <Link
+                to="/mon-compte"
+                search={{ tab: 'historique' }}
+                className="font-medium underline underline-offset-2"
+              >
+                Voir l&apos;historique
+              </Link>
+            </span>
+          ) : (
+            <span>Réservation annulée avec succès.</span>
+          )}
+        </AnimatedNotification>
         {isLimitReached ? (
           <div className="flex items-center gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
             <AlertCircleIcon

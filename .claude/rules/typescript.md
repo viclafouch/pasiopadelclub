@@ -25,15 +25,16 @@ paths: "**/*.{ts,tsx}"
 
 ### Trust TypeScript Inference (CRITICAL)
 - **NEVER type function return types** - trust inference
-- **Use `as const satisfies` for all constant arrays/objects** - combines literal preservation + type validation
+- **Use `as const satisfies` for constant arrays/objects only** - combines literal preservation + type validation
 - **Avoid explicit type annotations on literals** - use satisfies instead
 - Only exception: uninitialized variables or generic parameters
 
 ### Constants Pattern (MANDATORY)
-- All SCREAMING_SNAKE_CASE constants MUST use `as const satisfies Type`
-- Define a type for the expected structure, then validate with satisfies
+- **Arrays and Objects ONLY** - use `as const satisfies Type`
+- **Primitives (number, string, boolean)** - NO `as const satisfies`, just assign directly
 - Arrays: `[...] as const satisfies Type[]` (no `readonly` needed, `as const` handles it)
 - Objects/Records: `{...} as const satisfies Record<Key, Value>`
+- Numbers/Strings: `const MAX_COUNT = 10` (simple assignment, no `as const`)
 
 ### Async/Await & Error Handling (CRITICAL)
 - **Every promise must have error handling** - no unhandled rejections
