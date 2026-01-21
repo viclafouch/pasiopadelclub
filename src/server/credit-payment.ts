@@ -1,6 +1,10 @@
 import { addDays } from 'date-fns'
 import { and, count, eq, gt, isNull, lt, or, sum } from 'drizzle-orm'
-import { DAYS_TO_SHOW, MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
+import {
+  DAYS_TO_SHOW,
+  MAX_ACTIVE_BOOKINGS,
+  MS_PER_MINUTE
+} from '@/constants/booking'
 import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
@@ -8,8 +12,6 @@ import { nowParis } from '@/helpers/date'
 import { activeUserMiddleware } from '@/lib/middleware'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
-
-const MS_PER_MINUTE = 1000 * 60
 
 export const payBookingWithCreditsFn = createServerFn({ method: 'POST' })
   .middleware([activeUserMiddleware])

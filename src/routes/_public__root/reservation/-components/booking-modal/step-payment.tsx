@@ -63,7 +63,10 @@ export const StepPayment = ({
   const invalidateBookingQueries = () => {
     return Promise.all(
       BOOKING_QUERY_KEYS.map((key) => {
-        return queryClient.invalidateQueries({ queryKey: [key] })
+        return queryClient.invalidateQueries({
+          queryKey: [key],
+          refetchType: 'all'
+        })
       })
     )
   }
@@ -94,6 +97,9 @@ export const StepPayment = ({
   }
 
   const handleStripeSuccess = async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000)
+    })
     await invalidateBookingQueries()
     navigate({ to: '/reservation/success' })
   }
@@ -187,7 +193,7 @@ export const StepPayment = ({
             className="mr-1.5 inline-block size-3.5 align-text-bottom"
             aria-hidden="true"
           />
-          Annulation gratuite jusqu&apos;à 24h avant
+          Annulation : 100% si +24h avant, 50% si -24h avant
         </p>
         <p>
           En payant, vous acceptez nos{' '}

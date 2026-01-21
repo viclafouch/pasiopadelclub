@@ -3,9 +3,12 @@ import { z } from 'zod'
 import { FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { strongPasswordSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
+import { getErrorMessage } from '@/helpers/error'
 import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
@@ -22,7 +25,10 @@ const signUpSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
   email: z.email(),
-  password: strongPasswordSchema
+  password: strongPasswordSchema,
+  acceptTerms: z.boolean().refine((accepted) => {
+    return accepted
+  }, 'Vous devez accepter les conditions pour créer un compte')
 })
 
 const BENEFITS = [
@@ -64,7 +70,8 @@ const InscriptionPage = () => {
       firstName: '',
       lastName: '',
       email: '',
-      password: ''
+      password: '',
+      acceptTerms: false
     },
     validators: {
       onSubmit: signUpSchema
@@ -170,6 +177,59 @@ const InscriptionPage = () => {
             )
           }}
         </form.Field>
+        <form.Field name="acceptTerms">
+          {(field) => {
+            const hasError =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0
+
+            return (
+              <div className="space-y-2">
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="accept-terms"
+                    checked={field.state.value}
+                    onCheckedChange={(checked) => {
+                      field.handleChange(checked === true)
+                    }}
+                    onBlur={field.handleBlur}
+                    aria-invalid={hasError}
+                    aria-describedby={hasError ? 'terms-error' : undefined}
+                    aria-required="true"
+                  />
+                  <Label
+                    htmlFor="accept-terms"
+                    className="text-sm leading-relaxed text-muted-foreground"
+                  >
+                    J&apos;ai lu et j&apos;accepte les{' '}
+                    <Link
+                      to="/cgv"
+                      className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                    >
+                      conditions générales de vente
+                    </Link>{' '}
+                    et la{' '}
+                    <Link
+                      to="/politique-confidentialite"
+                      className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                    >
+                      politique de confidentialité
+                    </Link>
+                    <span className="text-destructive"> *</span>
+                  </Label>
+                </div>
+                {hasError ? (
+                  <p
+                    id="terms-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
+                    {getErrorMessage(field.state.meta.errors[0])}
+                  </p>
+                ) : null}
+              </div>
+            )
+          }}
+        </form.Field>
         {signUpMutation.error ? (
           <Alert variant="destructive">
             <AlertCircle className="size-4" aria-hidden="true" />
@@ -189,23 +249,6 @@ const InscriptionPage = () => {
           <ArrowRight className="size-4" aria-hidden="true" />
         </LoadingButton>
       </form>
-      <p className="text-center text-xs text-muted-foreground">
-        En créant un compte, vous acceptez nos{' '}
-        <Link
-          to="/cgv"
-          className="underline underline-offset-4 transition-colors hover:text-foreground"
-        >
-          conditions générales
-        </Link>{' '}
-        et notre{' '}
-        <Link
-          to="/politique-confidentialite"
-          className="underline underline-offset-4 transition-colors hover:text-foreground"
-        >
-          politique de confidentialité
-        </Link>
-        .
-      </p>
     </div>
   )
 }

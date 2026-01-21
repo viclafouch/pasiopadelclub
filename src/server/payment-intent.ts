@@ -1,6 +1,10 @@
 import { addDays } from 'date-fns'
 import { and, count, eq, gt, lt } from 'drizzle-orm'
-import { DAYS_TO_SHOW, MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
+import {
+  DAYS_TO_SHOW,
+  MAX_ACTIVE_BOOKINGS,
+  MS_PER_MINUTE
+} from '@/constants/booking'
 import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
@@ -10,8 +14,6 @@ import { stripe } from '@/lib/stripe.server'
 import { getCourtTypeLabel } from '@/utils/court'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
-
-const MS_PER_MINUTE = 1000 * 60
 
 export const createPaymentIntentFn = createServerFn({ method: 'POST' })
   .middleware([activeUserMiddleware])

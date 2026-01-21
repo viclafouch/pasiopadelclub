@@ -21,7 +21,7 @@ import type { Booking } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
 import { cancelBookingFn } from '@/server/bookings'
-import { matchCanCancelBooking } from '@/utils/booking'
+import { matchIsFullRefund } from '@/utils/booking'
 import {
   useMutation,
   useQueryClient,
@@ -38,18 +38,35 @@ const CancelDescription = ({ booking }: CancelDescriptionProps) => {
     return <>Voulez-vous vraiment annuler cette réservation ?</>
   }
 
+  const isFullRefund = matchIsFullRefund(new Date(booking.startAt))
+
   return (
-    <>
-      Voulez-vous vraiment annuler votre réservation du{' '}
-      <span className="font-medium">
-        {formatDateFr(new Date(booking.startAt))}
-      </span>{' '}
-      à{' '}
-      <span className="font-medium">
-        {formatTimeFr(new Date(booking.startAt))}
-      </span>{' '}
-      ? Vous serez remboursé intégralement.
-    </>
+    <div className="space-y-3">
+      <p>
+        Voulez-vous vraiment annuler votre réservation du{' '}
+        <span className="font-medium">
+          {formatDateFr(new Date(booking.startAt))}
+        </span>{' '}
+        à{' '}
+        <span className="font-medium">
+          {formatTimeFr(new Date(booking.startAt))}
+        </span>{' '}
+        ?
+      </p>
+      {isFullRefund ? (
+        <p className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-700">
+          Vous serez remboursé{' '}
+          <span className="font-semibold">intégralement</span> car
+          l&apos;annulation intervient plus de 24h avant le créneau.
+        </p>
+      ) : (
+        <p className="rounded-md bg-amber-500/10 p-3 text-sm text-amber-700">
+          Vous serez remboursé à hauteur de{' '}
+          <span className="font-semibold">50%</span> car l&apos;annulation
+          intervient moins de 24h avant le créneau.
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -114,9 +131,6 @@ export const UpcomingBookingsTab = () => {
   const bookingToCancel = upcomingBookingsQuery.data.find((booking) => {
     return booking.id === cancelingId
   })
-  const canCancelBooking = bookingToCancel
-    ? matchCanCancelBooking(bookingToCancel.startAt)
-    : false
 
   const isLimitReached = activeCountQuery.data >= MAX_ACTIVE_BOOKINGS
 
@@ -154,21 +168,9 @@ export const UpcomingBookingsTab = () => {
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {canCancelBooking
-                ? 'Annuler la réservation'
-                : 'Annulation impossible'}
-            </AlertDialogTitle>
+            <AlertDialogTitle>Annuler la réservation</AlertDialogTitle>
             <AlertDialogDescription>
-              {canCancelBooking ? (
-                <CancelDescription booking={bookingToCancel} />
-              ) : (
-                <>
-                  Les réservations ne peuvent être annulées moins de 24 heures
-                  avant le créneau prévu. Cette règle nous permet de garantir la
-                  disponibilité des terrains pour tous nos joueurs.
-                </>
-              )}
+              <CancelDescription booking={bookingToCancel} />
             </AlertDialogDescription>
           </AlertDialogHeader>
           {cancelBookingMutation.isError ? (
@@ -177,24 +179,18 @@ export const UpcomingBookingsTab = () => {
             </p>
           ) : null}
           <AlertDialogFooter>
-            {canCancelBooking ? (
-              <>
-                <AlertDialogCancel disabled={cancelBookingMutation.isPending}>
-                  Non, garder
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleConfirmCancel}
-                  disabled={cancelBookingMutation.isPending}
-                  aria-busy={cancelBookingMutation.isPending}
-                >
-                  {cancelBookingMutation.isPending
-                    ? 'Annulation...'
-                    : 'Oui, annuler'}
-                </AlertDialogAction>
-              </>
-            ) : (
-              <AlertDialogCancel>Compris</AlertDialogCancel>
-            )}
+            <AlertDialogCancel disabled={cancelBookingMutation.isPending}>
+              Non, garder
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmCancel}
+              disabled={cancelBookingMutation.isPending}
+              aria-busy={cancelBookingMutation.isPending}
+            >
+              {cancelBookingMutation.isPending
+                ? 'Annulation...'
+                : 'Oui, annuler'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

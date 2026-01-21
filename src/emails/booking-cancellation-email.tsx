@@ -7,7 +7,8 @@ type BookingCancellationEmailProps = {
   courtName: string
   date: string
   startTime: string
-  price: string
+  refundAmount: string
+  isFullRefund: boolean
   baseUrl?: string
 }
 
@@ -16,7 +17,8 @@ export const BookingCancellationEmail = ({
   courtName = 'Court N°2',
   date = 'Vendredi 24 janvier 2025',
   startTime = '18:30',
-  price = '60 €',
+  refundAmount = '30 €',
+  isFullRefund = false,
   baseUrl = SITE_URL
 }: BookingCancellationEmailProps) => {
   return (
@@ -75,10 +77,12 @@ export const BookingCancellationEmail = ({
           <tr>
             <td className="p-6 text-center">
               <Text className="m-0 text-sm font-medium uppercase tracking-wide text-brand-light">
-                Remboursement
+                {isFullRefund
+                  ? 'Remboursement intégral'
+                  : 'Remboursement (50%)'}
               </Text>
               <Text className="m-0 mt-2 text-3xl font-bold text-white">
-                {price}
+                {refundAmount}
               </Text>
               <Text className="m-0 mt-2 text-sm text-slate-300">
                 Le montant sera crédité sous 5 à 10 jours ouvrés

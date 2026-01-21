@@ -1,4 +1,5 @@
 import { and, count, desc, eq, gt, lte, or, sum } from 'drizzle-orm'
+import { PARTIAL_REFUND_PERCENTAGE } from '@/constants/booking'
 import { cancelBookingSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
@@ -9,7 +10,7 @@ import { formatCentsToEuros } from '@/helpers/number'
 import { extractFirstName } from '@/helpers/string'
 import { activeUserMiddleware, authMiddleware } from '@/lib/middleware'
 import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
-import { matchCanCancelBooking } from '@/utils/booking'
+import { matchIsFullRefund } from '@/utils/booking'
 import { safeRefund } from '@/utils/stripe'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
@@ -141,10 +142,9 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
       throw new Error("Impossible d'annuler cette réservation")
     }
 
-    if (!matchCanCancelBooking(bookingData.startAt)) {
-      setResponseStatus(400)
-      throw new Error('Annulation impossible moins de 24h avant')
-    }
+    const isFullRefund = matchIsFullRefund(bookingData.startAt)
+    const refundPercentage = isFullRefund ? 1 : PARTIAL_REFUND_PERCENTAGE
+    const refundAmount = Math.floor(bookingData.price * refundPercentage)
 
     const updatedRows = await db
       .update(booking)
@@ -166,22 +166,25 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
             .where(eq(walletTransaction.userId, userId))
 
           const currentBalance = Number(balanceResult?.balance ?? 0)
-          const newBalance = currentBalance + bookingData.price
+          const newBalance = currentBalance + refundAmount
 
           await tx.insert(walletTransaction).values({
             userId,
             type: 'refund',
-            amountCents: bookingData.price,
+            amountCents: refundAmount,
             balanceAfterCents: newBalance,
             bookingId,
-            description: 'Remboursement annulation'
+            description: isFullRefund
+              ? 'Remboursement annulation'
+              : 'Remboursement annulation (50%)'
           })
         },
         { isolationLevel: 'serializable' }
       )
     } else if (bookingData.stripePaymentId) {
       const refundResult = await safeRefund({
-        paymentIntentId: bookingData.stripePaymentId
+        paymentIntentId: bookingData.stripePaymentId,
+        amountCents: refundAmount
       })
 
       if (!refundResult.success && !refundResult.alreadyRefunded) {
@@ -202,7 +205,8 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
           courtName: courtData.name,
           date: formatDateFr(bookingData.startAt),
           startTime: formatTimeFr(bookingData.startAt),
-          price: formatCentsToEuros(bookingData.price),
+          refundAmount: formatCentsToEuros(refundAmount),
+          isFullRefund,
           baseUrl: serverEnv.VITE_SITE_URL
         })
       })

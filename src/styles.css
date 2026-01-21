@@ -178,6 +178,10 @@
   p {
     text-wrap: balance;
   }
+  [data-slot='dialog-content'] p,
+  [data-slot='alert-dialog-content'] p {
+    text-wrap: wrap;
+  }
 }
 
 @utility scrollbar-hide {

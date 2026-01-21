@@ -115,11 +115,11 @@ const CgvPage = () => {
               <ul className="ml-6 list-disc space-y-2">
                 <li>
                   Annulation plus de 24 heures avant le créneau : remboursement
-                  intégral
+                  intégral (100%)
                 </li>
                 <li>
-                  Annulation moins de 24 heures avant le créneau : aucun
-                  remboursement
+                  Annulation moins de 24 heures avant le créneau : remboursement
+                  partiel (50%)
                 </li>
                 <li>En cas de non-présentation : aucun remboursement</li>
               </ul>
@@ -256,12 +256,10 @@ const CgvPage = () => {
 export const Route = createFileRoute('/_public__root/cgv/')({
   component: CgvPage,
   head: () => {
-    return {
-      ...seo({
-        title: 'Conditions Générales de Vente',
-        description: `Conditions Générales de Vente de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.`,
-        pathname: '/cgv'
-      })
-    }
+    return seo({
+      title: 'Conditions Générales de Vente',
+      description: `Conditions Générales de Vente de ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Tarifs, réservation, annulation et règles d'utilisation des courts de padel.`,
+      pathname: '/cgv'
+    })
   }
 })
