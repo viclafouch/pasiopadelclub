@@ -83,3 +83,19 @@ export const strongPasswordSchema = z
   .regex(/[a-z]/, 'Doit contenir au moins une lettre minuscule')
   .regex(/[A-Z]/, 'Doit contenir au moins une lettre majuscule')
   .regex(/[0-9]/, 'Doit contenir au moins un chiffre')
+
+export const changePasswordFormSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Le mot de passe actuel est requis'),
+    newPassword: strongPasswordSchema,
+    confirmPassword: z.string().min(1, 'Confirmez le nouveau mot de passe')
+  })
+  .refine(
+    (data) => {
+      return data.newPassword === data.confirmPassword
+    },
+    {
+      message: 'Les mots de passe ne correspondent pas',
+      path: ['confirmPassword']
+    }
+  )

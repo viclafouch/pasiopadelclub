@@ -13,20 +13,19 @@ const AUTH_ERRORS_FR = {
   INVALID_EMAIL_OR_PASSWORD: 'Email ou mot de passe invalide',
   SOCIAL_ACCOUNT_ALREADY_LINKED: 'Ce compte social est déjà lié',
   PROVIDER_NOT_FOUND: 'Fournisseur introuvable',
-  INVALID_TOKEN: 'Token invalide',
+  INVALID_TOKEN: 'Lien expiré ou invalide',
   ID_TOKEN_NOT_SUPPORTED: 'Token non supporté',
   FAILED_TO_GET_USER_INFO: 'Impossible de récupérer les informations',
   USER_EMAIL_NOT_FOUND: 'Email introuvable',
-  EMAIL_NOT_VERIFIED: 'Veuillez vérifier votre email',
-  PASSWORD_TOO_SHORT: 'Mot de passe trop court',
+  EMAIL_NOT_VERIFIED: 'Veuillez vérifier votre email avant de vous connecter',
+  PASSWORD_TOO_SHORT: 'Mot de passe trop court (8 caractères minimum)',
   PASSWORD_TOO_LONG: 'Mot de passe trop long',
   USER_ALREADY_EXISTS: 'Cette adresse email est déjà utilisée',
   EMAIL_CAN_NOT_BE_UPDATED: "L'email ne peut pas être modifié",
   CREDENTIAL_ACCOUNT_NOT_FOUND: 'Compte introuvable',
   SESSION_EXPIRED: 'Session expirée, veuillez vous reconnecter',
   FAILED_TO_UNLINK_LAST_ACCOUNT: 'Impossible de dissocier votre dernier compte',
-  ACCOUNT_NOT_FOUND: 'Compte introuvable',
-  CROSS_SITE_NAVIGATION_LOGIN_BLOCKED: 'Requête bloquée pour raison de sécurité'
+  ACCOUNT_NOT_FOUND: 'Compte introuvable'
 } as const satisfies Partial<Record<AuthErrorCode, string>>
 
 export function getAuthErrorMessage(code: string) {
@@ -42,4 +41,22 @@ export function getAuthErrorMessage(code: string) {
   }
 
   return 'Une erreur est survenue'
+}
+
+const CHANGE_PASSWORD_ERRORS_FR = {
+  INVALID_PASSWORD: 'Le mot de passe actuel est incorrect',
+  PASSWORD_TOO_SHORT:
+    'Le nouveau mot de passe est trop court (8 caractères minimum)',
+  PASSWORD_TOO_LONG: 'Le nouveau mot de passe est trop long'
+} as const satisfies Partial<Record<AuthErrorCode, string>>
+
+export function getChangePasswordErrorMessage(code: string) {
+  const contextMessage =
+    CHANGE_PASSWORD_ERRORS_FR[code as keyof typeof CHANGE_PASSWORD_ERRORS_FR]
+
+  if (contextMessage) {
+    return contextMessage
+  }
+
+  return getAuthErrorMessage(code)
 }

@@ -4,9 +4,12 @@ import { AnimatedNotification } from '@/components/animated-notification'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { CurrentUser } from '@/server/auth'
+import { ChangePasswordSection } from './change-password-section'
 import { DataExportSection } from './data-export-section'
 import { DeleteAccountSection } from './delete-account-section'
 import { EditProfileModal } from './edit-profile-modal'
+
+const SUCCESS_NOTIFICATION_DURATION_MS = 3000
 
 export const ProfileTabSkeleton = () => {
   return (
@@ -37,6 +40,13 @@ export const ProfileTabSkeleton = () => {
       </div>
       <div className="flex items-center justify-between gap-4 rounded-lg border p-6">
         <div className="space-y-1">
+          <Skeleton className="h-5 w-28" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <Skeleton className="h-9 w-24" />
+      </div>
+      <div className="flex items-center justify-between gap-4 rounded-lg border p-6">
+        <div className="space-y-1">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-72" />
         </div>
@@ -64,8 +74,8 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
   const handleEditSuccess = () => {
     setShowSuccess(true)
     setTimeout(() => {
-      return setShowSuccess(false)
-    }, 3000)
+      setShowSuccess(false)
+    }, SUCCESS_NOTIFICATION_DURATION_MS)
   }
 
   return (
@@ -122,6 +132,7 @@ export const ProfileTab = ({ user }: ProfileTabProps) => {
             </div>
           </div>
         </div>
+        <ChangePasswordSection />
         <DataExportSection />
         <DeleteAccountSection />
       </div>

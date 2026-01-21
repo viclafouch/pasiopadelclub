@@ -380,6 +380,9 @@ Système de prépaiement par crédits avec bonus et expiration.
 - [x] Lien "Mot de passe oublié ?" sur page `/connexion`
 - [x] Template email dédié reset password (ResetPasswordEmail)
 
+### Compte utilisateur
+- [x] Modification du mot de passe (depuis onglet Profil)
+
 ### RGPD critique (pré-lancement)
 - [ ] Checkbox consentement explicite à l'inscription (CNIL obligatoire)
 - [ ] Mention collecte IP/UserAgent dans politique de confidentialité
