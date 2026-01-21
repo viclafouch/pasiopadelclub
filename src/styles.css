@@ -179,7 +179,9 @@
     text-wrap: balance;
   }
   [data-slot='dialog-content'] p,
-  [data-slot='alert-dialog-content'] p {
+  [data-slot='alert-dialog-content'] p,
+  form p,
+  label p {
     text-wrap: wrap;
   }
 }

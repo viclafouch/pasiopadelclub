@@ -9,7 +9,6 @@ import { getAuthUserQueryOpts } from '@/constants/queries'
 import { strongPasswordSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { getErrorMessage } from '@/helpers/error'
-import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -59,7 +58,6 @@ const InscriptionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      broadcastAuthEvent('login')
       await router.invalidate()
       navigate({ to: '/' })
     }
@@ -125,7 +123,7 @@ const InscriptionPage = () => {
         }}
         className="space-y-5"
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 xs:grid-cols-2">
           <form.Field name="firstName">
             {(field) => {
               return (
@@ -187,6 +185,7 @@ const InscriptionPage = () => {
                 <div className="flex items-start gap-3">
                   <Checkbox
                     id="accept-terms"
+                    className="mt-0.5"
                     checked={field.state.value}
                     onCheckedChange={(checked) => {
                       field.handleChange(checked === true)
@@ -198,7 +197,7 @@ const InscriptionPage = () => {
                   />
                   <Label
                     htmlFor="accept-terms"
-                    className="text-sm leading-relaxed text-muted-foreground"
+                    className="block text-sm leading-relaxed font-normal text-muted-foreground"
                   >
                     J&apos;ai lu et j&apos;accepte les{' '}
                     <Link

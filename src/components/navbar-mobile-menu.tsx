@@ -26,7 +26,6 @@ import {
 } from '@/constants/queries'
 import type { User } from '@/constants/types'
 import { formatCentsToEuros } from '@/helpers/number'
-import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -152,7 +151,6 @@ export const NavbarMobileMenu = ({
     await authClient.signOut()
     queryClient.removeQueries(getAuthUserQueryOpts())
     queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
-    broadcastAuthEvent('logout')
     onOpenChange(false)
     await router.invalidate()
   }
