@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_public__root/')({
     return {
       ...seo({
         title: `Réservation de courts de padel à ${CLUB_INFO.address.city}`,
-        description: `${CLUB_INFO.name} à ${CLUB_INFO.address.city} : réservez vos courts de padel en ligne. 7 terrains disponibles 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}. Location de raquettes et cours particuliers.`,
+        description: `${CLUB_INFO.name} à ${CLUB_INFO.address.city} : réservez vos courts de padel en ligne. 7 terrains disponibles 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`,
         keywords:
           'padel bayonne, réserver padel pays basque, club padel 64, terrain padel bayonne, padel anglet, padel biarritz',
         pathname: '/'

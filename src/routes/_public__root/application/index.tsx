@@ -125,6 +125,8 @@ export const Route = createFileRoute('/_public__root/application/')({
         title: 'Application mobile',
         description:
           "Téléchargez l'application Pasio Padel Club pour réserver vos terrains de padel en quelques secondes. Disponible sur iOS et Android.",
+        keywords:
+          'application padel, app réservation padel, télécharger pasio padel, padel app ios android',
         pathname: '/application'
       })
     }

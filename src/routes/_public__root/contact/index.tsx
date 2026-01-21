@@ -333,6 +333,8 @@ export const Route = createFileRoute('/_public__root/contact/')({
       ...seo({
         title: 'Contact',
         description: `Contactez ${CLUB_INFO.name} à ${CLUB_INFO.address.city}. Adresse : ${CLUB_INFO.address.full}. Téléphone : ${CLUB_INFO.phone.display}. Ouvert 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`,
+        keywords:
+          'contact padel bayonne, téléphone club padel, adresse pasio padel, horaires padel bayonne',
         pathname: '/contact'
       })
     }
