@@ -11,74 +11,74 @@ type GalleryImage = {
   category: string
 }
 
-const galleryImages: GalleryImage[] = [
+const GALLERY_IMAGES = [
   {
     id: 1,
-    src: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
+    src: '/images/gallery/gallery-01.webp',
     alt: 'Court de padel 1',
     category: 'Courts'
   },
   {
     id: 2,
-    src: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&q=80',
+    src: '/images/gallery/gallery-02.webp',
     alt: 'Joueurs de padel',
     category: 'Matchs'
   },
   {
     id: 3,
-    src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    src: '/images/gallery/gallery-03.webp',
     alt: 'Équipement de padel',
     category: 'Équipement'
   },
   {
     id: 4,
-    src: 'https://images.unsplash.com/photo-1599586120429-48281b6f0ece?w=800&q=80',
+    src: '/images/gallery/gallery-04.webp',
     alt: 'Court intérieur',
     category: 'Courts'
   },
   {
     id: 5,
-    src: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800&q=80',
+    src: '/images/gallery/gallery-05.webp',
     alt: 'Tournoi de padel',
     category: 'Événements'
   },
   {
     id: 6,
-    src: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+    src: '/images/gallery/gallery-06.webp',
     alt: 'Espace détente',
     category: 'Club'
   },
   {
     id: 7,
-    src: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
+    src: '/images/gallery/gallery-07.webp',
     alt: 'Match en double',
     category: 'Matchs'
   },
   {
     id: 8,
-    src: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
+    src: '/images/gallery/gallery-08.webp',
     alt: 'Cours collectif',
     category: 'Cours'
   },
   {
     id: 9,
-    src: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=80',
+    src: '/images/gallery/gallery-09.webp',
     alt: 'Vue du club',
     category: 'Club'
   }
-]
+] as const satisfies readonly GalleryImage[]
 
 const categories = [
   'Tous',
   ...new Set(
-    galleryImages.map((img) => {
+    GALLERY_IMAGES.map((img) => {
       return img.category
     })
   )
 ]
 
 type LightboxProps = {
-  images: GalleryImage[]
+  images: readonly GalleryImage[]
   currentIndex: number
   onClose: () => void
   onPrevious: () => void
@@ -174,8 +174,8 @@ const GaleriePage = () => {
 
   const filteredImages =
     selectedCategory === 'Tous'
-      ? galleryImages
-      : galleryImages.filter((img) => {
+      ? GALLERY_IMAGES
+      : GALLERY_IMAGES.filter((img) => {
           return img.category === selectedCategory
         })
 
@@ -261,6 +261,7 @@ const GaleriePage = () => {
                       alt={image.alt}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     <div className="absolute bottom-0 left-0 right-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0">

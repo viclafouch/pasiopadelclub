@@ -55,42 +55,18 @@ type CourtType = 'doubles' | 'simples' | 'kids'
 
 const AVATARS = {
   doubles: [
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Marie&baseColor=f9c9b6&backgroundColor=ffdfbf&mouth=smile',
-      fallback: 'MA'
-    },
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Jean&baseColor=ac6651&backgroundColor=c0aede&mouth=smile',
-      fallback: 'JE'
-    },
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Sophie&baseColor=f9c9b6&backgroundColor=ffd5dc&mouth=smile',
-      fallback: 'SO'
-    },
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Marc&baseColor=ac6651&backgroundColor=d1f4d9&mouth=smile',
-      fallback: 'MR'
-    }
+    { url: '/images/avatars/marie.svg', fallback: 'MA' },
+    { url: '/images/avatars/jean.svg', fallback: 'JE' },
+    { url: '/images/avatars/sophie.svg', fallback: 'SO' },
+    { url: '/images/avatars/marc.svg', fallback: 'MR' }
   ],
   simples: [
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Camille&baseColor=f9c9b6&backgroundColor=ffd5dc&mouth=smile',
-      fallback: 'CA'
-    },
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Lucas&baseColor=ac6651&backgroundColor=c0aede&mouth=smile',
-      fallback: 'LU'
-    }
+    { url: '/images/avatars/camille.svg', fallback: 'CA' },
+    { url: '/images/avatars/lucas.svg', fallback: 'LU' }
   ],
   kids: [
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Emma&baseColor=f9c9b6&backgroundColor=ffeaa7&mouth=laughing',
-      fallback: 'EM'
-    },
-    {
-      url: 'https://api.dicebear.com/9.x/micah/svg?seed=Hugo&baseColor=f9c9b6&backgroundColor=a8e6cf&mouth=laughing',
-      fallback: 'HU'
-    }
+    { url: '/images/avatars/emma.svg', fallback: 'EM' },
+    { url: '/images/avatars/hugo.svg', fallback: 'HU' }
   ]
 } as const satisfies Record<CourtType, readonly AvatarData[]>
 

@@ -29,6 +29,7 @@ export const AuthPageLayout = ({ children }: AuthPageLayoutProps) => {
           src={AUTH_BACKGROUND_IMAGE}
           alt=""
           aria-hidden="true"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/70 to-primary/30" />

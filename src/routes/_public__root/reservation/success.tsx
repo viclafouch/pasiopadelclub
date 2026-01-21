@@ -307,6 +307,8 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
               alt=""
               className="h-full w-full object-cover"
               aria-hidden="true"
+              loading="lazy"
+              decoding="async"
             />
           </picture>
         </div>

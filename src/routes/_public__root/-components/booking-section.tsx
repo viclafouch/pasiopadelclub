@@ -60,8 +60,8 @@ export const BookingSection = () => {
                 muted
                 loop
                 playsInline
-                src="https://videocdn.cdnpk.net/videos/39e599e1-06f4-5f4c-8f26-2808a8b568aa/horizontal/previews/watermarked/large.mp4"
-                poster="https://images.pexels.com/videos/992695/pexels-video-992695.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                src="/images/video/booking-video.mp4"
+                poster="/images/video/video-poster.webp"
               >
                 Votre navigateur ne supporte pas la lecture vidéo.
               </video>

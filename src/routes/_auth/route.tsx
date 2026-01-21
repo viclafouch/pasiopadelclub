@@ -22,6 +22,7 @@ export const Route = createFileRoute('/_auth')({
           rel: 'preload',
           href: AUTH_BACKGROUND_IMAGE,
           as: 'image',
+          type: 'image/webp',
           fetchPriority: 'high'
         }
       ]

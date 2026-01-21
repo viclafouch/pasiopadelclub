@@ -77,6 +77,8 @@ const Footer = () => {
                 src="/logo.webp"
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="size-12"
               />
             </Link>

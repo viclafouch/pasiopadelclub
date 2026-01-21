@@ -1,4 +1,3 @@
-import { APP_DOWNLOAD_URL } from '@/constants/app'
 import { cn } from '@/lib/utils'
 
 type QRCodeSize = 'small' | 'default' | 'large'
@@ -9,18 +8,18 @@ type QRCodeProps = {
 }
 
 type QRSizeConfig = {
-  pixel: number
+  src: string
   container: string
 }
 
 const QR_SIZES = {
-  small: { pixel: 100, container: 'size-24' },
-  default: { pixel: 150, container: 'size-36' },
-  large: { pixel: 200, container: 'size-48' }
+  small: { src: '/images/qr/qr-100.svg', container: 'size-24' },
+  default: { src: '/images/qr/qr-150.svg', container: 'size-36' },
+  large: { src: '/images/qr/qr-200.svg', container: 'size-48' }
 } as const satisfies Record<QRCodeSize, QRSizeConfig>
 
 export const QRCode = ({ size = 'default', className }: QRCodeProps) => {
-  const { pixel, container } = QR_SIZES[size]
+  const { src, container } = QR_SIZES[size]
 
   return (
     <div
@@ -31,7 +30,7 @@ export const QRCode = ({ size = 'default', className }: QRCodeProps) => {
       )}
     >
       <img
-        src={`https://api.qrserver.com/v1/create-qr-code/?size=${pixel}x${pixel}&data=${encodeURIComponent(APP_DOWNLOAD_URL)}&format=svg`}
+        src={src}
         alt="QR Code pour télécharger l'application"
         className="size-full"
         loading="lazy"

@@ -19,47 +19,41 @@ type PlaceholderStory = {
 const PLACEHOLDER_STORIES = [
   {
     id: 1,
-    image:
-      'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=400&h=600&fit=crop',
+    image: '/images/stories/story-01.webp',
     author: 'Lucas M.',
     avatar: ''
   },
   {
     id: 2,
-    image:
-      'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=400&h=600&fit=crop',
+    image: '/images/stories/story-02.webp',
     author: 'Sophie D.',
     avatar: ''
   },
   {
     id: 3,
-    image:
-      'https://images.unsplash.com/photo-1599474924187-334a4ae5bd3c?w=400&h=600&fit=crop',
+    image: '/images/stories/story-03.webp',
     author: 'Thomas R.',
     avatar: ''
   },
   {
     id: 4,
-    image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=600&fit=crop',
+    image: '/images/stories/story-04.webp',
     author: 'Marie L.',
     avatar: ''
   },
   {
     id: 5,
-    image:
-      'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400&h=600&fit=crop',
+    image: '/images/stories/story-05.webp',
     author: 'Antoine B.',
     avatar: ''
   },
   {
     id: 6,
-    image:
-      'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=400&h=600&fit=crop',
+    image: '/images/stories/story-06.webp',
     author: 'Camille P.',
     avatar: ''
   }
-] as const satisfies PlaceholderStory[]
+] as const satisfies readonly PlaceholderStory[]
 
 export const StoriesSection = () => {
   return (

@@ -17,7 +17,35 @@ const config = defineConfig({
     }),
     tailwindcss(),
     tanstackStart(),
-    nitro(),
+    nitro({
+      routeRules: {
+        '/images/**': {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        },
+        '/fonts/**': {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        },
+        '/*.webp': {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        },
+        '/*.png': {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        },
+        '/*.ico': {
+          headers: {
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        }
+      }
+    }),
     viteReact()
   ]
 })
