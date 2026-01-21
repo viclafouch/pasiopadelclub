@@ -75,3 +75,11 @@ export const contactFormSchema = z.object({
   subject: z.string().min(3).max(200),
   message: z.string().min(10).max(5000)
 })
+
+export const strongPasswordSchema = z
+  .string()
+  .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+  .max(100, 'Le mot de passe est trop long')
+  .regex(/[a-z]/, 'Doit contenir au moins une lettre minuscule')
+  .regex(/[A-Z]/, 'Doit contenir au moins une lettre majuscule')
+  .regex(/[0-9]/, 'Doit contenir au moins un chiffre')

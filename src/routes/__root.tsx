@@ -6,6 +6,7 @@ import {
   getAuthUserQueryOpts,
   getCreditPacksQueryOpts
 } from '@/constants/queries'
+import { useAuthSync } from '@/hooks/use-auth-sync'
 import type { CurrentUser } from '@/server/auth'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
@@ -48,6 +49,8 @@ const NotFoundComponent = () => {
 }
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
+  useAuthSync()
+
   return (
     <html lang="fr" data-os="other" suppressHydrationWarning>
       <head>

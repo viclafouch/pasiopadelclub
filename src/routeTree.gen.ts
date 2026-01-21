@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
+import { Route as AuthReinitialiserMotDePasseRouteImport } from './routes/_auth/reinitialiser-mot-de-passe'
+import { Route as AuthMotDePasseOublieRouteImport } from './routes/_auth/mot-de-passe-oublie'
 import { Route as AuthInscriptionRouteImport } from './routes/_auth/inscription'
 import { Route as AuthConnexionRouteImport } from './routes/_auth/connexion'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
@@ -52,6 +54,17 @@ const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => Public__rootRouteRoute,
+} as any)
+const AuthReinitialiserMotDePasseRoute =
+  AuthReinitialiserMotDePasseRouteImport.update({
+    id: '/reinitialiser-mot-de-passe',
+    path: '/reinitialiser-mot-de-passe',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
+const AuthMotDePasseOublieRoute = AuthMotDePasseOublieRouteImport.update({
+  id: '/mot-de-passe-oublie',
+  path: '/mot-de-passe-oublie',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthInscriptionRoute = AuthInscriptionRouteImport.update({
   id: '/inscription',
@@ -153,6 +166,8 @@ export interface FileRoutesByFullPath {
   '/': typeof Public__rootIndexRoute
   '/connexion': typeof AuthConnexionRoute
   '/inscription': typeof AuthInscriptionRoute
+  '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -173,6 +188,8 @@ export interface FileRoutesByTo {
   '/': typeof Public__rootIndexRoute
   '/connexion': typeof AuthConnexionRoute
   '/inscription': typeof AuthInscriptionRoute
+  '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
   '/reservation/echec': typeof Public__rootReservationEchecRoute
   '/reservation/success': typeof Public__rootReservationSuccessRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -197,6 +214,8 @@ export interface FileRoutesById {
   '/_public__root': typeof Public__rootRouteRouteWithChildren
   '/_auth/connexion': typeof AuthConnexionRoute
   '/_auth/inscription': typeof AuthInscriptionRoute
+  '/_auth/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
+  '/_auth/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
   '/_public__root/': typeof Public__rootIndexRoute
   '/_public__root/reservation/echec': typeof Public__rootReservationEchecRoute
   '/_public__root/reservation/success': typeof Public__rootReservationSuccessRoute
@@ -220,6 +239,8 @@ export interface FileRouteTypes {
     | '/'
     | '/connexion'
     | '/inscription'
+    | '/mot-de-passe-oublie'
+    | '/reinitialiser-mot-de-passe'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
@@ -240,6 +261,8 @@ export interface FileRouteTypes {
     | '/'
     | '/connexion'
     | '/inscription'
+    | '/mot-de-passe-oublie'
+    | '/reinitialiser-mot-de-passe'
     | '/reservation/echec'
     | '/reservation/success'
     | '/api/auth/$'
@@ -263,6 +286,8 @@ export interface FileRouteTypes {
     | '/_public__root'
     | '/_auth/connexion'
     | '/_auth/inscription'
+    | '/_auth/mot-de-passe-oublie'
+    | '/_auth/reinitialiser-mot-de-passe'
     | '/_public__root/'
     | '/_public__root/reservation/echec'
     | '/_public__root/reservation/success'
@@ -326,6 +351,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
+    }
+    '/_auth/reinitialiser-mot-de-passe': {
+      id: '/_auth/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof AuthReinitialiserMotDePasseRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/mot-de-passe-oublie': {
+      id: '/_auth/mot-de-passe-oublie'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof AuthMotDePasseOublieRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_auth/inscription': {
       id: '/_auth/inscription'
@@ -464,11 +503,15 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 interface AuthRouteRouteChildren {
   AuthConnexionRoute: typeof AuthConnexionRoute
   AuthInscriptionRoute: typeof AuthInscriptionRoute
+  AuthMotDePasseOublieRoute: typeof AuthMotDePasseOublieRoute
+  AuthReinitialiserMotDePasseRoute: typeof AuthReinitialiserMotDePasseRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthConnexionRoute: AuthConnexionRoute,
   AuthInscriptionRoute: AuthInscriptionRoute,
+  AuthMotDePasseOublieRoute: AuthMotDePasseOublieRoute,
+  AuthReinitialiserMotDePasseRoute: AuthReinitialiserMotDePasseRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

@@ -5,6 +5,7 @@ import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
+import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -48,6 +49,7 @@ const ConnexionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
+      broadcastAuthEvent('login')
       await router.invalidate()
       navigate({ to: safeRedirect })
     }
@@ -117,6 +119,14 @@ const ConnexionPage = () => {
             )
           }}
         </form.Field>
+        <div className="flex justify-end">
+          <Link
+            to="/mot-de-passe-oublie"
+            className="text-sm text-muted-foreground transition-colors hover:text-primary"
+          >
+            Mot de passe oublié ?
+          </Link>
+        </div>
         {signInMutation.error ? (
           <Alert variant="destructive">
             <AlertCircle className="size-4" aria-hidden="true" />

@@ -1,10 +1,17 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
-import { VerificationEmail, WelcomeEmail } from '@/emails'
+import {
+  PasswordChangedEmail,
+  ResetPasswordEmail,
+  VerificationEmail,
+  WelcomeEmail
+} from '@/emails'
 import { serverEnv } from '@/env/server'
+import { formatDateTimeLongFr } from '@/helpers/date'
 import { extractFirstName } from '@/helpers/string'
 import {
   matchWasEmailVerified,
@@ -20,6 +27,29 @@ export const auth = betterAuth({
     provider: 'pg',
     schema
   }),
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 100,
+    customRules: {
+      '/sign-in/email': {
+        window: 900,
+        max: 5
+      },
+      '/sign-up/email': {
+        window: 3600,
+        max: 3
+      },
+      '/forget-password': {
+        window: 3600,
+        max: 3
+      },
+      '/reset-password': {
+        window: 900,
+        max: 5
+      }
+    }
+  },
   advanced: {
     database: {
       generateId: 'uuid'
@@ -80,9 +110,25 @@ export const auth = betterAuth({
           from: EMAIL_FROM,
           to: getEmailRecipient(user.email),
           subject: 'Réinitialisez votre mot de passe - Pasio Padel Club',
-          react: VerificationEmail({
+          react: ResetPasswordEmail({
             firstName: extractFirstName(user.name),
-            verificationUrl: url
+            resetUrl: url
+          })
+        })
+        // eslint-disable-next-line no-console
+        .catch(console.error)
+    },
+    onPasswordReset: async ({ user }) => {
+      await db.delete(schema.session).where(eq(schema.session.userId, user.id))
+
+      resend.emails
+        .send({
+          from: EMAIL_FROM,
+          to: getEmailRecipient(user.email),
+          subject: 'Votre mot de passe a été modifié - Pasio Padel Club',
+          react: PasswordChangedEmail({
+            firstName: extractFirstName(user.name),
+            changeDate: formatDateTimeLongFr(new Date())
           })
         })
         // eslint-disable-next-line no-console

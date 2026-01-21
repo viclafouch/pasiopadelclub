@@ -6,6 +6,10 @@ import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 
+const IMMUTABLE_CACHE = {
+  'Cache-Control': 'public, max-age=31536000, immutable'
+}
+
 const config = defineConfig({
   server: {
     allowedHosts: true
@@ -19,31 +23,20 @@ const config = defineConfig({
     tanstackStart(),
     nitro({
       routeRules: {
-        '/images/**': {
+        '/**': {
           headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable'
+            'Strict-Transport-Security':
+              'max-age=31536000; includeSubDomains; preload',
+            'X-Frame-Options': 'DENY',
+            'X-Content-Type-Options': 'nosniff',
+            'Referrer-Policy': 'strict-origin-when-cross-origin'
           }
         },
-        '/fonts/**': {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable'
-          }
-        },
-        '/*.webp': {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable'
-          }
-        },
-        '/*.png': {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable'
-          }
-        },
-        '/*.ico': {
-          headers: {
-            'Cache-Control': 'public, max-age=31536000, immutable'
-          }
-        }
+        '/images/**': { headers: IMMUTABLE_CACHE },
+        '/fonts/**': { headers: IMMUTABLE_CACHE },
+        '/*.webp': { headers: IMMUTABLE_CACHE },
+        '/*.png': { headers: IMMUTABLE_CACHE },
+        '/*.ico': { headers: IMMUTABLE_CACHE }
       }
     }),
     viteReact()

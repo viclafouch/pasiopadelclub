@@ -1,3 +1,9 @@
+export function sanitizeForHtml(input: string) {
+  return input.replace(/[<>&"']/g, '')
+}
+
 export function extractFirstName(fullName: string, fallback = 'Client') {
-  return fullName.split(' ')[0] ?? fallback
+  const firstName = fullName.split(' ')[0] ?? fallback
+
+  return sanitizeForHtml(firstName)
 }

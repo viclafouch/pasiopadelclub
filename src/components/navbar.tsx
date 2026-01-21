@@ -29,6 +29,7 @@ import {
 } from '@/constants/queries'
 import type { User } from '@/constants/types'
 import { formatCentsToEuros } from '@/helpers/number'
+import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { useScrollFade } from '@/hooks/use-scroll-fade'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
@@ -71,6 +72,7 @@ export const Navbar = () => {
     await authClient.signOut()
     queryClient.removeQueries(getAuthUserQueryOpts())
     queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
+    broadcastAuthEvent('logout')
     await router.invalidate()
   }
 
@@ -234,7 +236,9 @@ export const Navbar = () => {
             <HamburgerButton
               isOpen={isMobileMenuOpen}
               onClick={() => {
-                return setIsMobileMenuOpen(!isMobileMenuOpen)
+                setIsMobileMenuOpen((prev) => {
+                  return !prev
+                })
               }}
             />
           </div>

@@ -203,6 +203,11 @@ Avant d'utiliser une librairie externe, TOUJOURS consulter Context7 :
 3. Lancer `npm run lint:fix`
 4. Mettre à jour le plan `[x]` si nécessaire
 
+**Règle plan.md :**
+- Le plan contient **uniquement la roadmap features** (fonctionnalités à développer)
+- **JAMAIS d'audits** (sécurité, performance, accessibilité) dans le plan
+- Les audits sont des snapshots ponctuels, pas une roadmap → les résultats restent dans le contexte de la conversation
+
 ---
 
 ## Commands

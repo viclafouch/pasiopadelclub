@@ -4,7 +4,9 @@ import { FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getAuthUserQueryOpts } from '@/constants/queries'
+import { strongPasswordSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
+import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
@@ -20,7 +22,7 @@ const signUpSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
   email: z.email(),
-  password: z.string().min(8)
+  password: strongPasswordSchema
 })
 
 const BENEFITS = [
@@ -51,6 +53,7 @@ const InscriptionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
+      broadcastAuthEvent('login')
       await router.invalidate()
       navigate({ to: '/' })
     }
@@ -161,7 +164,7 @@ const InscriptionPage = () => {
                 field={field}
                 label="Mot de passe"
                 type="password"
-                placeholder="8 caractères minimum"
+                placeholder="Min 8 car., 1 majuscule, 1 chiffre"
                 autoComplete="new-password"
               />
             )

@@ -12,6 +12,7 @@ paths: "**/*.{ts,tsx}"
   - Expensive computations that are measurably slow (profile first)
   - Dependencies in `useEffect` that would cause infinite loops without memoization
 - **Conditional rendering in parent** - never render a component that returns null internally; check condition in parent instead
+- **Use functional updates for state derived from previous state** - `setState(prev => !prev)` instead of `setState(!state)`. This avoids bugs with React's batching.
 
 ### Libraries
 - ALWAYS use shadcn components instead of raw HTML elements, `<Input>` instead of `<input>`,`<Textarea>` instead of `<textarea>`, etc.

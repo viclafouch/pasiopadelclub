@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { getErrorMessage } from '@/helpers/error'
+import { broadcastAuthEvent } from '@/hooks/use-auth-sync'
 import { authClient } from '@/lib/auth-client'
 import { anonymizeAccountFn } from '@/server/users'
 import { useMutation } from '@tanstack/react-query'
@@ -31,6 +32,7 @@ export const DeleteAccountSection = () => {
     onSuccess: async () => {
       setShowSuccess(true)
       await authClient.signOut()
+      broadcastAuthEvent('logout')
       setTimeout(() => {
         navigate({ to: '/' })
       }, REDIRECT_DELAY_MS)

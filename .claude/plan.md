@@ -375,10 +375,10 @@ Système de prépaiement par crédits avec bonus et expiration.
 ## Milestone 8.6 : Auth complet + RGPD critique
 
 ### Pages auth manquantes
-- [ ] Page `/mot-de-passe-oublie` (formulaire demande de reset)
-- [ ] Page `/reinitialiser-mot-de-passe` (définir nouveau mot de passe avec token)
-- [ ] Lien "Mot de passe oublié ?" sur page `/connexion`
-- [ ] Template email dédié reset password (actuellement utilise VerificationEmail)
+- [x] Page `/mot-de-passe-oublie` (formulaire demande de reset)
+- [x] Page `/reinitialiser-mot-de-passe` (définir nouveau mot de passe avec token)
+- [x] Lien "Mot de passe oublié ?" sur page `/connexion`
+- [x] Template email dédié reset password (ResetPasswordEmail)
 
 ### RGPD critique (pré-lancement)
 - [ ] Checkbox consentement explicite à l'inscription (CNIL obligatoire)
@@ -420,51 +420,3 @@ Système de prépaiement par crédits avec bonus et expiration.
 - **M16** : Section partenaires/sponsors (peut être intégrée à M14)
   - Logos : balle de match, CA Pyrénées Gascogne, NOTED, GOAN, MOWI
 
----
-
-## Sécurité - Audit Janvier 2026
-
-### Issues corrigées ✅
-
-| Issue | Fichiers | Statut |
-|-------|----------|--------|
-| Limite 2 réservations non vérifiée server-side | `payment-intent.ts`, `credit-payment.ts` | ✅ Corrigé |
-| Limite 10 jours non vérifiée server-side | `payment-intent.ts`, `credit-payment.ts` | ✅ Corrigé |
-
-### Issues connues (non critiques en pratique)
-
-#### Race condition sur les créneaux (différée)
-
-**Situation** : Deux utilisateurs peuvent théoriquement créer un PaymentIntent pour le même créneau simultanément. Le second sera remboursé automatiquement par le webhook.
-
-**Pourquoi différée** :
-- Avec ~20 utilisateurs, la probabilité que deux paient le même créneau à la même seconde est quasi nulle
-- Le système actuel gère ce cas via auto-refund dans le webhook
-- Impact = mauvaise UX pour le second user + frais Stripe refund
-
-**Solution si problème avéré** :
-1. Créer une réservation `status='pending'` AVANT le PaymentIntent
-2. Le webhook passe à `status='confirmed'`
-3. Cron nettoie les pending > 15 min
-
-**Fichiers à modifier** : `payment-intent.ts`, `webhooks/stripe.ts`, nouveau cron
-
-**À surveiller** : Logs webhook pour détecter des refunds "duplicate slot"
-
----
-
-### Améliorations recommandées (basse priorité)
-
-- [ ] Rate limiting sur endpoints paiement (5 req/min/user)
-- [ ] Security headers (CSP, HSTS, X-Frame-Options)
-- [ ] IP allowlist webhook Stripe
-- [ ] Alerting email admin sur refund échoué
-
----
-
-## Améliorations Better Auth (non-critique)
-
-- [ ] Ajouter `rateLimit` config (protection brute force)
-- [ ] Configurer `trustedOrigins` pour production
-- [ ] Configurer `ipAddressHeaders` (Railway proxy)
-- [ ] Centraliser types additionalFields via `auth.$Infer`
