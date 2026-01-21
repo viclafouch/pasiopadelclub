@@ -1,3 +1,4 @@
+import { CLUB_INFO } from '@/constants/app'
 import { Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -28,8 +29,8 @@ export const PasswordChangedEmail = ({
         </Text>
         <Text className="mt-2 text-sm leading-6 text-red-300">
           Si vous n&apos;êtes pas à l&apos;origine de cette modification, votre
-          compte a peut-être été compromis. Contactez-nous immédiatement à
-          pasio.padel.club@gmail.com ou au 05.59.42.81.33.
+          compte a peut-être été compromis. Contactez-nous immédiatement à{' '}
+          {CLUB_INFO.email} ou au {CLUB_INFO.phone.display}.
         </Text>
       </Section>
     </EmailLayout>

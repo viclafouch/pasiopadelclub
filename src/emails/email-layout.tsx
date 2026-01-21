@@ -1,4 +1,4 @@
-import { SITE_URL } from '@/constants/app'
+import { CLUB_INFO, SITE_URL } from '@/constants/app'
 import {
   Body,
   Container,
@@ -53,13 +53,28 @@ export const EmailLayout = ({
             <Section className="px-8 py-10">{children}</Section>
             <Section className="border-t border-slate-700 px-8 py-6">
               <Text className="m-0 text-center text-xs leading-5 text-slate-400">
-                Pasio Padel Club
+                {CLUB_INFO.name}
                 <br />
-                24 rue Arnaud Detroyat, 64100 Bayonne
+                {CLUB_INFO.address.full}
               </Text>
-              <Text className="m-0 mt-3 text-center text-xs text-slate-500">
+              <Text className="m-0 mt-2 text-center text-xs text-slate-500">
+                <Link
+                  href={CLUB_INFO.phone.href}
+                  className="text-slate-400 no-underline"
+                >
+                  {CLUB_INFO.phone.display}
+                </Link>
+                {' • '}
+                <Link
+                  href={`mailto:${CLUB_INFO.email}`}
+                  className="text-slate-400 no-underline"
+                >
+                  {CLUB_INFO.email}
+                </Link>
+              </Text>
+              <Text className="m-0 mt-2 text-center text-xs text-slate-500">
                 <Link href={baseUrl} className="text-brand-light underline">
-                  pasiopadelclub.fr
+                  {baseUrl.replace('https://', '')}
                 </Link>
               </Text>
             </Section>
