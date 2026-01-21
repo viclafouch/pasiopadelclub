@@ -284,7 +284,7 @@ const Highlight = <T extends React.ElementType = 'div'>({
           style={{ position: 'relative', zIndex: 1 }}
           className={(props as ParentModeHighlightProps)?.containerClassName}
         >
-          <AnimatePresence initial={false} mode="wait">
+          <AnimatePresence initial={false}>
             {boundsState ? (
               <motion.div
                 data-slot="motion-highlight"
@@ -292,23 +292,9 @@ const Highlight = <T extends React.ElementType = 'div'>({
                   top: boundsState.top,
                   left: boundsState.left,
                   width: boundsState.width,
-                  height: boundsState.height,
-                  opacity: 1
+                  height: boundsState.height
                 }}
-                initial={{
-                  top: boundsState.top,
-                  left: boundsState.left,
-                  width: boundsState.width,
-                  height: boundsState.height,
-                  opacity: 0
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: {
-                    ...transition,
-                    delay: (transition?.delay ?? 0) + (exitDelay ?? 0) / 1000
-                  }
-                }}
+                initial={false}
                 transition={transition}
                 style={{ position: 'absolute', zIndex: 0, ...style }}
                 className={cn(className, activeClassNameState)}
@@ -570,35 +556,21 @@ const HighlightItem = <T extends React.ElementType>({
           ...props
         },
         <>
-          <AnimatePresence initial={false} mode="wait">
-            {isActive && !isDisabled ? (
-              <motion.div
-                layoutId={`transition-background-${contextId}`}
-                data-slot="motion-highlight"
-                style={{
-                  position: 'absolute',
-                  zIndex: 0,
-                  ...contextStyle,
-                  ...style
-                }}
-                className={cn(contextClassName, activeClassName)}
-                transition={itemTransition}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{
-                  opacity: 0,
-                  transition: {
-                    ...itemTransition,
-                    delay:
-                      (itemTransition?.delay ?? 0) +
-                      (exitDelay ?? contextExitDelay ?? 0) / 1000
-                  }
-                }}
-                {...dataAttributes}
-              />
-            ) : null}
-          </AnimatePresence>
-
+          {isActive && !isDisabled ? (
+            <motion.div
+              layoutId={`transition-background-${contextId}`}
+              data-slot="motion-highlight"
+              style={{
+                position: 'absolute',
+                zIndex: 0,
+                ...contextStyle,
+                ...style
+              }}
+              className={cn(contextClassName, activeClassName)}
+              transition={itemTransition}
+              {...dataAttributes}
+            />
+          ) : null}
           <Component
             data-slot="motion-highlight-item"
             style={{ position: 'relative', zIndex: 1 }}
@@ -632,34 +604,21 @@ const HighlightItem = <T extends React.ElementType>({
       {...commonHandlers}
     >
       {mode === 'children' ? (
-        <AnimatePresence initial={false} mode="wait">
-          {isActive && !isDisabled ? (
-            <motion.div
-              layoutId={`transition-background-${contextId}`}
-              data-slot="motion-highlight"
-              style={{
-                position: 'absolute',
-                zIndex: 0,
-                ...contextStyle,
-                ...style
-              }}
-              className={cn(contextClassName, activeClassName)}
-              transition={itemTransition}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  ...itemTransition,
-                  delay:
-                    (itemTransition?.delay ?? 0) +
-                    (exitDelay ?? contextExitDelay ?? 0) / 1000
-                }
-              }}
-              {...dataAttributes}
-            />
-          ) : null}
-        </AnimatePresence>
+        isActive && !isDisabled ? (
+          <motion.div
+            layoutId={`transition-background-${contextId}`}
+            data-slot="motion-highlight"
+            style={{
+              position: 'absolute',
+              zIndex: 0,
+              ...contextStyle,
+              ...style
+            }}
+            className={cn(contextClassName, activeClassName)}
+            transition={itemTransition}
+            {...dataAttributes}
+          />
+        ) : null
       ) : null}
 
       {React.cloneElement(element, {
