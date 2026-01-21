@@ -15,7 +15,6 @@ import {
   useNavigate,
   useRouter
 } from '@tanstack/react-router'
-import { AuthPageLayout } from './-components/auth-page-layout'
 
 const searchSchema = z.object({
   redirect: z.string().optional()
@@ -70,76 +69,74 @@ const ConnexionPage = () => {
   })
 
   return (
-    <AuthPageLayout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Connexion
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            Pas encore de compte ?{' '}
-            <Link
-              to="/inscription"
-              className="font-medium text-primary transition-colors hover:text-primary/80"
-            >
-              Créer un compte
-            </Link>
-          </p>
-        </div>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            form.handleSubmit()
-          }}
-          className="space-y-5"
-        >
-          <form.Field name="email">
-            {(field) => {
-              return (
-                <FormField
-                  field={field}
-                  label="Email"
-                  type="email"
-                  placeholder="jean.dupont@email.com"
-                  autoComplete="email"
-                />
-              )
-            }}
-          </form.Field>
-          <form.Field name="password">
-            {(field) => {
-              return (
-                <FormField
-                  field={field}
-                  label="Mot de passe"
-                  type="password"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                />
-              )
-            }}
-          </form.Field>
-          {signInMutation.error ? (
-            <Alert variant="destructive">
-              <AlertCircle className="size-4" aria-hidden="true" />
-              <AlertDescription>
-                {getAuthErrorMessage(signInMutation.error.message)}
-              </AlertDescription>
-            </Alert>
-          ) : null}
-          <LoadingButton
-            type="submit"
-            size="lg"
-            className="w-full"
-            isLoading={signInMutation.isPending}
-            loadingText="Connexion..."
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          Connexion
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Pas encore de compte ?{' '}
+          <Link
+            to="/inscription"
+            className="font-medium text-primary transition-colors hover:text-primary/80"
           >
-            Se connecter
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </LoadingButton>
-        </form>
+            Créer un compte
+          </Link>
+        </p>
       </div>
-    </AuthPageLayout>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          form.handleSubmit()
+        }}
+        className="space-y-5"
+      >
+        <form.Field name="email">
+          {(field) => {
+            return (
+              <FormField
+                field={field}
+                label="Email"
+                type="email"
+                placeholder="jean.dupont@email.com"
+                autoComplete="email"
+              />
+            )
+          }}
+        </form.Field>
+        <form.Field name="password">
+          {(field) => {
+            return (
+              <FormField
+                field={field}
+                label="Mot de passe"
+                type="password"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            )
+          }}
+        </form.Field>
+        {signInMutation.error ? (
+          <Alert variant="destructive">
+            <AlertCircle className="size-4" aria-hidden="true" />
+            <AlertDescription>
+              {getAuthErrorMessage(signInMutation.error.message)}
+            </AlertDescription>
+          </Alert>
+        ) : null}
+        <LoadingButton
+          type="submit"
+          size="lg"
+          className="w-full"
+          isLoading={signInMutation.isPending}
+          loadingText="Connexion..."
+        >
+          Se connecter
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </LoadingButton>
+      </form>
+    </div>
   )
 }
 

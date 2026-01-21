@@ -15,7 +15,6 @@ import {
   useNavigate,
   useRouter
 } from '@tanstack/react-router'
-import { AuthPageLayout } from './-components/auth-page-layout'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2),
@@ -75,138 +74,136 @@ const InscriptionPage = () => {
   })
 
   return (
-    <AuthPageLayout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Créer un compte
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            Déjà membre ?{' '}
-            <Link
-              to="/connexion"
-              className="font-medium text-primary transition-colors hover:text-primary/80"
-            >
-              Se connecter
-            </Link>
-          </p>
-        </div>
-        <ul className="grid grid-cols-2 gap-3">
-          {BENEFITS.map((benefit) => {
-            return (
-              <li
-                key={benefit}
-                className="flex items-center gap-2 text-sm text-muted-foreground"
-              >
-                <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                  <Check
-                    className="size-3 text-primary"
-                    aria-hidden="true"
-                    strokeWidth={3}
-                  />
-                </div>
-                {benefit}
-              </li>
-            )
-          })}
-        </ul>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            form.handleSubmit()
-          }}
-          className="space-y-5"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <form.Field name="firstName">
-              {(field) => {
-                return (
-                  <FormField
-                    field={field}
-                    label="Prénom"
-                    placeholder="Jean"
-                    autoComplete="given-name"
-                  />
-                )
-              }}
-            </form.Field>
-            <form.Field name="lastName">
-              {(field) => {
-                return (
-                  <FormField
-                    field={field}
-                    label="Nom"
-                    placeholder="Dupont"
-                    autoComplete="family-name"
-                  />
-                )
-              }}
-            </form.Field>
-          </div>
-          <form.Field name="email">
-            {(field) => {
-              return (
-                <FormField
-                  field={field}
-                  label="Email"
-                  type="email"
-                  placeholder="jean.dupont@email.com"
-                  autoComplete="email"
-                />
-              )
-            }}
-          </form.Field>
-          <form.Field name="password">
-            {(field) => {
-              return (
-                <FormField
-                  field={field}
-                  label="Mot de passe"
-                  type="password"
-                  placeholder="8 caractères minimum"
-                  autoComplete="new-password"
-                />
-              )
-            }}
-          </form.Field>
-          {signUpMutation.error ? (
-            <Alert variant="destructive">
-              <AlertCircle className="size-4" aria-hidden="true" />
-              <AlertDescription>
-                {getAuthErrorMessage(signUpMutation.error.message)}
-              </AlertDescription>
-            </Alert>
-          ) : null}
-          <LoadingButton
-            type="submit"
-            size="lg"
-            className="w-full"
-            isLoading={signUpMutation.isPending}
-            loadingText="Création du compte..."
-          >
-            Créer mon compte
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </LoadingButton>
-        </form>
-        <p className="text-center text-xs text-muted-foreground">
-          En créant un compte, vous acceptez nos{' '}
+    <div className="space-y-8">
+      <div>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          Créer un compte
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Déjà membre ?{' '}
           <Link
-            to="/cgv"
-            className="underline underline-offset-4 transition-colors hover:text-foreground"
+            to="/connexion"
+            className="font-medium text-primary transition-colors hover:text-primary/80"
           >
-            conditions générales
-          </Link>{' '}
-          et notre{' '}
-          <Link
-            to="/politique-confidentialite"
-            className="underline underline-offset-4 transition-colors hover:text-foreground"
-          >
-            politique de confidentialité
+            Se connecter
           </Link>
-          .
         </p>
       </div>
-    </AuthPageLayout>
+      <ul className="grid grid-cols-2 gap-3">
+        {BENEFITS.map((benefit) => {
+          return (
+            <li
+              key={benefit}
+              className="flex items-center gap-2 text-sm text-muted-foreground"
+            >
+              <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                <Check
+                  className="size-3 text-primary"
+                  aria-hidden="true"
+                  strokeWidth={3}
+                />
+              </div>
+              {benefit}
+            </li>
+          )
+        })}
+      </ul>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          form.handleSubmit()
+        }}
+        className="space-y-5"
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <form.Field name="firstName">
+            {(field) => {
+              return (
+                <FormField
+                  field={field}
+                  label="Prénom"
+                  placeholder="Jean"
+                  autoComplete="given-name"
+                />
+              )
+            }}
+          </form.Field>
+          <form.Field name="lastName">
+            {(field) => {
+              return (
+                <FormField
+                  field={field}
+                  label="Nom"
+                  placeholder="Dupont"
+                  autoComplete="family-name"
+                />
+              )
+            }}
+          </form.Field>
+        </div>
+        <form.Field name="email">
+          {(field) => {
+            return (
+              <FormField
+                field={field}
+                label="Email"
+                type="email"
+                placeholder="jean.dupont@email.com"
+                autoComplete="email"
+              />
+            )
+          }}
+        </form.Field>
+        <form.Field name="password">
+          {(field) => {
+            return (
+              <FormField
+                field={field}
+                label="Mot de passe"
+                type="password"
+                placeholder="8 caractères minimum"
+                autoComplete="new-password"
+              />
+            )
+          }}
+        </form.Field>
+        {signUpMutation.error ? (
+          <Alert variant="destructive">
+            <AlertCircle className="size-4" aria-hidden="true" />
+            <AlertDescription>
+              {getAuthErrorMessage(signUpMutation.error.message)}
+            </AlertDescription>
+          </Alert>
+        ) : null}
+        <LoadingButton
+          type="submit"
+          size="lg"
+          className="w-full"
+          isLoading={signUpMutation.isPending}
+          loadingText="Création du compte..."
+        >
+          Créer mon compte
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </LoadingButton>
+      </form>
+      <p className="text-center text-xs text-muted-foreground">
+        En créant un compte, vous acceptez nos{' '}
+        <Link
+          to="/cgv"
+          className="underline underline-offset-4 transition-colors hover:text-foreground"
+        >
+          conditions générales
+        </Link>{' '}
+        et notre{' '}
+        <Link
+          to="/politique-confidentialite"
+          className="underline underline-offset-4 transition-colors hover:text-foreground"
+        >
+          politique de confidentialité
+        </Link>
+        .
+      </p>
+    </div>
   )
 }
 
