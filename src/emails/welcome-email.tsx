@@ -35,7 +35,7 @@ export const WelcomeEmail = ({ firstName = 'Marie' }: WelcomeEmailProps) => {
                 Réserver un terrain
               </Text>
               <Text className="m-0 mt-1 text-xs text-slate-400">
-                6 terrains disponibles, jusqu&apos;à 10 jours à l&apos;avance
+                7 terrains disponibles, jusqu&apos;à 10 jours à l&apos;avance
               </Text>
             </td>
           </tr>

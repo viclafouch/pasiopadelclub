@@ -240,7 +240,7 @@ export const Route = createFileRoute('/_public__root/reservation/')({
       meta: seo({
         title: 'Réservation',
         description:
-          'Réservez votre court de padel en ligne à Pasio Padel Club Anglet. Choisissez votre créneau parmi nos 6 terrains disponibles 7j/7.',
+          'Réservez votre court de padel en ligne à Pasio Padel Club Bayonne. Choisissez votre créneau parmi nos 7 terrains disponibles 7j/7.',
         pathname: '/reservation'
       }),
       links: [

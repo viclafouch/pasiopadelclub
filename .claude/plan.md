@@ -38,7 +38,7 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 | Court N°3 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
 | Court N°4 | 4 | 90 min | 60€ | 8h, 9h30, 11h, 12h30, 14h, 15h30, 17h, 18h30, 20h |
 
-**Total : 6 terrains**
+**Total : 7 terrains**
 - Terrain "Kids" : ouvert à tous (info-bulle explicative dans l'interface)
 - Grilles horaires indépendantes par durée (90 min vs 60 min)
 
@@ -372,6 +372,21 @@ Système de prépaiement par crédits avec bonus et expiration.
 
 ---
 
+## Milestone 8.6 : Auth complet + RGPD critique
+
+### Pages auth manquantes
+- [ ] Page `/mot-de-passe-oublie` (formulaire demande de reset)
+- [ ] Page `/reinitialiser-mot-de-passe` (définir nouveau mot de passe avec token)
+- [ ] Lien "Mot de passe oublié ?" sur page `/connexion`
+- [ ] Template email dédié reset password (actuellement utilise VerificationEmail)
+
+### RGPD critique (pré-lancement)
+- [ ] Checkbox consentement explicite à l'inscription (CNIL obligatoire)
+- [ ] Mention collecte IP/UserAgent dans politique de confidentialité
+- [ ] Notice technique sous formulaire inscription
+
+---
+
 ## Milestones 9-13 : À venir
 
 - **M9-10** : Dashboard admin (stats, blocage créneaux/users, réservations manuelles)
@@ -385,6 +400,7 @@ Système de prépaiement par crédits avec bonus et expiration.
   - [ ] Cron suppression automatique données > 3 ans (data retention)
   - [ ] Vérifier région Railway = Europe (ou documenter transferts hors-UE)
   - [ ] Vérifier région Neon = Europe (ou documenter transferts hors-UE)
+  - [ ] Plan de réponse en cas de violation de données
 
 ---
 

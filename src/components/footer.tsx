@@ -153,8 +153,10 @@ const Footer = () => {
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="size-4 shrink-0" aria-hidden="true" />
                 <span>
-                  Tous les jours,{' '}
-                  <time className="font-medium text-primary">8h00 — 22h00</time>
+                  {CLUB_INFO.hours.days},{' '}
+                  <time className="font-medium text-primary">
+                    {CLUB_INFO.hours.open} - {CLUB_INFO.hours.close}
+                  </time>
                 </span>
               </p>
             </address>
@@ -164,7 +166,7 @@ const Footer = () => {
               Réservez maintenant
             </h3>
             <p className="text-sm text-muted-foreground text-balance">
-              6 terrains disponibles, réservation en ligne 24h/24.
+              7 terrains disponibles, réservation en ligne simplifiée.
             </p>
             <div className="space-y-3">
               <Button asChild>

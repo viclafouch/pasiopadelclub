@@ -1,4 +1,13 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { AUTH_BACKGROUND_IMAGE } from './constants'
+
+const AuthLayout = () => {
+  return (
+    <div className="pt-[var(--navbar-height)]">
+      <Outlet />
+    </div>
+  )
+}
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: async ({ context }) => {
@@ -6,5 +15,17 @@ export const Route = createFileRoute('/_auth')({
       throw redirect({ to: '/', replace: true })
     }
   },
-  component: Outlet
+  head: () => {
+    return {
+      links: [
+        {
+          rel: 'preload',
+          href: AUTH_BACKGROUND_IMAGE,
+          as: 'image',
+          fetchPriority: 'high'
+        }
+      ]
+    }
+  },
+  component: AuthLayout
 })

@@ -18,6 +18,9 @@ type ClubInfo = {
     close: string
     days: string
   }
+  courts: {
+    total: number
+  }
 }
 
 export const CLUB_INFO = {
@@ -40,6 +43,9 @@ export const CLUB_INFO = {
     open: '8h',
     close: '22h',
     days: 'Tous les jours'
+  },
+  courts: {
+    total: 7
   }
 } as const satisfies ClubInfo
 
@@ -78,7 +84,7 @@ type AppFeature = {
 export const APP_FEATURES = [
   {
     title: 'Réservation instantanée',
-    description: 'Réservez votre terrain en quelques secondes, 24h/24'
+    description: 'Réservez votre terrain en quelques secondes'
   },
   {
     title: 'Notifications',

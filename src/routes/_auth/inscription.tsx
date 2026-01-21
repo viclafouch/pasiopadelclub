@@ -1,16 +1,8 @@
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, ArrowRight, Check } from 'lucide-react'
 import { z } from 'zod'
 import { FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { authClient } from '@/lib/auth-client'
@@ -23,6 +15,7 @@ import {
   useNavigate,
   useRouter
 } from '@tanstack/react-router'
+import { AuthPageLayout } from './-components/auth-page-layout'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2),
@@ -31,18 +24,20 @@ const signUpSchema = z.object({
   password: z.string().min(8)
 })
 
+const BENEFITS = [
+  'Réservation instantanée',
+  'Gestion en ligne',
+  'Historique des parties',
+  'Paiement sécurisé'
+] as const
+
 const InscriptionPage = () => {
   const navigate = useNavigate()
   const router = useRouter()
   const queryClient = useQueryClient()
 
   const signUpMutation = useMutation({
-    mutationFn: async (data: {
-      firstName: string
-      lastName: string
-      email: string
-      password: string
-    }) => {
+    mutationFn: async (data: z.infer<typeof signUpSchema>) => {
       const { error } = await authClient.signUp.email({
         name: `${data.firstName} ${data.lastName}`,
         firstName: data.firstName,
@@ -80,94 +75,138 @@ const InscriptionPage = () => {
   })
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Inscription</CardTitle>
-          <CardDescription>Créez votre compte Pasio Padel Club</CardDescription>
-        </CardHeader>
+    <AuthPageLayout>
+      <div className="space-y-8">
+        <div>
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+            Créer un compte
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Déjà membre ?{' '}
+            <Link
+              to="/connexion"
+              className="font-medium text-primary transition-colors hover:text-primary/80"
+            >
+              Se connecter
+            </Link>
+          </p>
+        </div>
+        <ul className="grid grid-cols-2 gap-3">
+          {BENEFITS.map((benefit) => {
+            return (
+              <li
+                key={benefit}
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+              >
+                <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <Check
+                    className="size-3 text-primary"
+                    aria-hidden="true"
+                    strokeWidth={3}
+                  />
+                </div>
+                {benefit}
+              </li>
+            )
+          })}
+        </ul>
         <form
           onSubmit={(event) => {
             event.preventDefault()
             form.handleSubmit()
           }}
+          className="space-y-5"
         >
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <form.Field name="firstName">
-                {(field) => {
-                  return (
-                    <FormField
-                      field={field}
-                      label="Prénom"
-                      placeholder="Prénom"
-                    />
-                  )
-                }}
-              </form.Field>
-              <form.Field name="lastName">
-                {(field) => {
-                  return (
-                    <FormField field={field} label="Nom" placeholder="Nom" />
-                  )
-                }}
-              </form.Field>
-            </div>
-            <form.Field name="email">
+          <div className="grid grid-cols-2 gap-4">
+            <form.Field name="firstName">
               {(field) => {
                 return (
                   <FormField
                     field={field}
-                    label="Email"
-                    type="email"
-                    placeholder="votre@email.com"
+                    label="Prénom"
+                    placeholder="Jean"
+                    autoComplete="given-name"
                   />
                 )
               }}
             </form.Field>
-            <form.Field name="password">
+            <form.Field name="lastName">
               {(field) => {
                 return (
                   <FormField
                     field={field}
-                    label="Mot de passe"
-                    type="password"
-                    placeholder="••••••••"
+                    label="Nom"
+                    placeholder="Dupont"
+                    autoComplete="family-name"
                   />
                 )
               }}
             </form.Field>
-            {signUpMutation.error ? (
-              <Alert variant="destructive">
-                <AlertCircle className="size-4" aria-hidden="true" />
-                <AlertDescription>
-                  {getAuthErrorMessage(signUpMutation.error.message)}
-                </AlertDescription>
-              </Alert>
-            ) : null}
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4 pt-6">
-            <LoadingButton
-              type="submit"
-              className="w-full"
-              isLoading={signUpMutation.isPending}
-              loadingText="Création..."
-            >
-              Créer mon compte
-            </LoadingButton>
-            <p className="text-sm text-muted-foreground">
-              Déjà un compte ?{' '}
-              <Link
-                to="/connexion"
-                className="text-primary underline-offset-4 hover:underline"
-              >
-                Se connecter
-              </Link>
-            </p>
-          </CardFooter>
+          </div>
+          <form.Field name="email">
+            {(field) => {
+              return (
+                <FormField
+                  field={field}
+                  label="Email"
+                  type="email"
+                  placeholder="jean.dupont@email.com"
+                  autoComplete="email"
+                />
+              )
+            }}
+          </form.Field>
+          <form.Field name="password">
+            {(field) => {
+              return (
+                <FormField
+                  field={field}
+                  label="Mot de passe"
+                  type="password"
+                  placeholder="8 caractères minimum"
+                  autoComplete="new-password"
+                />
+              )
+            }}
+          </form.Field>
+          {signUpMutation.error ? (
+            <Alert variant="destructive">
+              <AlertCircle className="size-4" aria-hidden="true" />
+              <AlertDescription>
+                {getAuthErrorMessage(signUpMutation.error.message)}
+              </AlertDescription>
+            </Alert>
+          ) : null}
+          <LoadingButton
+            type="submit"
+            size="lg"
+            className="w-full"
+            isLoading={signUpMutation.isPending}
+            loadingText="Création du compte..."
+          >
+            Créer mon compte
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </LoadingButton>
         </form>
-      </Card>
-    </main>
+        <p className="text-center text-xs text-muted-foreground">
+          En créant un compte, vous acceptez nos{' '}
+          <Link
+            to="/cgv"
+            className="underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            conditions générales
+          </Link>{' '}
+          et notre{' '}
+          <Link
+            to="/politique-confidentialite"
+            className="underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            politique de confidentialité
+          </Link>
+          .
+        </p>
+      </div>
+    </AuthPageLayout>
   )
 }
 
@@ -176,9 +215,11 @@ export const Route = createFileRoute('/_auth/inscription')({
   head: () => {
     return {
       meta: seo({
-        title: 'Inscription',
+        title: 'Inscription | Créez votre compte',
         description:
-          'Créez votre compte Pasio Padel Club pour réserver vos créneaux de padel en ligne à Anglet.',
+          'Créez votre compte Pasio Padel Club et réservez vos créneaux de padel en ligne à Bayonne. 7 terrains disponibles, réservation simplifiée.',
+        keywords:
+          'inscription padel bayonne, créer compte padel, réservation terrain padel',
         pathname: '/inscription'
       })
     }
