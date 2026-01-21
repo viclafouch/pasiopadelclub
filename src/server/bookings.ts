@@ -148,7 +148,7 @@ export const cancelBookingFn = createServerFn({ method: 'POST' })
 
     const updatedRows = await db
       .update(booking)
-      .set({ status: 'cancelled' })
+      .set({ status: 'cancelled', refundedAmountCents: refundAmount })
       .where(and(eq(booking.id, bookingId), eq(booking.status, 'confirmed')))
       .returning({ id: booking.id })
 

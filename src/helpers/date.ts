@@ -104,3 +104,7 @@ export const parseDateKey = (dateKey: string) => {
 export const formatDateTimeLongFr = (date: Date) => {
   return format(toParisDate(date), "EEEE d MMMM yyyy 'à' HH:mm", FR_LOCALE)
 }
+
+export const formatDateWithDayFr = (date: Date) => {
+  return format(toParisDate(date), 'EEEE d MMMM', FR_LOCALE)
+}

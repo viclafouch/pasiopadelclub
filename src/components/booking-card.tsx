@@ -1,12 +1,21 @@
-import { CalendarIcon, ClockIcon, MapPinIcon, UsersIcon } from 'lucide-react'
+import {
+  CalendarIcon,
+  ClockIcon,
+  CreditCardIcon,
+  MapPinIcon,
+  TimerIcon,
+  UsersIcon,
+  WalletIcon,
+  XIcon
+} from 'lucide-react'
 import {
   type BookingStatus,
   Status,
   StatusIndicator,
   StatusLabel
 } from '@/components/kibo-ui/status'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Tooltip,
@@ -14,8 +23,9 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import type { Booking, BookingWithCourt } from '@/constants/types'
-import { formatDateFr, formatTimeFr } from '@/helpers/date'
+import { formatDateFr, formatDateWithDayFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
+import { cn } from '@/lib/utils'
 import { matchIsBookingInProgress } from '@/utils/booking'
 import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 
@@ -24,6 +34,14 @@ type BookingCardProps = {
   onCancel?: (bookingId: Booking['id']) => void
   showCancelButton?: boolean
   isHistory?: boolean
+}
+
+const getRefundPercentage = (booking: BookingWithCourt): number | null => {
+  if (booking.status !== 'cancelled' || booking.refundedAmountCents === null) {
+    return null
+  }
+
+  return Math.round((booking.refundedAmountCents / booking.price) * 100)
 }
 
 const getDisplayStatus = (
@@ -45,6 +63,73 @@ const getDisplayStatus = (
   return 'confirmed'
 }
 
+type PaymentBadgeProps = {
+  paymentType: Booking['paymentType']
+}
+
+const PaymentBadge = ({ paymentType }: PaymentBadgeProps) => {
+  if (paymentType === 'free') {
+    return null
+  }
+
+  const isCredit = paymentType === 'credit'
+
+  return (
+    <span className="inline-flex items-center gap-1 whitespace-nowrap">
+      {isCredit ? (
+        <WalletIcon className="size-3.5 shrink-0" aria-hidden="true" />
+      ) : (
+        <CreditCardIcon className="size-3.5 shrink-0" aria-hidden="true" />
+      )}
+      <span>{isCredit ? 'Crédits' : 'Carte bancaire'}</span>
+    </span>
+  )
+}
+
+type RefundBadgeProps = {
+  percentage: number
+}
+
+const RefundBadge = ({ percentage }: RefundBadgeProps) => {
+  const isFullRefund = percentage === 100
+
+  return (
+    <Badge
+      variant="outline"
+      className={cn(
+        'gap-1 text-xs font-medium',
+        isFullRefund
+          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700'
+          : 'border-amber-500/30 bg-amber-500/10 text-amber-700'
+      )}
+    >
+      Remboursé {percentage}%
+    </Badge>
+  )
+}
+
+type BookingFooterInfoProps = {
+  isCancelled: boolean
+  refundPercentage: number | null
+  createdAt: Date
+}
+
+const BookingFooterInfo = ({
+  isCancelled,
+  refundPercentage,
+  createdAt
+}: BookingFooterInfoProps) => {
+  if (isCancelled && refundPercentage !== null) {
+    return <RefundBadge percentage={refundPercentage} />
+  }
+
+  return (
+    <p className="text-xs text-muted-foreground">
+      Réservé le {formatDateFr(new Date(createdAt))}
+    </p>
+  )
+}
+
 export const BookingCard = ({
   booking,
   onCancel,
@@ -54,120 +139,165 @@ export const BookingCard = ({
   const { court } = booking
   const displayStatus = getDisplayStatus(booking, isHistory)
   const isConfirmed = booking.status === 'confirmed'
+  const isCancelled = booking.status === 'cancelled'
   const isInProgress = displayStatus === 'in-progress'
   const showCancel = showCancelButton && isConfirmed && !isHistory
+  const refundPercentage = getRefundPercentage(booking)
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <h3 className="font-sans font-semibold text-lg">
-              Terrain {court.name}
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              {getCourtTypeLabel(court.type)}
-            </p>
+    <article className="group relative overflow-hidden rounded-xl border-2 border-primary/25 bg-gradient-to-br from-primary/10 via-white to-white shadow-sm transition-shadow hover:shadow-md">
+      <div
+        className="pointer-events-none absolute -right-6 -bottom-6 size-32 opacity-10 transition-opacity group-hover:opacity-15"
+        aria-hidden="true"
+      >
+        <img
+          src="/images/tennis-ball.svg"
+          alt=""
+          className="size-full"
+          loading="lazy"
+        />
+      </div>
+      <div className="relative flex flex-col gap-4 p-5">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-display text-lg font-bold text-foreground">
+                Terrain {court.name}
+              </h3>
+              <Badge className="border-0 bg-primary/90 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+                {getCourtTypeLabel(court.type)}
+              </Badge>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <TimerIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="whitespace-nowrap">{court.duration} min</span>
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <MapPinIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="whitespace-nowrap">
+                  {getLocationLabel(court.location)}
+                </span>
+              </span>
+              <PaymentBadge paymentType={booking.paymentType} />
+            </div>
           </div>
-          <Status status={displayStatus}>
+          <Status status={displayStatus} className="shrink-0 self-start">
             <StatusIndicator />
             <StatusLabel />
           </Status>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid gap-2 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <CalendarIcon className="size-4" aria-hidden="true" />
-            <span>{formatDateFr(new Date(booking.startAt))}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <ClockIcon className="size-4" aria-hidden="true" />
-            <span>
-              {formatTimeFr(new Date(booking.startAt))} -{' '}
-              {formatTimeFr(new Date(booking.endAt))}
+        </header>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5">
+            <div className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <CalendarIcon className="size-4" aria-hidden="true" />
+            </div>
+            <span className="font-semibold capitalize text-foreground">
+              {formatDateWithDayFr(new Date(booking.startAt))}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <MapPinIcon className="size-4" aria-hidden="true" />
-            <span>{getLocationLabel(court.location)}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <UsersIcon className="size-4" aria-hidden="true" />
-            <span>{court.capacity} joueurs</span>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-2.5 rounded-lg bg-muted/50 px-3 py-2">
+              <ClockIcon
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <span className="whitespace-nowrap text-sm font-medium">
+                {formatTimeFr(new Date(booking.startAt))} -{' '}
+                {formatTimeFr(new Date(booking.endAt))}
+              </span>
+            </div>
+            <div className="flex items-center gap-2.5 rounded-lg bg-muted/50 px-3 py-2">
+              <UsersIcon
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <span className="whitespace-nowrap text-sm font-medium">
+                {court.capacity} joueurs
+              </span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center justify-between pt-2 border-t">
-          <p className="font-medium">{formatCentsToEuros(booking.price)}</p>
-          {booking.status === 'cancelled' ? (
-            <p className="text-xs text-muted-foreground">
-              Remboursement effectué
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Réservé le {formatDateFr(new Date(booking.createdAt))}
-            </p>
-          )}
-        </div>
-      </CardContent>
-      {showCancel ? (
-        <CardFooter>
-          {isInProgress ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    disabled
-                    aria-disabled="true"
-                  >
-                    Annuler la réservation
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>Réservation en cours</TooltipContent>
-            </Tooltip>
-          ) : (
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => {
-                return onCancel?.(booking.id)
-              }}
-            >
-              Annuler la réservation
-            </Button>
-          )}
-        </CardFooter>
-      ) : null}
-    </Card>
+        <footer className="flex items-center justify-between border-t border-primary/15 pt-3">
+          <p className="text-xl font-bold text-primary">
+            {formatCentsToEuros(booking.price)}
+          </p>
+          <BookingFooterInfo
+            isCancelled={isCancelled}
+            refundPercentage={refundPercentage}
+            createdAt={booking.createdAt}
+          />
+        </footer>
+        {showCancel ? (
+          <div className="pt-1">
+            {isInProgress ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="block">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+                      disabled
+                      aria-disabled="true"
+                    >
+                      <XIcon className="size-4" aria-hidden="true" />
+                      Annuler la réservation
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Réservation en cours</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-red-300 bg-red-50 text-red-700 hover:border-red-400 hover:bg-red-100 hover:text-red-800"
+                onClick={() => {
+                  return onCancel?.(booking.id)
+                }}
+              >
+                <XIcon className="size-4" aria-hidden="true" />
+                Annuler la réservation
+              </Button>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </article>
   )
 }
 
 export const BookingCardSkeleton = () => {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-4 w-20" />
+    <article className="overflow-hidden rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-white to-white shadow-sm">
+      <div className="flex flex-col gap-4 p-5">
+        <header className="flex items-start justify-between gap-3">
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-6 w-28" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </div>
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-24" />
+            </div>
           </div>
-          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </header>
+        <div className="space-y-2">
+          <Skeleton className="h-14 w-full rounded-lg" />
+          <div className="grid grid-cols-2 gap-2">
+            <Skeleton className="h-10 rounded-lg" />
+            <Skeleton className="h-10 rounded-lg" />
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid gap-2">
-          <Skeleton className="h-4 w-40" />
+        <div className="flex items-center justify-between border-t border-primary/10 pt-3">
+          <Skeleton className="h-7 w-20" />
           <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-24" />
         </div>
-        <div className="pt-2 border-t">
-          <Skeleton className="h-5 w-16" />
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </article>
   )
 }

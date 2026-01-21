@@ -186,6 +186,7 @@ export const booking = pgTable(
     creditTransactionId: uuid('credit_transaction_id'),
     paymentType: paymentTypeEnum('payment_type').notNull(),
     status: bookingStatusEnum('status').notNull().default('pending'),
+    refundedAmountCents: integer('refunded_amount_cents'),
     reminderSent: boolean('reminder_sent').notNull().default(false),
     createdAt: timestamp('created_at').defaultNow().notNull()
   },

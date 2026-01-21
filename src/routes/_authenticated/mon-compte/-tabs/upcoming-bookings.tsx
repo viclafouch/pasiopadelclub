@@ -152,7 +152,7 @@ export const UpcomingBookingsTab = () => {
         {upcomingBookingsQuery.data.length === 0 ? (
           <EmptyBookings />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {upcomingBookingsQuery.data.map((booking) => {
               return (
                 <BookingCard
@@ -169,8 +169,10 @@ export const UpcomingBookingsTab = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Annuler la réservation</AlertDialogTitle>
-            <AlertDialogDescription>
-              <CancelDescription booking={bookingToCancel} />
+            <AlertDialogDescription asChild>
+              <div>
+                <CancelDescription booking={bookingToCancel} />
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           {cancelBookingMutation.isError ? (
