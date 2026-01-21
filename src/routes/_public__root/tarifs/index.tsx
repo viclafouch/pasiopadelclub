@@ -145,14 +145,14 @@ const PricingCard = ({
       <div className={cn('flex flex-1 flex-col p-8', isFeatured && 'pt-14')}>
         <div className="mb-6">
           <div className="mb-0.5 flex items-center gap-2">
-            <h3
+            <h2
               className={cn(
                 'font-display text-2xl font-bold',
                 isFeatured ? 'text-white' : 'text-foreground'
               )}
             >
               {title}
-            </h3>
+            </h2>
             {tooltip ? (
               <Tooltip>
                 <TooltipTrigger asChild>

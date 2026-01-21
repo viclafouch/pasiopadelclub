@@ -222,8 +222,11 @@ const GaleriePage = () => {
           </div>
         </section>
 
-        <section className="section-pb">
+        <section className="section-pb" aria-labelledby="gallery-filters">
           <div className="container">
+            <h2 id="gallery-filters" className="sr-only">
+              Filtrer par catégorie
+            </h2>
             <div className="mb-10 flex flex-wrap justify-center gap-3">
               {categories.map((category) => {
                 return (

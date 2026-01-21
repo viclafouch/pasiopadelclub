@@ -110,14 +110,14 @@ export const CreditPackCard = ({
       ) : null}
       <div className={cn('flex flex-1 flex-col p-8', isPopular && 'pt-14')}>
         <div className="mb-6">
-          <h3
+          <h2
             className={cn(
               'font-display text-2xl font-bold',
               isPopular ? 'text-white' : 'text-foreground'
             )}
           >
             Pack {pack.name}
-          </h3>
+          </h2>
           <p
             className={cn(
               'text-sm',

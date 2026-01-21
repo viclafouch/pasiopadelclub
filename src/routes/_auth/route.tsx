@@ -14,7 +14,7 @@ const AuthLayout = () => {
       <main className="flex min-h-[calc(100svh-var(--navbar-height))] flex-col lg:flex-row">
         <section
           className="relative hidden flex-col justify-center bg-slate-900 px-6 py-12 lg:flex lg:w-1/2 lg:px-12 xl:px-20"
-          aria-label="Avantages du club"
+          aria-labelledby="auth-benefits"
         >
           <img
             src={AUTH_BACKGROUND_IMAGE}
@@ -25,6 +25,9 @@ const AuthLayout = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/70 to-primary/30" />
           <div className="relative z-10 mx-auto w-full max-w-lg">
+            <h2 id="auth-benefits" className="sr-only">
+              Avantages du club
+            </h2>
             <ul className="grid grid-cols-2 gap-4">
               {FEATURES.map((feature) => {
                 const Icon = feature.icon
@@ -58,7 +61,7 @@ const AuthLayout = () => {
         </section>
         <section
           className="flex flex-1 flex-col justify-center bg-background px-6 py-12 lg:px-12 xl:px-20"
-          aria-label="Formulaire"
+          aria-labelledby="auth-form"
         >
           <div className="mx-auto w-full max-w-md lg:min-h-[500px]">
             <Outlet />

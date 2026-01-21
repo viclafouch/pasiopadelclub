@@ -82,7 +82,10 @@ const InscriptionPage = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+        <h1
+          id="auth-form"
+          className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl"
+        >
           Créer un compte
         </h1>
         <p className="mt-2 text-muted-foreground">

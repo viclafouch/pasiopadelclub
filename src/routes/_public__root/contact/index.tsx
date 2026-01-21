@@ -69,12 +69,12 @@ const SuccessState = ({ successRef, onReset }: SuccessStateProps) => {
       >
         <SuccessCheckmark shouldReduceMotion={shouldReduceMotion} />
       </motion.div>
-      <motion.h3
+      <motion.h2
         variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
         className="mb-2 font-display text-xl font-semibold text-foreground"
       >
         Message envoyé !
-      </motion.h3>
+      </motion.h2>
       <motion.p
         variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
         className="text-muted-foreground"

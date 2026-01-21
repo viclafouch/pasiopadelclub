@@ -43,9 +43,9 @@ const config = defineConfig({
         },
         '/images/**': { headers: IMMUTABLE_CACHE },
         '/fonts/**': { headers: IMMUTABLE_CACHE },
-        '/*.webp': { headers: IMMUTABLE_CACHE },
-        '/*.png': { headers: IMMUTABLE_CACHE },
-        '/*.ico': { headers: IMMUTABLE_CACHE }
+        '/**/*.webp': { headers: IMMUTABLE_CACHE },
+        '/**/*.png': { headers: IMMUTABLE_CACHE },
+        '/**/*.ico': { headers: IMMUTABLE_CACHE }
       }
     }),
     viteReact()
