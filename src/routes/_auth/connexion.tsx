@@ -5,16 +5,12 @@ import { LoadingButton } from '@/components/loading-button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getAuthUserQueryOpts } from '@/constants/queries'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
+import { getSafeRedirect } from '@/helpers/url'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  createFileRoute,
-  Link,
-  useNavigate,
-  useRouter
-} from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 
 const searchSchema = z.object({
   redirect: z.string().optional()
@@ -27,13 +23,9 @@ const loginSchema = z.object({
 
 const ConnexionPage = () => {
   const { redirect: redirectQuery } = Route.useSearch()
-  const navigate = useNavigate()
   const router = useRouter()
   const queryClient = useQueryClient()
-
-  const isInternalPath =
-    redirectQuery?.startsWith('/') && !redirectQuery.startsWith('//')
-  const safeRedirect = isInternalPath ? redirectQuery : '/'
+  const safeRedirect = getSafeRedirect(redirectQuery)
 
   const signInMutation = useMutation({
     mutationFn: async (data: z.infer<typeof loginSchema>) => {
@@ -48,8 +40,7 @@ const ConnexionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      await router.invalidate()
-      navigate({ to: safeRedirect })
+      await router.navigate({ to: safeRedirect })
     }
   })
 

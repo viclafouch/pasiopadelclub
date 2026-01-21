@@ -13,12 +13,7 @@ import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  createFileRoute,
-  Link,
-  useNavigate,
-  useRouter
-} from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 
 const signUpSchema = z.object({
   firstName: z.string().min(2),
@@ -38,7 +33,6 @@ const BENEFITS = [
 ] as const
 
 const InscriptionPage = () => {
-  const navigate = useNavigate()
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -58,8 +52,7 @@ const InscriptionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      await router.invalidate()
-      navigate({ to: '/' })
+      await router.navigate({ to: '/' })
     }
   })
 

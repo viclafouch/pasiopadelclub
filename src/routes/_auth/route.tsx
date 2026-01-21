@@ -1,6 +1,12 @@
 import { Clock, MapPin } from 'lucide-react'
+import { z } from 'zod'
+import { getSafeRedirect } from '@/helpers/url'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { AUTH_BACKGROUND_IMAGE, FEATURES } from './-constants'
+
+const authSearchSchema = z.object({
+  redirect: z.string().optional()
+})
 
 const AuthLayout = () => {
   return (
@@ -64,9 +70,10 @@ const AuthLayout = () => {
 }
 
 export const Route = createFileRoute('/_auth')({
-  beforeLoad: async ({ context }) => {
+  validateSearch: authSearchSchema,
+  beforeLoad: async ({ context, search }) => {
     if (context.user) {
-      throw redirect({ to: '/', replace: true })
+      throw redirect({ to: getSafeRedirect(search.redirect), replace: true })
     }
   },
   head: () => {
