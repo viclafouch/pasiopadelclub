@@ -132,8 +132,8 @@ const PricingCard = ({
         <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
       ) : (
         <>
-          <div className="absolute -top-10 -left-10 h-24 w-24 rounded-full bg-primary/[0.07] blur-2xl transition-all duration-500 group-hover:bg-primary/15" />
-          <div className="absolute -bottom-12 -right-12 h-28 w-28 rounded-full bg-primary/[0.06] blur-2xl transition-all duration-500 group-hover:bg-primary/20" />
+          <div className="absolute -top-10 -left-10 h-24 w-24 rounded-full bg-primary/[0.07] blur-2xl transition-colors duration-500 group-hover:bg-primary/15" />
+          <div className="absolute -bottom-12 -right-12 h-28 w-28 rounded-full bg-primary/[0.06] blur-2xl transition-colors duration-500 group-hover:bg-primary/20" />
         </>
       )}
       {isFeatured ? (
@@ -156,13 +156,16 @@ const PricingCard = ({
             {tooltip ? (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info
+                  <button
+                    type="button"
+                    aria-label={`Information : ${tooltip}`}
                     className={cn(
-                      'size-4 cursor-help',
+                      'cursor-help',
                       isFeatured ? 'text-white/70' : 'text-muted-foreground'
                     )}
-                    aria-hidden="true"
-                  />
+                  >
+                    <Info className="size-4" aria-hidden="true" />
+                  </button>
                 </TooltipTrigger>
                 <TooltipContent>{tooltip}</TooltipContent>
               </Tooltip>
@@ -181,7 +184,7 @@ const PricingCard = ({
           <div className="flex items-baseline gap-1">
             <span
               className={cn(
-                'font-display text-5xl font-bold tracking-tight',
+                'font-display text-5xl font-bold tracking-tight tabular-nums',
                 isFeatured ? 'text-white' : 'text-foreground'
               )}
             >
@@ -204,7 +207,7 @@ const PricingCard = ({
                 : 'bg-primary/10 text-primary'
             )}
           >
-            <span className="font-semibold">
+            <span className="font-semibold tabular-nums">
               {formatCentsToEuros(price / players, {
                 minimumFractionDigits: 0
               })}

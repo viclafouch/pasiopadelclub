@@ -74,7 +74,7 @@ export const PaymentMethodSelector = ({
           }}
           disabled={isDisabled}
           className={cn(
-            'flex items-center gap-2 rounded-lg border-2 p-3 transition-all',
+            'flex items-center gap-2 rounded-lg border-2 p-3 transition-colors',
             selectedMethod === 'card'
               ? 'border-primary bg-primary/5'
               : 'border-border hover:border-primary/50'
@@ -101,7 +101,7 @@ export const PaymentMethodSelector = ({
           }}
           disabled={isDisabled || balanceQuery.isError}
           className={cn(
-            'flex items-center gap-2 rounded-lg border-2 p-3 transition-all',
+            'flex items-center gap-2 rounded-lg border-2 p-3 transition-colors',
             selectedMethod === 'credit'
               ? 'border-primary bg-primary/5'
               : 'border-border',

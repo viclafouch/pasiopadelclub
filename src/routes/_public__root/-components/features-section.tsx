@@ -199,7 +199,7 @@ const FeatureCard = ({ feature, className }: FeatureCardProps) => {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white/10',
+        'group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-6 backdrop-blur-sm transition-colors duration-300 hover:bg-white/10',
         className
       )}
     >

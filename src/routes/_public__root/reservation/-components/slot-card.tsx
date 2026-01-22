@@ -79,7 +79,7 @@ export const SlotCard = ({ slot, price, onSelect }: SlotCardProps) => {
       onClick={handleClick}
       disabled={!isClickable}
       className={cn(
-        'flex w-full flex-col items-center gap-1.5 rounded-xl border-2 px-4 py-4 transition-all duration-300 ease-out',
+        'flex w-full flex-col items-center gap-1.5 rounded-xl border-2 px-4 py-4 transition-colors duration-300 ease-out',
         config.buttonClass
       )}
     >
@@ -89,7 +89,7 @@ export const SlotCard = ({ slot, price, onSelect }: SlotCardProps) => {
       </span>
       <span
         className={cn(
-          'flex items-center gap-1.5 text-sm transition-all duration-300',
+          'flex items-center gap-1.5 text-sm transition-colors duration-300',
           config.textClass
         )}
       >

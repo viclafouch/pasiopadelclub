@@ -236,7 +236,7 @@ const GaleriePage = () => {
                     onClick={() => {
                       setSelectedCategory(category)
                     }}
-                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
                       selectedCategory === category
                         ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
                         : 'bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground'

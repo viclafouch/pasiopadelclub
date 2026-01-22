@@ -32,6 +32,8 @@ export const QRCode = ({ size = 'default', className }: QRCodeProps) => {
       <img
         src={src}
         alt="QR Code pour télécharger l'application"
+        width={150}
+        height={150}
         className="size-full"
         loading="lazy"
       />

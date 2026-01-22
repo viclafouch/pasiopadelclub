@@ -20,6 +20,8 @@ const MockupHeader = ({ isLarge }: MockupScreenProps) => {
       <img
         src="/logo.webp"
         alt="Pasio Padel Club"
+        width={44}
+        height={44}
         loading="lazy"
         decoding="async"
         className={cn(

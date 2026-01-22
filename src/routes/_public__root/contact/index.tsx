@@ -180,6 +180,7 @@ const ContactPage = () => {
                             type="email"
                             placeholder="jean@exemple.fr"
                             autoComplete="email"
+                            spellCheck={false}
                             required
                           />
                         )

@@ -98,8 +98,8 @@ export const CreditPackCard = ({
         <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
       ) : (
         <>
-          <div className="absolute -top-10 -left-10 h-24 w-24 rounded-full bg-primary/[0.07] blur-2xl transition-all duration-500 group-hover:bg-primary/15" />
-          <div className="absolute -bottom-12 -right-12 h-28 w-28 rounded-full bg-primary/[0.06] blur-2xl transition-all duration-500 group-hover:bg-primary/20" />
+          <div className="absolute -top-10 -left-10 h-24 w-24 rounded-full bg-primary/[0.07] blur-2xl transition-colors duration-500 group-hover:bg-primary/15" />
+          <div className="absolute -bottom-12 -right-12 h-28 w-28 rounded-full bg-primary/[0.06] blur-2xl transition-colors duration-500 group-hover:bg-primary/20" />
         </>
       )}
       {isPopular ? (
@@ -131,7 +131,7 @@ export const CreditPackCard = ({
           <div className="flex items-baseline gap-1">
             <span
               className={cn(
-                'font-display text-5xl font-bold tracking-tight',
+                'font-display text-5xl font-bold tracking-tight tabular-nums',
                 isPopular ? 'text-white' : 'text-foreground'
               )}
             >
@@ -150,7 +150,7 @@ export const CreditPackCard = ({
               )}
             >
               <GiftIcon className="size-4" aria-hidden="true" />
-              <span className="font-semibold">
+              <span className="font-semibold tabular-nums">
                 +{formatCentsToEuros(bonusCents, { minimumFractionDigits: 0 })}{' '}
                 offerts
               </span>

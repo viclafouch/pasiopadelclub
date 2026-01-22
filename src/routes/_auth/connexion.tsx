@@ -87,6 +87,7 @@ const ConnexionPage = () => {
                 type="email"
                 placeholder="jean.dupont@email.com"
                 autoComplete="email"
+                spellCheck={false}
                 required
               />
             )

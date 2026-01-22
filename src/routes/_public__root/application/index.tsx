@@ -22,7 +22,7 @@ type FeatureCardProps = {
 
 const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
   return (
-    <div className="group rounded-2xl border border-border/50 bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+    <div className="group rounded-2xl border border-border/50 bg-card p-6 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
         <Icon className="size-6 text-primary" />
       </div>

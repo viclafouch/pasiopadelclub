@@ -23,7 +23,7 @@ export const StoreBadge = ({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'flex items-center gap-3 rounded-xl bg-neutral px-5 text-neutral-foreground transition-all hover:scale-105',
+        'flex items-center gap-3 rounded-xl bg-neutral px-5 text-neutral-foreground transition-transform hover:scale-105',
         isLarge ? 'h-16 gap-4 rounded-2xl px-6 hover:shadow-xl' : 'h-14',
         className
       )}

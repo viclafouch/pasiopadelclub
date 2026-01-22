@@ -153,6 +153,8 @@ export const BookingCard = ({
         <img
           src="/images/tennis-ball.svg"
           alt=""
+          width={128}
+          height={128}
           className="size-full"
           loading="lazy"
         />
@@ -219,7 +221,7 @@ export const BookingCard = ({
           </div>
         </div>
         <footer className="flex items-center justify-between border-t border-primary/15 pt-3">
-          <p className="text-xl font-bold text-primary">
+          <p className="text-xl font-bold tabular-nums text-primary">
             {formatCentsToEuros(booking.price)}
           </p>
           <BookingFooterInfo
