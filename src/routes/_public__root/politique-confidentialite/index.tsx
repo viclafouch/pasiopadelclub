@@ -281,13 +281,12 @@ export const Route = createFileRoute(
   '/_public__root/politique-confidentialite/'
 )({
   component: PolitiqueConfidentialitePage,
+  staleTime: Infinity,
   head: () => {
-    return {
-      ...seo({
-        title: 'Politique de confidentialité',
-        description: `Politique de confidentialité de ${CLUB_INFO.name}. Comment nous collectons, utilisons et protégeons vos données personnelles (RGPD).`,
-        pathname: '/politique-confidentialite'
-      })
-    }
+    return seo({
+      title: 'Politique de confidentialité',
+      description: `Politique de confidentialité de ${CLUB_INFO.name}. Comment nous collectons, utilisons et protégeons vos données personnelles (RGPD).`,
+      pathname: '/politique-confidentialite'
+    })
   }
 })

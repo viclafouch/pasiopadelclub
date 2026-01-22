@@ -233,15 +233,16 @@ const InscriptionPage = () => {
 export const Route = createFileRoute('/_auth/inscription')({
   component: InscriptionPage,
   head: () => {
+    const seoData = seo({
+      title: 'Créer un compte',
+      description:
+        'Créez votre compte Pasio Padel Club et réservez vos créneaux de padel à Bayonne. 7 terrains disponibles, réservation simplifiée.',
+      pathname: '/inscription'
+    })
+
     return {
-      ...seo({
-        title: 'Créer un compte',
-        description:
-          'Créez votre compte Pasio Padel Club et réservez vos créneaux de padel à Bayonne. 7 terrains disponibles, réservation simplifiée.',
-        keywords:
-          'inscription padel bayonne, créer compte padel, réservation terrain padel',
-        pathname: '/inscription'
-      })
+      meta: [{ name: 'robots', content: 'noindex,nofollow' }, ...seoData.meta],
+      links: seoData.links
     }
   }
 })

@@ -138,15 +138,16 @@ const ConnexionPage = () => {
 export const Route = createFileRoute('/_auth/connexion')({
   component: ConnexionPage,
   head: () => {
+    const seoData = seo({
+      title: 'Connexion',
+      description:
+        'Connectez-vous à Pasio Padel Club pour réserver vos créneaux de padel à Bayonne. Accédez à vos réservations et votre historique.',
+      pathname: '/connexion'
+    })
+
     return {
-      ...seo({
-        title: 'Connexion',
-        description:
-          'Connectez-vous à Pasio Padel Club pour réserver vos créneaux de padel à Bayonne. Accédez à vos réservations et votre historique.',
-        keywords:
-          'connexion padel bayonne, se connecter padel, espace membre padel',
-        pathname: '/connexion'
-      })
+      meta: [{ name: 'robots', content: 'noindex,nofollow' }, ...seoData.meta],
+      links: seoData.links
     }
   }
 })

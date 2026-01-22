@@ -306,16 +306,17 @@ const GaleriePage = () => {
 
 export const Route = createFileRoute('/_public__root/galerie/')({
   component: GaleriePage,
+  staleTime: Infinity,
   head: () => {
-    return {
-      ...seo({
-        title: 'Galerie',
-        description:
-          "Découvrez la galerie photos de Pasio Padel Club à Bayonne : nos courts de padel, événements, tournois et l'ambiance du club.",
-        keywords:
-          'photos padel bayonne, terrains padel indoor, club padel pays basque, galerie pasio padel',
-        pathname: '/galerie'
-      })
-    }
+    return seo({
+      title: 'Galerie',
+      description:
+        "Découvrez la galerie photos de Pasio Padel Club à Bayonne : nos courts de padel, événements, tournois et l'ambiance du club.",
+      keywords:
+        'photos padel bayonne, terrains padel indoor, club padel pays basque, galerie pasio padel',
+      pathname: '/galerie',
+      image: '/images/og-image.webp',
+      imageAlt: 'Galerie photos Pasio Padel Club Bayonne'
+    })
   }
 })

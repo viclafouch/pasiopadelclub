@@ -1,8 +1,9 @@
 import { clientEnv } from '@/env/client'
 
-const SITE_NAME = 'Pasio Padel Club' as const satisfies string
-const OG_IMAGE_WIDTH = 1200 as const satisfies number
-const OG_IMAGE_HEIGHT = 630 as const satisfies number
+const SITE_NAME = 'Pasio Padel Club'
+const OG_IMAGE_WIDTH = 1200
+const OG_IMAGE_HEIGHT = 630
+const DEFAULT_OG_IMAGE = '/images/og-image.webp'
 
 type SeoParams = {
   title: string
@@ -26,24 +27,14 @@ function buildUrl(pathname: string) {
   }
 }
 
-type BuildOgImageUrlParams = {
-  image: string | undefined
-  title: string
-}
+function buildOgImageUrl(image: string | undefined) {
+  const imagePath = image ?? DEFAULT_OG_IMAGE
 
-function buildOgImageUrl({ image, title }: BuildOgImageUrlParams) {
-  if (image?.startsWith('http')) {
-    return image
+  if (imagePath.startsWith('http')) {
+    return imagePath
   }
 
-  if (image) {
-    return new URL(image, clientEnv.VITE_SITE_URL).href
-  }
-
-  const ogUrl = new URL('/api/og', clientEnv.VITE_SITE_URL)
-  ogUrl.searchParams.set('title', title)
-
-  return ogUrl.href
+  return new URL(imagePath, clientEnv.VITE_SITE_URL).href
 }
 
 export function seo({
@@ -56,7 +47,7 @@ export function seo({
 }: SeoParams) {
   const fullTitle = `${title} | ${SITE_NAME}`
   const url = buildUrl(pathname)
-  const ogImage = buildOgImageUrl({ image, title })
+  const ogImage = buildOgImageUrl(image)
   const ogImageAlt =
     imageAlt ?? `${title} - ${SITE_NAME} - Courts de padel à Bayonne`
 

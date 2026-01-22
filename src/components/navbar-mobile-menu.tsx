@@ -33,8 +33,8 @@ import type { LinkOptions } from '@tanstack/react-router'
 import { Link, useRouter } from '@tanstack/react-router'
 
 const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits' }, label: 'Packs' },
+  { linkOptions: { to: '/tarifs', preload: 'render' }, label: 'Tarifs' },
+  { linkOptions: { to: '/credits', preload: 'render' }, label: 'Packs' },
   { linkOptions: { to: '/application' }, label: 'Application' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
@@ -278,7 +278,9 @@ export const NavbarMobileMenu = ({
               asChild
               onClick={handleLinkClick}
             >
-              <Link to="/reservation">Réserver un terrain</Link>
+              <Link to="/reservation" preload="render">
+                Réserver un terrain
+              </Link>
             </Button>
           </div>
         </div>

@@ -3,10 +3,7 @@
 import Footer from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { LOCAL_BUSINESS_JSON_LD } from '@/constants/json-ld'
-import {
-  getAuthUserQueryOpts,
-  getCreditPacksQueryOpts
-} from '@/constants/queries'
+import { getAuthUserQueryOpts } from '@/constants/queries'
 import type { CurrentUser } from '@/server/auth'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
@@ -99,8 +96,6 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery(getAuthUserQueryOpts())
-
-    context.queryClient.ensureQueryData(getCreditPacksQueryOpts())
 
     return { user }
   },

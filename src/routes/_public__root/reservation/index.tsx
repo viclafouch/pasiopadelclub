@@ -12,6 +12,7 @@ import {
   getActiveBookingCountQueryOpts,
   getSlotsByDateQueryOpts
 } from '@/constants/queries'
+import { SECOND } from '@/constants/time'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
 import { getValidBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
@@ -240,17 +241,32 @@ const ReservationPage = () => {
 export const Route = createFileRoute('/_public__root/reservation/')({
   component: ReservationPage,
   validateSearch: searchSchema,
+  beforeLoad: ({ context, search }) => {
+    const selectedDate = getValidBookingDateKey({
+      maxDays: DAYS_TO_SHOW,
+      closingHour: CLOSING_HOUR,
+      minSessionMinutes: MIN_SESSION_MINUTES,
+      urlDate: search.date
+    })
+    context.queryClient.ensureQueryData(getSlotsByDateQueryOpts(selectedDate))
+  },
+  staleTime: 30 * SECOND,
   head: () => {
+    const seoData = seo({
+      title: 'Réservation',
+      description:
+        'Réservez votre court de padel en ligne à Pasio Padel Club Bayonne. Choisissez votre créneau parmi nos 7 terrains disponibles 7j/7.',
+      keywords:
+        'réserver terrain padel, booking padel bayonne, réservation court padel en ligne, padel bayonne réservation',
+      pathname: '/reservation',
+      image: '/images/og-image.webp',
+      imageAlt: 'Réserver un terrain de padel à Bayonne - Pasio Padel Club'
+    })
+
     return {
-      ...seo({
-        title: 'Réservation',
-        description:
-          'Réservez votre court de padel en ligne à Pasio Padel Club Bayonne. Choisissez votre créneau parmi nos 7 terrains disponibles 7j/7.',
-        keywords:
-          'réserver terrain padel, booking padel bayonne, réservation court padel en ligne, padel bayonne réservation',
-        pathname: '/reservation'
-      }),
+      meta: seoData.meta,
       links: [
+        ...seoData.links,
         {
           rel: 'preload',
           href: '/images/terrain.webp',

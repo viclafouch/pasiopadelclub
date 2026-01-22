@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { fr } from 'zod/locales'
+import { MINUTE, SECOND } from '@/constants/time'
 import { QueryClient } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
@@ -11,11 +12,22 @@ export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        staleTime: 30 * SECOND,
+        gcTime: 5 * MINUTE,
         refetchOnWindowFocus: process.env.NODE_ENV === 'production',
-        staleTime: 1000 * 60 * 2 // 2min
+        refetchOnReconnect: true,
+        refetchOnMount: true,
+        retry: 3,
+        retryDelay: (attemptIndex) => {
+          return Math.min(SECOND * 2 ** attemptIndex, 30 * SECOND)
+        },
+        structuralSharing: true,
+        networkMode: 'online'
       },
       mutations: {
-        retry: false
+        retry: false,
+        networkMode: 'online',
+        gcTime: 5 * MINUTE
       }
     }
   })
@@ -26,7 +38,14 @@ export function getRouter() {
       queryClient,
       user: null
     },
-    scrollRestoration: false
+    defaultPreload: 'intent',
+    defaultPreloadDelay: 50,
+    defaultPreloadStaleTime: 0,
+    scrollRestoration: true,
+    trailingSlash: 'never',
+    defaultPendingMs: 1000,
+    defaultPendingMinMs: 200,
+    notFoundMode: 'fuzzy'
   })
 
   setupRouterSsrQueryIntegration({

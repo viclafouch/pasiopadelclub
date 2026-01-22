@@ -325,15 +325,16 @@ const TarifsPage = () => {
 
 export const Route = createFileRoute('/_public__root/tarifs/')({
   component: TarifsPage,
+  staleTime: Infinity,
   head: () => {
-    return {
-      ...seo({
-        title: 'Tarifs',
-        description: `Tarifs ${CLUB_INFO.name} à ${CLUB_INFO.address.city} : Double 60€/90min, Simple 30€/60min, Kids 15€/60min. Réservation en ligne 7j/7.`,
-        keywords:
-          'tarif padel bayonne, prix location terrain padel, padel pas cher pays basque, tarif court padel 64',
-        pathname: '/tarifs'
-      })
-    }
+    return seo({
+      title: 'Tarifs',
+      description: `Tarifs ${CLUB_INFO.name} à ${CLUB_INFO.address.city} : Double 60€/90min, Simple 30€/60min, Kids 15€/60min. Réservation en ligne 7j/7.`,
+      keywords:
+        'tarif padel bayonne, prix location terrain padel, padel pas cher pays basque, tarif court padel 64',
+      pathname: '/tarifs',
+      image: '/images/og-image.webp',
+      imageAlt: 'Court de padel Pasio Padel Club - Tarifs et réservation'
+    })
   }
 })

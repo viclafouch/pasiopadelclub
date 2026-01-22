@@ -15,10 +15,10 @@ const config = defineConfig({
     allowedHosts: true
   },
   ssr: {
-    external: ['@resvg/resvg-js', 'ws']
+    external: ['ws']
   },
   optimizeDeps: {
-    exclude: ['@resvg/resvg-js', 'ws']
+    exclude: ['ws']
   },
   plugins: [
     devtools(),

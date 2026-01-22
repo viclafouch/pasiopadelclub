@@ -1,3 +1,4 @@
+import { MINUTE, SECOND } from '@/constants/time'
 import { getCurrentUserFn } from '@/server/auth'
 import {
   getActiveBookingCountFn,
@@ -18,7 +19,7 @@ export const getAuthUserQueryOpts = () => {
   return queryOptions({
     queryKey: [...getAuthUserQueryOpts.all],
     queryFn: getCurrentUserFn,
-    staleTime: 1000 * 60 * 15
+    staleTime: 15 * MINUTE
   })
 }
 
@@ -30,7 +31,7 @@ export const getSlotsByDateQueryOpts = (date: string) => {
     queryFn: () => {
       return getSlotsByDateFn({ data: { date } })
     },
-    staleTime: 1000 * 30
+    staleTime: 30 * SECOND
   })
 }
 
@@ -40,7 +41,7 @@ export const getActiveBookingCountQueryOpts = () => {
   return queryOptions({
     queryKey: [...getActiveBookingCountQueryOpts.all],
     queryFn: getActiveBookingCountFn,
-    staleTime: 1000 * 30
+    staleTime: 30 * SECOND
   })
 }
 
@@ -50,7 +51,7 @@ export const getUpcomingBookingsQueryOpts = () => {
   return queryOptions({
     queryKey: [...getUpcomingBookingsQueryOpts.all],
     queryFn: getUpcomingBookingsFn,
-    staleTime: 1000 * 30
+    staleTime: 30 * SECOND
   })
 }
 
@@ -60,7 +61,7 @@ export const getBookingHistoryQueryOpts = () => {
   return queryOptions({
     queryKey: [...getBookingHistoryQueryOpts.all],
     queryFn: getBookingHistoryFn,
-    staleTime: 1000 * 60 * 5
+    staleTime: 10 * MINUTE
   })
 }
 
@@ -80,7 +81,7 @@ export const getUserBalanceQueryOpts = () => {
   return queryOptions({
     queryKey: [...getUserBalanceQueryOpts.all],
     queryFn: getUserBalanceFn,
-    staleTime: 1000 * 30
+    staleTime: 30 * SECOND
   })
 }
 
@@ -90,7 +91,7 @@ export const getWalletTransactionsQueryOpts = () => {
   return queryOptions({
     queryKey: [...getWalletTransactionsQueryOpts.all],
     queryFn: getWalletTransactionsFn,
-    staleTime: 1000 * 30
+    staleTime: MINUTE
   })
 }
 
@@ -100,7 +101,7 @@ export const getCreditPacksQueryOpts = () => {
   return queryOptions({
     queryKey: [...getCreditPacksQueryOpts.all],
     queryFn: getCreditPacksFn,
-    staleTime: 1000 * 60 * 60 * 24
+    staleTime: Infinity
   })
 }
 
@@ -110,7 +111,7 @@ export const getNextExpiringCreditsQueryOpts = () => {
   return queryOptions({
     queryKey: [...getNextExpiringCreditsQueryOpts.all],
     queryFn: getNextExpiringCreditsFn,
-    staleTime: 1000 * 60 * 5
+    staleTime: 10 * MINUTE
   })
 }
 

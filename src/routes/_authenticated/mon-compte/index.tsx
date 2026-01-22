@@ -8,6 +8,11 @@ import {
   TabsTrigger
 } from '@/components/animate-ui/components/animate/tabs'
 import { BookingCardSkeleton } from '@/components/booking-card'
+import {
+  getActiveBookingCountQueryOpts,
+  getUpcomingBookingsQueryOpts
+} from '@/constants/queries'
+import { SECOND } from '@/constants/time'
 import { seo } from '@/utils/seo'
 import {
   createFileRoute,
@@ -113,15 +118,23 @@ const MonComptePage = () => {
 
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   validateSearch: searchSchema,
+  beforeLoad: ({ context }) => {
+    context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
+    context.queryClient.ensureQueryData(getActiveBookingCountQueryOpts())
+  },
+  staleTime: 30 * SECOND,
   component: MonComptePage,
   head: () => {
+    const seoData = seo({
+      title: 'Mon compte',
+      description:
+        'Gérez vos réservations de padel, consultez votre historique et modifiez vos informations personnelles.',
+      pathname: '/mon-compte'
+    })
+
     return {
-      ...seo({
-        title: 'Mon compte',
-        description:
-          'Gérez vos réservations de padel, consultez votre historique et modifiez vos informations personnelles.',
-        pathname: '/mon-compte'
-      })
+      meta: [{ name: 'robots', content: 'noindex,nofollow' }, ...seoData.meta],
+      links: seoData.links
     }
   }
 })

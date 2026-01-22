@@ -255,6 +255,7 @@ const CgvPage = () => {
 
 export const Route = createFileRoute('/_public__root/cgv/')({
   component: CgvPage,
+  staleTime: Infinity,
   head: () => {
     return seo({
       title: 'Conditions Générales de Vente',

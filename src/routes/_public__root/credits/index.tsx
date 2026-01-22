@@ -166,17 +166,22 @@ const CreditsPage = () => {
 
 export const Route = createFileRoute('/_public__root/credits/')({
   validateSearch: searchSchema,
+  beforeLoad: ({ context }) => {
+    context.queryClient.ensureQueryData(getCreditPacksQueryOpts())
+  },
+  staleTime: Infinity,
   component: CreditsPage,
   head: () => {
-    return {
-      ...seo({
-        title: 'Packs de crédits',
-        description:
-          'Achetez des packs de crédits et économisez sur vos réservations de padel. Bonus exclusifs sur nos packs Starter, Pro et Premium.',
-        keywords:
-          'pack crédits padel, abonnement padel bayonne, forfait padel pays basque, réduction padel',
-        pathname: '/credits'
-      })
-    }
+    return seo({
+      title: 'Packs de crédits',
+      description:
+        'Achetez des packs de crédits et économisez sur vos réservations de padel. Bonus exclusifs sur nos packs Starter, Pro et Premium.',
+      keywords:
+        'pack crédits padel, abonnement padel bayonne, forfait padel pays basque, réduction padel',
+      pathname: '/credits',
+      image: '/images/og-image.webp',
+      imageAlt:
+        'Packs de crédits Pasio Padel Club - Économisez sur vos réservations'
+    })
   }
 })

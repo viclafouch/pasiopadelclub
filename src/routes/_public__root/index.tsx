@@ -26,15 +26,20 @@ const RouteComponent = () => {
 export const Route = createFileRoute('/_public__root/')({
   component: RouteComponent,
   head: () => {
+    const seoData = seo({
+      title: `Réservation de courts de padel à ${CLUB_INFO.address.city}`,
+      description: `${CLUB_INFO.name} à ${CLUB_INFO.address.city} : réservez vos courts de padel en ligne. 7 terrains disponibles 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`,
+      keywords:
+        'padel bayonne, réserver padel pays basque, club padel 64, terrain padel bayonne, padel anglet, padel biarritz',
+      pathname: '/',
+      image: '/images/og-image.webp',
+      imageAlt: 'Pasio Padel Club Bayonne - Courts de padel indoor et outdoor'
+    })
+
     return {
-      ...seo({
-        title: `Réservation de courts de padel à ${CLUB_INFO.address.city}`,
-        description: `${CLUB_INFO.name} à ${CLUB_INFO.address.city} : réservez vos courts de padel en ligne. 7 terrains disponibles 7j/7 de ${CLUB_INFO.hours.open} à ${CLUB_INFO.hours.close}.`,
-        keywords:
-          'padel bayonne, réserver padel pays basque, club padel 64, terrain padel bayonne, padel anglet, padel biarritz',
-        pathname: '/'
-      }),
+      meta: seoData.meta,
       links: [
+        ...seoData.links,
         {
           rel: 'preload',
           href: '/images/background-hero.webp',
