@@ -2,15 +2,14 @@ import { ArrowRight } from 'lucide-react'
 import { z } from 'zod'
 import { FormErrorAlert, FormField } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
-import { getAuthUserQueryOpts } from '@/constants/queries'
 import { emailSchema } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
 import { getSafeRedirect } from '@/helpers/url'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -19,8 +18,6 @@ const loginSchema = z.object({
 
 const ConnexionPage = () => {
   const { redirect: redirectQuery } = Route.useSearch()
-  const router = useRouter()
-  const queryClient = useQueryClient()
   const safeRedirect = getSafeRedirect(redirectQuery)
 
   const signInMutation = useMutation({
@@ -34,9 +31,8 @@ const ConnexionPage = () => {
         throw new Error(error.code)
       }
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      await router.navigate({ to: safeRedirect })
+    onSuccess: () => {
+      window.location.href = safeRedirect
     }
   })
 

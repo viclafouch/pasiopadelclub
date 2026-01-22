@@ -76,7 +76,7 @@ export const Route = createFileRoute('/_auth')({
   validateSearch: authSearchSchema,
   beforeLoad: async ({ context, search }) => {
     if (context.user) {
-      throw redirect({ to: getSafeRedirect(search.redirect), replace: true })
+      throw redirect({ href: getSafeRedirect(search.redirect), replace: true })
     }
   },
   head: () => {
