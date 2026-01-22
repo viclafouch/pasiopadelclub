@@ -183,11 +183,11 @@ const GaleriePage = () => {
     setLightboxIndex(index)
   }
 
-  const closeLightbox = React.useCallback(() => {
+  const closeLightbox = () => {
     setLightboxIndex(null)
-  }, [])
+  }
 
-  const goToPrevious = React.useCallback(() => {
+  const goToPrevious = () => {
     setLightboxIndex((prev) => {
       if (prev === null) {
         return null
@@ -195,9 +195,9 @@ const GaleriePage = () => {
 
       return prev === 0 ? filteredImages.length - 1 : prev - 1
     })
-  }, [filteredImages.length])
+  }
 
-  const goToNext = React.useCallback(() => {
+  const goToNext = () => {
     setLightboxIndex((prev) => {
       if (prev === null) {
         return null
@@ -205,7 +205,7 @@ const GaleriePage = () => {
 
       return prev === filteredImages.length - 1 ? 0 : prev + 1
     })
-  }, [filteredImages.length])
+  }
 
   return (
     <>

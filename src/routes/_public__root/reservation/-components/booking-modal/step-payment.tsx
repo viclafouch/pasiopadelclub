@@ -114,7 +114,7 @@ export const StepPayment = ({
       : undefined
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-6">
       <PaymentMethodSelector
         selectedMethod={paymentMethod}
         onMethodChange={onPaymentMethodChange}

@@ -17,7 +17,9 @@ export const LoadingButton = ({
     <Button disabled={isLoading || disabled} aria-busy={isLoading} {...props}>
       {isLoading ? (
         <>
-          <LoaderIcon className="animate-spin" aria-hidden="true" />
+          <span className="animate-spin">
+            <LoaderIcon aria-hidden="true" />
+          </span>
           {loadingText ?? children}
         </>
       ) : (

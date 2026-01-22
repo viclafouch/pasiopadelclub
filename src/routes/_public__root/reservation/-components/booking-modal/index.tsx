@@ -88,6 +88,10 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
     mutationFn: createPaymentIntentFn
   })
 
+  React.useEffect(() => {
+    queryClient.prefetchQuery(getUserBalanceQueryOpts())
+  }, [queryClient])
+
   const handleClose = () => {
     setIsPaymentStep(false)
     setPaymentMethod('card')
@@ -98,8 +102,6 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
   }
 
   const handleGoToPayment = () => {
-    queryClient.prefetchQuery(getUserBalanceQueryOpts())
-
     if (!paymentIntentMutation.data && !paymentIntentMutation.isPending) {
       paymentIntentMutation.mutate({
         data: {
@@ -176,7 +178,7 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
                   ease: animationEasing
                 }}
               >
-                <div className="mb-2">
+                <div className="mb-6">
                   <BookingSummary selectedSlot={selectedSlot} />
                 </div>
                 <StepPayment

@@ -137,8 +137,7 @@ export const PaymentMethodSelector = ({
             ? 'Solde insuffisant.'
             : 'Aucun crédit disponible.'}{' '}
           <Link
-            to="/mon-compte"
-            search={{ tab: 'credits' }}
+            to="/credits"
             className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
           >
             Acheter des crédits
