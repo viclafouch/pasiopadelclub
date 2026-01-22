@@ -28,6 +28,9 @@ const config = defineConfig({
       routeRules: {
         '/images/**': { headers: IMMUTABLE_CACHE },
         '/fonts/**': { headers: IMMUTABLE_CACHE }
+      },
+      rollupConfig: {
+        external: ['ws']
       }
     }),
     viteReact()
