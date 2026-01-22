@@ -7,6 +7,7 @@ import { getAuthUserQueryOpts } from '@/constants/queries'
 import type { CurrentUser } from '@/server/auth'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -83,6 +84,10 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
             {
               name: 'Tanstack Router',
               render: <TanStackRouterDevtoolsPanel />
+            },
+            {
+              name: 'TanStack Query',
+              render: <ReactQueryDevtoolsPanel />
             }
           ]}
         />

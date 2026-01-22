@@ -51,7 +51,7 @@ export const getUpcomingBookingsQueryOpts = () => {
   return queryOptions({
     queryKey: [...getUpcomingBookingsQueryOpts.all],
     queryFn: getUpcomingBookingsFn,
-    staleTime: 30 * SECOND
+    staleTime: 5 * MINUTE
   })
 }
 
@@ -81,7 +81,7 @@ export const getUserBalanceQueryOpts = () => {
   return queryOptions({
     queryKey: [...getUserBalanceQueryOpts.all],
     queryFn: getUserBalanceFn,
-    staleTime: 30 * SECOND
+    staleTime: 5 * MINUTE
   })
 }
 
@@ -91,7 +91,7 @@ export const getWalletTransactionsQueryOpts = () => {
   return queryOptions({
     queryKey: [...getWalletTransactionsQueryOpts.all],
     queryFn: getWalletTransactionsFn,
-    staleTime: MINUTE
+    staleTime: 2 * MINUTE
   })
 }
 

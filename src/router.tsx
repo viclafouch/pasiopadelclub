@@ -15,14 +15,8 @@ export function getRouter() {
         staleTime: 30 * SECOND,
         gcTime: 5 * MINUTE,
         refetchOnWindowFocus: process.env.NODE_ENV === 'production',
-        refetchOnReconnect: true,
-        refetchOnMount: true,
-        retry: 3,
-        retryDelay: (attemptIndex) => {
-          return Math.min(SECOND * 2 ** attemptIndex, 30 * SECOND)
-        },
-        structuralSharing: true,
-        networkMode: 'online'
+        networkMode: 'online',
+        retry: false
       },
       mutations: {
         retry: false,
@@ -40,9 +34,8 @@ export function getRouter() {
     },
     defaultPreload: 'intent',
     defaultPreloadDelay: 50,
-    defaultPreloadStaleTime: 0,
-    scrollRestoration: true,
-    trailingSlash: 'never',
+    defaultPreloadStaleTime: 30_000,
+    scrollRestoration: false,
     defaultPendingMs: 1000,
     defaultPendingMinMs: 200,
     notFoundMode: 'fuzzy'

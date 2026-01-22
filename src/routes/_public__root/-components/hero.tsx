@@ -36,7 +36,7 @@ export const Hero = () => {
               className="h-12 rounded-full bg-white px-8 text-base text-slate-900 hover:bg-white/90"
               asChild
             >
-              <Link to="/reservation" preload="render">
+              <Link to="/reservation">
                 Réserver un terrain
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -11,12 +11,11 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { getAuthUserQueryOpts } from '@/constants/queries'
 import { profileFormSchema } from '@/constants/schemas'
 import { getErrorMessage } from '@/helpers/error'
 import { updateProfileFn } from '@/server/users'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 
 type EditProfileModalProps = {
@@ -38,7 +37,6 @@ export const EditProfileModal = ({
   defaultValues
 }: EditProfileModalProps) => {
   const router = useRouter()
-  const queryClient = useQueryClient()
 
   const updateProfileMutation = useMutation({
     mutationFn: (values: {
@@ -49,7 +47,6 @@ export const EditProfileModal = ({
       return updateProfileFn({ data: values })
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries(getAuthUserQueryOpts())
       await router.invalidate()
       onSuccess()
       onClose()
