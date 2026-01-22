@@ -5,11 +5,20 @@ import { BookingCta } from '@/components/booking-cta'
 import { CreditPackCard } from '@/components/credit-pack-card'
 import { PageHeader } from '@/components/page-header'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getCreditPacksQueryOpts } from '@/constants/queries'
+import {
+  getCreditPacksQueryOpts,
+  getNextExpiringCreditsQueryOpts,
+  getUserBalanceQueryOpts,
+  getWalletTransactionsQueryOpts
+} from '@/constants/queries'
 import { getErrorMessage } from '@/helpers/error'
 import { createCreditPackCheckoutFn } from '@/server/credits-checkout'
 import { seo } from '@/utils/seo'
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery
+} from '@tanstack/react-query'
 import {
   createFileRoute,
   useNavigate,
@@ -46,8 +55,17 @@ const CreditsPageSkeleton = () => {
 const CreditsPageContent = () => {
   const { success, cancelled } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const queryClient = useQueryClient()
   const { user } = useRouteContext({ from: '/_public__root' })
   const isLoggedIn = user !== null
+
+  React.useEffect(() => {
+    if (success) {
+      queryClient.invalidateQueries(getUserBalanceQueryOpts())
+      queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
+      queryClient.invalidateQueries(getNextExpiringCreditsQueryOpts())
+    }
+  }, [success, queryClient])
 
   const packsQuery = useSuspenseQuery(getCreditPacksQueryOpts())
 

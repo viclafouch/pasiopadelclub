@@ -26,8 +26,7 @@ export function getRouter() {
       queryClient,
       user: null
     },
-    scrollRestoration: false,
-    defaultPreloadStaleTime: 0
+    scrollRestoration: false
   })
 
   setupRouterSsrQueryIntegration({

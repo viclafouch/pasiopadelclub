@@ -151,6 +151,8 @@ export const NavbarMobileMenu = ({
     await authClient.signOut()
     queryClient.removeQueries(getAuthUserQueryOpts())
     queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
+    queryClient.removeQueries({ queryKey: ['bookings'] })
+    queryClient.removeQueries({ queryKey: ['wallet'] })
     onOpenChange(false)
     await router.invalidate()
   }

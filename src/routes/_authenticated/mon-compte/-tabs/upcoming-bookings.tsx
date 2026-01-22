@@ -17,9 +17,12 @@ import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import {
   getActiveBookingCountQueryOpts,
   getBookingHistoryQueryOpts,
-  getUpcomingBookingsQueryOpts
+  getSlotsByDateQueryOpts,
+  getUpcomingBookingsQueryOpts,
+  getUserBalanceQueryOpts,
+  getWalletTransactionsQueryOpts
 } from '@/constants/queries'
-import type { Booking } from '@/constants/types'
+import type { Booking, BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { getErrorMessage } from '@/helpers/error'
 import { cancelBookingFn } from '@/server/bookings'
@@ -34,7 +37,7 @@ import { Link } from '@tanstack/react-router'
 const SUCCESS_NOTIFICATION_DURATION_MS = 5000
 
 type CancelDescriptionProps = {
-  booking: (Booking & { court: { name: string; duration: number } }) | undefined
+  booking: BookingWithCourt | undefined
 }
 
 const CancelDescription = ({ booking }: CancelDescriptionProps) => {
@@ -120,7 +123,7 @@ export const UpcomingBookingsTab = () => {
     mutationFn: (bookingId: string) => {
       return cancelBookingFn({ data: { bookingId } })
     },
-    onSuccess: (_data, bookingId) => {
+    onSuccess: async (_data, bookingId) => {
       const cancelledBooking = upcomingBookingsQuery.data.find((booking) => {
         return booking.id === bookingId
       })
@@ -134,17 +137,26 @@ export const UpcomingBookingsTab = () => {
         })
       }
 
+      await Promise.all([
+        queryClient.invalidateQueries(getUpcomingBookingsQueryOpts()),
+        queryClient.invalidateQueries(getActiveBookingCountQueryOpts()),
+        queryClient.invalidateQueries(getBookingHistoryQueryOpts()),
+        queryClient.invalidateQueries({
+          queryKey: getSlotsByDateQueryOpts.all
+        }),
+        queryClient.invalidateQueries(getUserBalanceQueryOpts()),
+        queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
+      ])
+
+      setIsDialogOpen(false)
+      setCancelingId(null)
+
       setShowSuccess(true)
       setTimeout(() => {
         setShowSuccess(false)
       }, SUCCESS_NOTIFICATION_DURATION_MS)
-
-      queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
-      queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
-      queryClient.invalidateQueries(getBookingHistoryQueryOpts())
     },
-    onSettled: () => {
-      setIsDialogOpen(false)
+    onError: () => {
       setCancelingId(null)
     }
   })

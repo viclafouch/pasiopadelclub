@@ -71,6 +71,8 @@ export const Navbar = () => {
     await authClient.signOut()
     queryClient.removeQueries(getAuthUserQueryOpts())
     queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
+    queryClient.removeQueries({ queryKey: ['bookings'] })
+    queryClient.removeQueries({ queryKey: ['wallet'] })
     await router.invalidate()
   }
 
