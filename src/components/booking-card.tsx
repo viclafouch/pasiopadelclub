@@ -27,7 +27,7 @@ import { formatDateFr, formatDateWithDayFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { cn } from '@/lib/utils'
 import { matchIsBookingInProgress } from '@/utils/booking'
-import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
+import { getLocationLabel } from '@/utils/court'
 
 type BookingCardProps = {
   booking: BookingWithCourt
@@ -61,29 +61,6 @@ const getDisplayStatus = (
   }
 
   return 'confirmed'
-}
-
-type PaymentBadgeProps = {
-  paymentType: Booking['paymentType']
-}
-
-const PaymentBadge = ({ paymentType }: PaymentBadgeProps) => {
-  if (paymentType === 'free') {
-    return null
-  }
-
-  const isCredit = paymentType === 'credit'
-
-  return (
-    <span className="inline-flex items-center gap-1 whitespace-nowrap">
-      {isCredit ? (
-        <WalletIcon className="size-3.5 shrink-0" aria-hidden="true" />
-      ) : (
-        <CreditCardIcon className="size-3.5 shrink-0" aria-hidden="true" />
-      )}
-      <span>{isCredit ? 'Crédits' : 'Carte bancaire'}</span>
-    </span>
-  )
 }
 
 type RefundBadgeProps = {
@@ -160,31 +137,23 @@ export const BookingCard = ({
         />
       </div>
       <div className="relative flex flex-col gap-4 p-5">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-display text-lg font-bold text-foreground">
-                Terrain {court.name}
-              </h3>
-              <Badge className="border-0 bg-primary/90 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
-                {getCourtTypeLabel(court.type)}
-              </Badge>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="font-display text-lg font-bold leading-tight text-foreground">
+              {court.name}
+            </h3>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <TimerIcon className="size-3.5 shrink-0" aria-hidden="true" />
-                <span className="whitespace-nowrap">{court.duration} min</span>
+                <span>{court.duration} min</span>
               </span>
               <span className="inline-flex items-center gap-1">
                 <MapPinIcon className="size-3.5 shrink-0" aria-hidden="true" />
-                <span className="whitespace-nowrap">
-                  {getLocationLabel(court.location)}
-                </span>
+                <span>{getLocationLabel(court.location)}</span>
               </span>
-              <PaymentBadge paymentType={booking.paymentType} />
             </div>
           </div>
-          <Status status={displayStatus} className="shrink-0 self-start">
+          <Status status={displayStatus} className="shrink-0">
             <StatusIndicator />
             <StatusLabel />
           </Status>
@@ -221,9 +190,26 @@ export const BookingCard = ({
           </div>
         </div>
         <footer className="flex items-center justify-between border-t border-primary/15 pt-3">
-          <p className="text-xl font-bold tabular-nums text-primary">
-            {formatCentsToEuros(booking.price)}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-xl font-bold tabular-nums text-primary">
+              {formatCentsToEuros(booking.price)}
+            </p>
+            {booking.paymentType !== 'free' ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-muted/80 px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                {booking.paymentType === 'credit' ? (
+                  <>
+                    <WalletIcon className="size-3.5" aria-hidden="true" />
+                    Crédits
+                  </>
+                ) : (
+                  <>
+                    <CreditCardIcon className="size-3.5" aria-hidden="true" />
+                    Carte
+                  </>
+                )}
+              </span>
+            ) : null}
+          </div>
           <BookingFooterInfo
             isCancelled={isCancelled}
             refundPercentage={refundPercentage}
@@ -273,20 +259,16 @@ export const BookingCard = ({
 export const BookingCardSkeleton = () => {
   return (
     <article className="overflow-hidden rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-white to-white shadow-sm">
-      <div className="flex flex-col gap-4 p-5">
-        <header className="flex items-start justify-between gap-3">
-          <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-6 w-28" />
-              <Skeleton className="h-5 w-16 rounded-full" />
-            </div>
+      <div className="relative flex flex-col gap-4 p-5">
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-40" />
             <div className="flex items-center gap-3">
               <Skeleton className="h-4 w-16" />
               <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-24" />
             </div>
           </div>
-          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-20 shrink-0 rounded-full" />
         </header>
         <div className="space-y-2">
           <Skeleton className="h-14 w-full rounded-lg" />
@@ -296,7 +278,10 @@ export const BookingCardSkeleton = () => {
           </div>
         </div>
         <div className="flex items-center justify-between border-t border-primary/10 pt-3">
-          <Skeleton className="h-7 w-20" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-7 w-20" />
+            <Skeleton className="h-6 w-16 rounded-full" />
+          </div>
           <Skeleton className="h-4 w-28" />
         </div>
       </div>
