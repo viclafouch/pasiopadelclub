@@ -26,7 +26,7 @@ export function getRouter() {
       queryClient,
       user: null
     },
-    scrollRestoration: true,
+    scrollRestoration: false,
     defaultPreloadStaleTime: 0
   })
 
