@@ -25,7 +25,9 @@ import {
   ANIMATION_DURATION,
   ANIMATION_EASING,
   CREDIT_FORM_ID,
+  type ModalAction,
   type PaymentMethod,
+  POLLING_TIMEOUT_MS,
   STRIPE_FORM_ID
 } from './constants'
 import { StepPayment } from './step-payment'
@@ -35,16 +37,6 @@ type BookingModalProps = {
   onClose: () => void
   selectedSlot: SelectedSlot
 }
-
-type StripeFormState = {
-  isReady: boolean
-  isProcessing: boolean
-}
-
-const INITIAL_STRIPE_FORM_STATE = {
-  isReady: false,
-  isProcessing: false
-} as const satisfies StripeFormState
 
 const SLIDE_VARIANTS = {
   enter: (direction: number) => {
@@ -71,16 +63,49 @@ const REDUCED_MOTION_VARIANTS = {
   exit: { opacity: 1 }
 } as const satisfies Variants
 
+type ModalState = {
+  isPaymentStep: boolean
+  paymentMethod: PaymentMethod
+  isStripeReady: boolean
+  isProcessing: boolean
+  pollingStartTime: number | null
+}
+
+const INITIAL_MODAL_STATE = {
+  isPaymentStep: false,
+  paymentMethod: 'card',
+  isStripeReady: false,
+  isProcessing: false,
+  pollingStartTime: null
+} as const satisfies ModalState
+
+const modalReducer = (state: ModalState, action: ModalAction): ModalState => {
+  switch (action.type) {
+    case 'GO_TO_PAYMENT':
+      return { ...state, isPaymentStep: true }
+    case 'BACK_TO_RECAP':
+      return { ...state, isPaymentStep: false }
+    case 'SET_PAYMENT_METHOD':
+      return { ...state, paymentMethod: action.method }
+    case 'SET_STRIPE_STATE':
+      return {
+        ...state,
+        isStripeReady: action.isReady,
+        isProcessing: action.isProcessing
+      }
+    case 'SET_PROCESSING':
+      return { ...state, isProcessing: action.isProcessing }
+    case 'START_POLLING':
+      return { ...state, pollingStartTime: Date.now() }
+    default:
+      return state
+  }
+}
+
 export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
   const queryClient = useQueryClient()
   const shouldReduceMotion = useReducedMotion()
-  const [isPaymentStep, setIsPaymentStep] = React.useState(false)
-  const [paymentMethod, setPaymentMethod] =
-    React.useState<PaymentMethod>('card')
-  const [stripeFormState, setStripeFormState] = React.useState<StripeFormState>(
-    INITIAL_STRIPE_FORM_STATE
-  )
-  const [isCreditProcessing, setIsCreditProcessing] = React.useState(false)
+  const [state, dispatch] = React.useReducer(modalReducer, INITIAL_MODAL_STATE)
   const directionRef = React.useRef<1 | -1>(1)
   const contentRef = React.useRef<HTMLDivElement>(null)
 
@@ -92,14 +117,13 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
     queryClient.prefetchQuery(getUserBalanceQueryOpts())
   }, [queryClient])
 
-  const handleClose = () => {
-    setIsPaymentStep(false)
-    setPaymentMethod('card')
-    setStripeFormState(INITIAL_STRIPE_FORM_STATE)
-    setIsCreditProcessing(false)
-    paymentIntentMutation.reset()
-    onClose()
-  }
+  const hasPollingTimedOut =
+    state.pollingStartTime !== null &&
+    Date.now() - state.pollingStartTime >= POLLING_TIMEOUT_MS
+
+  const isPolling = state.pollingStartTime !== null && !hasPollingTimedOut
+
+  const canClose = !state.isProcessing && !isPolling
 
   const handleGoToPayment = () => {
     if (!paymentIntentMutation.data && !paymentIntentMutation.isPending) {
@@ -113,14 +137,20 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
     }
 
     directionRef.current = 1
-    setIsPaymentStep(true)
+    dispatch({ type: 'GO_TO_PAYMENT' })
     contentRef.current?.focus()
   }
 
   const handleBackToRecap = () => {
     directionRef.current = -1
-    setIsPaymentStep(false)
+    dispatch({ type: 'BACK_TO_RECAP' })
     contentRef.current?.focus()
+  }
+
+  const handleClose = () => {
+    if (canClose) {
+      onClose()
+    }
   }
 
   const slideVariants = shouldReduceMotion
@@ -130,21 +160,19 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
   const animationDuration = shouldReduceMotion ? 0 : ANIMATION_DURATION
   const animationEasing = shouldReduceMotion ? 'linear' : ANIMATION_EASING
 
-  const isProcessing =
-    paymentMethod === 'card' ? stripeFormState.isProcessing : isCreditProcessing
-
   const isDisabled =
-    paymentMethod === 'card'
-      ? !stripeFormState.isReady ||
-        stripeFormState.isProcessing ||
+    isPolling ||
+    (state.paymentMethod === 'card'
+      ? !state.isStripeReady ||
+        state.isProcessing ||
         paymentIntentMutation.isPending
-      : isCreditProcessing
+      : state.isProcessing)
 
   const paymentFormId =
-    paymentMethod === 'card' ? STRIPE_FORM_ID : CREDIT_FORM_ID
+    state.paymentMethod === 'card' ? STRIPE_FORM_ID : CREDIT_FORM_ID
 
   const paymentButtonLabel =
-    paymentMethod === 'card'
+    state.paymentMethod === 'card'
       ? `Payer ${formatCentsToEuros(selectedSlot.court.price)}`
       : `Utiliser ${formatCentsToEuros(selectedSlot.court.price)} de crédits`
 
@@ -156,7 +184,7 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
       >
         <DialogHeader className="border-b bg-muted/30 px-6 py-4">
           <DialogTitle className="text-center text-lg">
-            {isPaymentStep ? 'Paiement' : 'Récapitulatif'}
+            {state.isPaymentStep ? 'Paiement' : 'Récapitulatif'}
           </DialogTitle>
         </DialogHeader>
         <div
@@ -164,7 +192,7 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
           tabIndex={-1}
           className="min-h-0 flex-1 overflow-y-auto p-6 outline-none"
         >
-          {isPaymentStep ? (
+          {state.isPaymentStep ? (
             <AnimatePresence mode="wait" custom={directionRef.current}>
               <motion.div
                 key="payment"
@@ -184,10 +212,10 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
                 <StepPayment
                   selectedSlot={selectedSlot}
                   paymentIntentMutation={paymentIntentMutation}
-                  paymentMethod={paymentMethod}
-                  onPaymentMethodChange={setPaymentMethod}
-                  onStripeStateChange={setStripeFormState}
-                  onCreditProcessingChange={setIsCreditProcessing}
+                  paymentMethod={state.paymentMethod}
+                  isPolling={isPolling}
+                  hasPollingTimedOut={hasPollingTimedOut}
+                  dispatch={dispatch}
                   onEscape={handleClose}
                 />
               </motion.div>
@@ -200,10 +228,10 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
           <Button
             type="button"
             variant="outline"
-            onClick={isPaymentStep ? handleBackToRecap : onClose}
-            disabled={isProcessing}
+            onClick={state.isPaymentStep ? handleBackToRecap : handleClose}
+            disabled={!canClose}
           >
-            {isPaymentStep ? (
+            {state.isPaymentStep ? (
               <>
                 <ArrowLeftIcon aria-hidden="true" />
                 Retour
@@ -212,11 +240,11 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
               'Annuler'
             )}
           </Button>
-          {isPaymentStep ? (
+          {state.isPaymentStep ? (
             <LoadingButton
               type="submit"
               form={paymentFormId}
-              isLoading={isProcessing}
+              isLoading={state.isProcessing}
               disabled={isDisabled}
             >
               {paymentButtonLabel}

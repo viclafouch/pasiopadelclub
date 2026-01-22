@@ -2,6 +2,11 @@ import type { Appearance } from '@stripe/stripe-js'
 
 export type PaymentMethod = 'card' | 'credit'
 
+export type StripeFormState = {
+  isReady: boolean
+  isProcessing: boolean
+}
+
 export type SummaryItem = {
   emoji: string
   bg: string
@@ -36,10 +41,10 @@ export const AMENITIES = [
   }
 ] as const satisfies SummaryItem[]
 
-export const STRIPE_FORM_ID = 'stripe-payment-form' as const
-export const CREDIT_FORM_ID = 'credit-payment-form' as const
+export const STRIPE_FORM_ID = 'stripe-payment-form'
+export const CREDIT_FORM_ID = 'credit-payment-form'
 
-export const ANIMATION_DURATION = 0.15 as const
+export const ANIMATION_DURATION = 0.15
 export const ANIMATION_EASING = [0.4, 0, 0.2, 1] as const
 
 export const STRIPE_APPEARANCE = {
@@ -88,3 +93,14 @@ export const STRIPE_APPEARANCE = {
 } as const satisfies Appearance
 
 export const BOOKING_QUERY_KEYS = ['wallet', 'bookings', 'slots'] as const
+
+export const POLLING_INTERVAL_MS = 1500
+export const POLLING_TIMEOUT_MS = 30000
+
+export type ModalAction =
+  | { type: 'GO_TO_PAYMENT' }
+  | { type: 'BACK_TO_RECAP' }
+  | { type: 'SET_PAYMENT_METHOD'; method: PaymentMethod }
+  | { type: 'SET_STRIPE_STATE'; isReady: boolean; isProcessing: boolean }
+  | { type: 'SET_PROCESSING'; isProcessing: boolean }
+  | { type: 'START_POLLING' }

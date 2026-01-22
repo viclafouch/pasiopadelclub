@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { clientEnv } from '@/env/client'
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import type { StripePaymentElementOptions } from '@stripe/stripe-js'
-import { STRIPE_FORM_ID } from './constants'
+import { STRIPE_FORM_ID, type StripeFormState } from './constants'
 
 const PAYMENT_ELEMENT_OPTIONS = {
   layout: {
@@ -18,13 +18,8 @@ const PAYMENT_ELEMENT_OPTIONS = {
   }
 } as const satisfies StripePaymentElementOptions
 
-type StripeFormState = {
-  isReady: boolean
-  isProcessing: boolean
-}
-
 type StripePaymentFormProps = {
-  onSuccess: () => void
+  onSuccess: (paymentIntentId: string) => void
   onStateChange: (state: StripeFormState) => void
   onEscape: () => void
 }
@@ -85,13 +80,14 @@ export const StripePaymentForm = ({
       }
 
       /* eslint-disable camelcase */
-      const { error: confirmError } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${clientEnv.VITE_SITE_URL}/reservation/success`
-        },
-        redirect: 'if_required'
-      })
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${clientEnv.VITE_SITE_URL}/reservation/success`
+          },
+          redirect: 'if_required'
+        })
       /* eslint-enable camelcase */
 
       if (confirmError) {
@@ -100,7 +96,13 @@ export const StripePaymentForm = ({
         return
       }
 
-      onSuccess()
+      if (!paymentIntent?.id) {
+        resetProcessingState('Erreur de confirmation du paiement')
+
+        return
+      }
+
+      onSuccess(paymentIntent.id)
     } catch (caughtError) {
       const message =
         caughtError instanceof Error

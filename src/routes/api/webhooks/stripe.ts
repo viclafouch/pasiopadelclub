@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { addMonths } from 'date-fns'
-import { and, eq, gt, isNull, lt, or, sum } from 'drizzle-orm'
+import { and, eq, gt, isNull, or, sum } from 'drizzle-orm'
 import type Stripe from 'stripe'
 import {
   bookingMetadataSchema,
@@ -9,21 +9,15 @@ import {
 } from '@/constants/schemas'
 import { STRIPE_METADATA_TYPE_CREDIT_PACK } from '@/constants/wallet'
 import { db } from '@/db'
-import {
-  booking,
-  court,
-  creditPack,
-  user,
-  walletTransaction
-} from '@/db/schema'
-import { BookingConfirmationEmail, CreditPackPurchaseEmail } from '@/emails'
+import { creditPack, user, walletTransaction } from '@/db/schema'
+import { CreditPackPurchaseEmail } from '@/emails'
 import { serverEnv } from '@/env/server'
-import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
+import { formatDateFr, nowParis } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { extractFirstName } from '@/helpers/string'
 import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
 import { stripe } from '@/lib/stripe.server'
-import { safeRefund } from '@/utils/stripe'
+import { createBookingFromPayment } from '@/utils/booking-creation'
 import { createFileRoute } from '@tanstack/react-router'
 
 function maskId(id: string) {
@@ -150,19 +144,19 @@ async function handleCreditPackPurchase(
     })
 }
 
-type CreateBookingFromPaymentParams = {
+type HandleBookingPaymentParams = {
   paymentIntentId: string
   amountPaid: number
   metadata: unknown
   source: 'payment_intent' | 'checkout'
 }
 
-async function createBookingFromPayment({
+async function handleBookingPayment({
   paymentIntentId,
   amountPaid,
   metadata,
   source
-}: CreateBookingFromPaymentParams): Promise<void> {
+}: HandleBookingPaymentParams): Promise<void> {
   const parsed = bookingMetadataSchema.safeParse(metadata)
 
   if (!parsed.success) {
@@ -177,101 +171,30 @@ async function createBookingFromPayment({
 
   const { courtId, userId, startAt, endAt } = parsed.data
 
-  const [[userData], [courtData]] = await Promise.all([
-    db.select().from(user).where(eq(user.id, userId)).limit(1),
-    db.select().from(court).where(eq(court.id, courtId)).limit(1)
-  ])
+  const result = await createBookingFromPayment({
+    paymentIntentId,
+    amountPaid,
+    courtId,
+    userId,
+    startAt,
+    endAt
+  })
 
-  if (!userData) {
-    console.error('[Webhook] User not found:', maskId(userId))
-
-    return
-  }
-
-  if (!courtData) {
-    console.error('[Webhook] Court not found:', maskId(courtId))
-
-    return
-  }
-
-  if (amountPaid !== courtData.price) {
-    console.error('[Webhook] Price mismatch:', {
-      expected: courtData.price,
-      paid: amountPaid
-    })
-    await safeRefund({ paymentIntentId, reason: 'fraudulent' })
-
-    return
-  }
-
-  const [existingBooking] = await db
-    .select({ id: booking.id })
-    .from(booking)
-    .where(
-      and(
-        eq(booking.courtId, courtId),
-        eq(booking.status, 'confirmed'),
-        lt(booking.startAt, endAt),
-        gt(booking.endAt, startAt)
-      )
+  if (result.success) {
+    console.log('[Webhook] Booking processed:', maskId(result.bookingId))
+  } else {
+    console.log(
+      '[Webhook] Booking failed, refunded:',
+      maskId(paymentIntentId),
+      result.reason
     )
-    .limit(1)
-
-  if (existingBooking) {
-    console.error('[Webhook] Slot conflict - auto refund:', {
-      courtId: maskId(courtId),
-      paymentId: maskId(paymentIntentId)
-    })
-    await safeRefund({ paymentIntentId, reason: 'duplicate' })
-
-    return
   }
-
-  const insertedRows = await db
-    .insert(booking)
-    .values({
-      userId: userData.id,
-      courtId,
-      startAt,
-      endAt,
-      price: courtData.price,
-      paymentType: 'online',
-      status: 'confirmed',
-      stripePaymentId: paymentIntentId
-    })
-    .onConflictDoNothing({ target: booking.stripePaymentId })
-    .returning({ id: booking.id })
-
-  if (insertedRows.length === 0) {
-    console.log('[Webhook] Payment already processed:', maskId(paymentIntentId))
-
-    return
-  }
-
-  console.log('[Webhook] Booking created:', maskId(insertedRows[0]?.id ?? ''))
-
-  resend.emails
-    .send({
-      from: EMAIL_FROM,
-      to: getEmailRecipient(userData.email),
-      subject: `Réservation confirmée - ${courtData.name} le ${formatDateFr(startAt)}`,
-      react: BookingConfirmationEmail({
-        firstName: userData.firstName ?? extractFirstName(userData.name),
-        courtName: courtData.name,
-        date: formatDateFr(startAt),
-        startTime: formatTimeFr(startAt),
-        endTime: formatTimeFr(endAt),
-        price: formatCentsToEuros(courtData.price),
-        baseUrl: serverEnv.VITE_SITE_URL
-      })
-    })
-    .catch(console.error)
 }
 
 async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent
 ): Promise<void> {
-  await createBookingFromPayment({
+  await handleBookingPayment({
     paymentIntentId: paymentIntent.id,
     amountPaid: paymentIntent.amount,
     metadata: paymentIntent.metadata,
@@ -298,7 +221,7 @@ async function handleCheckoutCompleted(
     return
   }
 
-  await createBookingFromPayment({
+  await handleBookingPayment({
     paymentIntentId,
     amountPaid,
     metadata: session.metadata,
