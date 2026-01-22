@@ -39,7 +39,7 @@ type CancelDescriptionProps = {
 
 const CancelDescription = ({ booking }: CancelDescriptionProps) => {
   if (!booking) {
-    return <>Voulez-vous vraiment annuler cette réservation ?</>
+    return <>Souhaitez-vous continuer ?</>
   }
 
   const isFullRefund = matchIsFullRefund(new Date(booking.startAt))
@@ -47,19 +47,19 @@ const CancelDescription = ({ booking }: CancelDescriptionProps) => {
   return (
     <div className="space-y-3">
       <p>
-        Voulez-vous vraiment annuler votre réservation du{' '}
+        Vous êtes sur le point d&apos;annuler votre réservation du{' '}
         <span className="font-medium">
           {formatDateFr(new Date(booking.startAt))}
         </span>{' '}
         à{' '}
         <span className="font-medium">
           {formatTimeFr(new Date(booking.startAt))}
-        </span>{' '}
-        ?
+        </span>
+        .
       </p>
       {isFullRefund ? (
         <p className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-700">
-          Vous serez remboursé{' '}
+          Bonne nouvelle : vous serez remboursé{' '}
           <span className="font-semibold">intégralement</span> car
           l&apos;annulation intervient plus de 24h avant le créneau.
         </p>
@@ -70,6 +70,7 @@ const CancelDescription = ({ booking }: CancelDescriptionProps) => {
           intervient moins de 24h avant le créneau.
         </p>
       )}
+      <p className="text-muted-foreground">Souhaitez-vous continuer ?</p>
     </div>
   )
 }
