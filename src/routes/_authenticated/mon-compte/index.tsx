@@ -85,26 +85,26 @@ const MonComptePage = () => {
               )
             })}
           </TabsList>
-          <React.Activity mode={tab === 'reservations' ? 'visible' : 'hidden'}>
+          {tab === 'reservations' ? (
             <React.Suspense fallback={<BookingsSkeleton />}>
               <UpcomingBookingsTab />
             </React.Suspense>
-          </React.Activity>
-          <React.Activity mode={tab === 'historique' ? 'visible' : 'hidden'}>
+          ) : null}
+          {tab === 'historique' ? (
             <React.Suspense fallback={<BookingsSkeleton />}>
               <HistoryTab />
             </React.Suspense>
-          </React.Activity>
-          <React.Activity mode={tab === 'credits' ? 'visible' : 'hidden'}>
+          ) : null}
+          {tab === 'credits' ? (
             <React.Suspense fallback={<CreditsTabSkeleton />}>
               <CreditsTab />
             </React.Suspense>
-          </React.Activity>
-          <React.Activity mode={tab === 'profil' ? 'visible' : 'hidden'}>
+          ) : null}
+          {tab === 'profil' ? (
             <React.Suspense fallback={<ProfileTabSkeleton />}>
               <ProfileTab user={user} />
             </React.Suspense>
-          </React.Activity>
+          ) : null}
         </Tabs>
       </div>
     </div>
