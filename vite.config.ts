@@ -14,9 +14,6 @@ const config = defineConfig({
   server: {
     allowedHosts: true
   },
-  ssr: {
-    external: ['ws']
-  },
   optimizeDeps: {
     exclude: ['ws']
   },
@@ -28,24 +25,9 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      rollupConfig: {
-        external: ['@resvg/resvg-js', 'ws']
-      },
       routeRules: {
-        '/**': {
-          headers: {
-            'Strict-Transport-Security':
-              'max-age=31536000; includeSubDomains; preload',
-            'X-Frame-Options': 'DENY',
-            'X-Content-Type-Options': 'nosniff',
-            'Referrer-Policy': 'strict-origin-when-cross-origin'
-          }
-        },
         '/images/**': { headers: IMMUTABLE_CACHE },
-        '/fonts/**': { headers: IMMUTABLE_CACHE },
-        '/**/*.webp': { headers: IMMUTABLE_CACHE },
-        '/**/*.png': { headers: IMMUTABLE_CACHE },
-        '/**/*.ico': { headers: IMMUTABLE_CACHE }
+        '/fonts/**': { headers: IMMUTABLE_CACHE }
       }
     }),
     viteReact()

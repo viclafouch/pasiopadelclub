@@ -57,7 +57,8 @@ const InscriptionPage = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      await router.navigate({ to: '/' })
+      await router.invalidate({ sync: true })
+      router.navigate({ to: '/' })
     }
   })
 

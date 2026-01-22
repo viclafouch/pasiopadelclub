@@ -23,35 +23,27 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {
   getActiveBookingCountQueryOpts,
-  getAuthUserQueryOpts,
-  getSlotsByDateQueryOpts,
   getUserBalanceQueryOpts
 } from '@/constants/queries'
 import type { User } from '@/constants/types'
 import { formatCentsToEuros } from '@/helpers/number'
 import { useScrollFade } from '@/hooks/use-scroll-fade'
-import { authClient } from '@/lib/auth-client'
+import { useSignOut } from '@/hooks/use-sign-out'
 import { cn } from '@/lib/utils'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import type { LinkOptions } from '@tanstack/react-router'
-import {
-  Link,
-  useLocation,
-  useRouteContext,
-  useRouter
-} from '@tanstack/react-router'
+import { Link, useLocation, useRouteContext } from '@tanstack/react-router'
 
 const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs', preload: 'render' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits', preload: 'render' }, label: 'Packs' },
+  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
+  { linkOptions: { to: '/credits' }, label: 'Packs' },
   { linkOptions: { to: '/application' }, label: 'Application' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
 export const Navbar = () => {
   const { user } = useRouteContext({ from: '__root__' })
-  const router = useRouter()
   const location = useLocation()
-  const queryClient = useQueryClient()
+  const signOut = useSignOut()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
 
   const isOverlay = location.pathname === '/'
@@ -66,15 +58,6 @@ export const Navbar = () => {
     ...getActiveBookingCountQueryOpts(),
     enabled: Boolean(user)
   })
-
-  const handleSignOut = async () => {
-    await authClient.signOut()
-    queryClient.removeQueries(getAuthUserQueryOpts())
-    queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
-    queryClient.removeQueries({ queryKey: ['bookings'] })
-    queryClient.removeQueries({ queryKey: ['wallet'] })
-    await router.invalidate()
-  }
 
   const getInitials = (
     firstName: User['firstName'],
@@ -132,9 +115,7 @@ export const Navbar = () => {
               className="hidden rounded-full bg-white text-slate-900 hover:bg-white/90 sm:inline-flex"
               asChild
             >
-              <Link to="/reservation" preload="render">
-                Réserver un terrain
-              </Link>
+              <Link to="/reservation">Réserver un terrain</Link>
             </Button>
             <div className="hidden lg:flex lg:items-center">
               {user ? (
@@ -218,7 +199,7 @@ export const Navbar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={handleSignOut}
+                      onClick={signOut}
                       className="cursor-pointer text-destructive focus:text-destructive"
                     >
                       <LogOut className="size-4" />

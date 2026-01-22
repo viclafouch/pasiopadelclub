@@ -20,21 +20,19 @@ import {
 import { Separator } from '@/components/ui/separator'
 import {
   getActiveBookingCountQueryOpts,
-  getAuthUserQueryOpts,
-  getSlotsByDateQueryOpts,
   getUserBalanceQueryOpts
 } from '@/constants/queries'
 import type { User } from '@/constants/types'
 import { formatCentsToEuros } from '@/helpers/number'
-import { authClient } from '@/lib/auth-client'
+import { useSignOut } from '@/hooks/use-sign-out'
 import { cn } from '@/lib/utils'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import type { LinkOptions } from '@tanstack/react-router'
-import { Link, useRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 
 const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs', preload: 'render' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits', preload: 'render' }, label: 'Packs' },
+  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
+  { linkOptions: { to: '/credits' }, label: 'Packs' },
   { linkOptions: { to: '/application' }, label: 'Application' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
 
@@ -128,8 +126,7 @@ export const NavbarMobileMenu = ({
   onOpenChange,
   user
 }: NavbarMobileMenuProps) => {
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const signOut = useSignOut()
   const closeButtonRef = React.useRef<HTMLButtonElement>(null)
 
   const handleOpenAutoFocus = (event: Event) => {
@@ -148,13 +145,8 @@ export const NavbarMobileMenu = ({
   })
 
   const handleSignOut = async () => {
-    await authClient.signOut()
-    queryClient.removeQueries(getAuthUserQueryOpts())
-    queryClient.removeQueries({ queryKey: getSlotsByDateQueryOpts.all })
-    queryClient.removeQueries({ queryKey: ['bookings'] })
-    queryClient.removeQueries({ queryKey: ['wallet'] })
     onOpenChange(false)
-    await router.invalidate()
+    await signOut()
   }
 
   const handleLinkClick = () => {
@@ -278,9 +270,7 @@ export const NavbarMobileMenu = ({
               asChild
               onClick={handleLinkClick}
             >
-              <Link to="/reservation" preload="render">
-                Réserver un terrain
-              </Link>
+              <Link to="/reservation">Réserver un terrain</Link>
             </Button>
           </div>
         </div>
