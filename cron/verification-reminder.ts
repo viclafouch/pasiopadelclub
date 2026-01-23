@@ -12,7 +12,7 @@ import { extractFirstName, maskEmail } from '@/helpers/string'
 import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
 
 const REMINDER_HOURS = 48
-const REMINDER_WINDOW_HOURS = 2
+const REMINDER_WINDOW_HOURS = 12
 const TOKEN_EXPIRY_DAYS = 1
 
 function generateToken() {
