@@ -1,7 +1,7 @@
 import { HomeIcon, RefreshCwIcon, XCircleIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { seo } from '@/utils/seo'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 
 const ReservationEchecPage = () => {
   return (
@@ -40,6 +40,11 @@ const ReservationEchecPage = () => {
 }
 
 export const Route = createFileRoute('/_public__root/reservation/echec')({
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: '/' })
+    }
+  },
   head: () => {
     const seoData = seo({
       title: 'Paiement échoué',

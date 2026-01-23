@@ -14,14 +14,26 @@ import {
   type Variants
 } from 'motion/react'
 import { Button } from '@/components/ui/button'
-import { getLatestBookingQueryOpts } from '@/constants/queries'
+import {
+  getActiveBookingCountQueryOpts,
+  getLatestBookingQueryOpts,
+  getSlotsByDateQueryOpts,
+  getUpcomingBookingsQueryOpts,
+  getUserBalanceQueryOpts,
+  getWalletTransactionsQueryOpts
+} from '@/constants/queries'
 import type { BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import { formatCentsToEuros } from '@/helpers/number'
 import { getCourtTypeLabel, getLocationLabel } from '@/utils/court'
 import { seo } from '@/utils/seo'
-import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  ClientOnly,
+  createFileRoute,
+  Link,
+  redirect
+} from '@tanstack/react-router'
 
 const CONFETTI_COLORS = [
   'rgb(var(--color-primary))',
@@ -406,8 +418,17 @@ const buttonVariants: Variants = {
 }
 
 const ReservationSuccessPage = () => {
-  const latestBookingQuery = useQuery(getLatestBookingQueryOpts())
+  const { booking } = Route.useLoaderData()
+  const queryClient = useQueryClient()
   const shouldReduceMotion = useReducedMotion()
+
+  React.useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: getSlotsByDateQueryOpts.all })
+    queryClient.invalidateQueries(getUserBalanceQueryOpts())
+    queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
+    queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
+    queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
+  }, [queryClient])
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-muted/30 via-background to-muted/30">
@@ -415,9 +436,11 @@ const ReservationSuccessPage = () => {
         <div className="absolute left-1/4 top-1/4 size-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 size-96 rounded-full bg-emerald-500/5 blur-3xl" />
       </div>
-      <AnimatePresence>
-        <Confetti shouldReduceMotion={shouldReduceMotion} />
-      </AnimatePresence>
+      <ClientOnly>
+        <AnimatePresence>
+          <Confetti shouldReduceMotion={shouldReduceMotion} />
+        </AnimatePresence>
+      </ClientOnly>
       <div className="container relative flex min-h-screen flex-col items-center justify-center py-12">
         <motion.div
           variants={shouldReduceMotion ? undefined : containerVariants}
@@ -456,16 +479,14 @@ const ReservationSuccessPage = () => {
               votre réservation.
             </motion.p>
           </motion.div>
-          {latestBookingQuery.data ? (
-            <motion.div
-              variants={shouldReduceMotion ? undefined : ticketVariants}
-              initial={shouldReduceMotion ? 'visible' : 'hidden'}
-              animate="visible"
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              <BookingTicket booking={latestBookingQuery.data} />
-            </motion.div>
-          ) : null}
+          <motion.div
+            variants={shouldReduceMotion ? undefined : ticketVariants}
+            initial={shouldReduceMotion ? 'visible' : 'hidden'}
+            animate="visible"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            <BookingTicket booking={booking} />
+          </motion.div>
           <motion.div
             variants={shouldReduceMotion ? undefined : containerVariants}
             className="flex flex-col gap-3 sm:flex-row"
@@ -503,6 +524,22 @@ const ReservationSuccessPage = () => {
 }
 
 export const Route = createFileRoute('/_public__root/reservation/success')({
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: '/' })
+    }
+  },
+  loader: async ({ context }) => {
+    const booking = await context.queryClient.fetchQuery(
+      getLatestBookingQueryOpts()
+    )
+
+    if (!booking) {
+      throw redirect({ to: '/reservation' })
+    }
+
+    return { booking }
+  },
   head: () => {
     const seoData = seo({
       title: 'Réservation confirmée',

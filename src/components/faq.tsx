@@ -48,10 +48,10 @@ export const Faq = () => {
         FAQ
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
-        {FAQ_ITEMS.map((item, index) => {
+        {FAQ_ITEMS.map((item) => {
           return (
             <div
-              key={index}
+              key={item.question}
               itemScope
               itemProp="mainEntity"
               itemType="https://schema.org/Question"

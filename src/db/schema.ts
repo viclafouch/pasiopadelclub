@@ -196,7 +196,8 @@ export const booking = pgTable(
       index('booking_court_id_idx').on(table.courtId),
       index('booking_start_at_idx').on(table.startAt),
       index('booking_status_idx').on(table.status),
-      index('booking_user_status_idx').on(table.userId, table.status)
+      index('booking_user_status_idx').on(table.userId, table.status),
+      index('booking_user_start_idx').on(table.userId, table.startAt.desc())
     ]
   }
 )

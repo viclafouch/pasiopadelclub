@@ -10,6 +10,12 @@ const IMMUTABLE_CACHE = {
   'Cache-Control': 'public, max-age=31536000, immutable'
 }
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
+}
+
 const config = defineConfig({
   server: {
     allowedHosts: true
@@ -26,8 +32,9 @@ const config = defineConfig({
     tanstackStart(),
     nitro({
       routeRules: {
-        '/images/**': { headers: IMMUTABLE_CACHE },
-        '/fonts/**': { headers: IMMUTABLE_CACHE }
+        '/**': { headers: SECURITY_HEADERS },
+        '/images/**': { headers: { ...SECURITY_HEADERS, ...IMMUTABLE_CACHE } },
+        '/fonts/**': { headers: { ...SECURITY_HEADERS, ...IMMUTABLE_CACHE } }
       },
       rollupConfig: {
         external: ['ws']

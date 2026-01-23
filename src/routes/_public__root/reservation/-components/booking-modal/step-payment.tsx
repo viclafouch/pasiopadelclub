@@ -9,13 +9,8 @@ import {
 import { motion, useReducedMotion } from 'motion/react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
-  getActiveBookingCountQueryOpts,
   getAuthUserQueryOpts,
-  getLatestBookingQueryOpts,
-  getSlotsByDateQueryOpts,
-  getUpcomingBookingsQueryOpts,
-  getUserBalanceQueryOpts,
-  getWalletTransactionsQueryOpts
+  getUserBalanceQueryOpts
 } from '@/constants/queries'
 import type { BookingSlotData, SelectedSlot } from '@/constants/types'
 import { getErrorMessage } from '@/helpers/error'
@@ -27,7 +22,7 @@ import type { createPaymentIntentFn } from '@/server/payment-intent'
 import { Elements } from '@stripe/react-stripe-js'
 import type { StripeElementsOptions } from '@stripe/stripe-js'
 import type { UseMutationResult } from '@tanstack/react-query'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
   CREDIT_FORM_ID,
@@ -65,7 +60,6 @@ export const StepPayment = ({
   onEscape
 }: StepPaymentProps) => {
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const shouldReduceMotion = useReducedMotion()
   const { court, slot } = selectedSlot
   const authUserQuery = useQuery(getAuthUserQueryOpts())
@@ -96,33 +90,11 @@ export const StepPayment = ({
   const hasPollingError =
     bookingStatusQuery.isError && bookingStatusQuery.failureCount >= 3
 
-  const invalidateBookingQueries = React.useCallback(() => {
-    queryClient
-      .invalidateQueries({ queryKey: getSlotsByDateQueryOpts.all })
-      .catch(console.error)
-    queryClient
-      .invalidateQueries(getUserBalanceQueryOpts())
-      .catch(console.error)
-    queryClient
-      .invalidateQueries(getWalletTransactionsQueryOpts())
-      .catch(console.error)
-    queryClient
-      .invalidateQueries(getUpcomingBookingsQueryOpts())
-      .catch(console.error)
-    queryClient
-      .invalidateQueries(getActiveBookingCountQueryOpts())
-      .catch(console.error)
-
-    return queryClient.invalidateQueries(getLatestBookingQueryOpts())
-  }, [queryClient])
-
   React.useEffect(() => {
     if (bookingStatusQuery.data?.found) {
-      invalidateBookingQueries().then(() => {
-        navigate({ to: '/reservation/success' })
-      })
+      navigate({ to: '/reservation/success' })
     }
-  }, [bookingStatusQuery.data, invalidateBookingQueries, navigate])
+  }, [bookingStatusQuery.data, navigate])
 
   const creditMutation = useMutation({
     mutationFn: (data: BookingSlotData) => {
@@ -134,8 +106,7 @@ export const StepPayment = ({
     onSettled: () => {
       dispatch({ type: 'SET_PROCESSING', isProcessing: false })
     },
-    onSuccess: async () => {
-      await invalidateBookingQueries()
+    onSuccess: () => {
       navigate({ to: '/reservation/success' })
     }
   })

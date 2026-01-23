@@ -60,27 +60,25 @@ const SlotsContent = ({
 }: SlotsContentProps) => {
   const slotsQuery = useSuspenseQuery(getSlotsByDateQueryOpts(selectedDate))
 
-  const courtGroups = React.useMemo(() => {
-    const filteredCourts = filterCourts({
-      courts: slotsQuery.data,
-      courtType,
-      location,
-      availability
-    })
+  const filteredCourts = filterCourts({
+    courts: slotsQuery.data,
+    courtType,
+    location,
+    availability
+  })
 
-    const groupedByType = Map.groupBy(filteredCourts, (item) => {
-      return item.court.type
-    })
+  const groupedByType = Map.groupBy(filteredCourts, (item) => {
+    return item.court.type
+  })
 
-    return COURT_TYPE_ORDER.map((type) => {
-      return {
-        type,
-        courts: groupedByType.get(type) ?? []
-      }
-    }).filter((group) => {
-      return group.courts.length > 0
-    })
-  }, [slotsQuery.data, courtType, location, availability])
+  const courtGroups = COURT_TYPE_ORDER.map((type) => {
+    return {
+      type,
+      courts: groupedByType.get(type) ?? []
+    }
+  }).filter((group) => {
+    return group.courts.length > 0
+  })
 
   return (
     <>
