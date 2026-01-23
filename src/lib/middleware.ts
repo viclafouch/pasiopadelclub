@@ -29,3 +29,14 @@ export const activeUserMiddleware = createMiddleware({ type: 'function' })
 
     return next()
   })
+
+export const verifiedEmailMiddleware = createMiddleware({ type: 'function' })
+  .middleware([activeUserMiddleware])
+  .server(async ({ next, context }) => {
+    if (!context.session.user.emailVerified) {
+      setResponseStatus(403)
+      throw new Error('Email non vérifié')
+    }
+
+    return next()
+  })

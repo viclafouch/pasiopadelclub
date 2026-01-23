@@ -5,12 +5,12 @@ import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court, walletTransaction } from '@/db/schema'
 import { nowParis } from '@/helpers/date'
-import { activeUserMiddleware } from '@/lib/middleware'
+import { verifiedEmailMiddleware } from '@/lib/middleware'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
 
 export const payBookingWithCreditsFn = createServerFn({ method: 'POST' })
-  .middleware([activeUserMiddleware])
+  .middleware([verifiedEmailMiddleware])
   .inputValidator(bookingSlotSchema)
   .handler(async ({ data, context }) => {
     const userId = context.session.user.id

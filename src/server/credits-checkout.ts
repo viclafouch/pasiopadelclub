@@ -4,13 +4,13 @@ import { STRIPE_METADATA_TYPE_CREDIT_PACK } from '@/constants/wallet'
 import { db } from '@/db'
 import { creditPack } from '@/db/schema'
 import { serverEnv } from '@/env/server'
-import { activeUserMiddleware } from '@/lib/middleware'
+import { verifiedEmailMiddleware } from '@/lib/middleware'
 import { stripe } from '@/lib/stripe.server'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
 
 export const createCreditPackCheckoutFn = createServerFn({ method: 'POST' })
-  .middleware([activeUserMiddleware])
+  .middleware([verifiedEmailMiddleware])
   .inputValidator(creditPackIdSchema)
   .handler(async ({ data, context }) => {
     const [pack] = await db

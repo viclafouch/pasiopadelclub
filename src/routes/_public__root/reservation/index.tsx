@@ -31,6 +31,7 @@ import {
 import { BookingModal } from './-components/booking-modal'
 import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
+import { EmailVerificationModal } from './-components/email-verification-modal'
 import { FilterBar } from './-components/filter-bar'
 import { FilterDrawer } from './-components/filter-drawer'
 import { NextBookingBadge } from './-components/next-booking-badge'
@@ -121,8 +122,11 @@ const ReservationContent = () => {
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
     null
   )
+  const [isVerificationModalOpen, setIsVerificationModalOpen] =
+    React.useState(false)
 
   const isAuthenticated = Boolean(user)
+  const isEmailVerified = user?.emailVerified ?? false
   const selectedDate = getValidBookingDateKey({
     maxDays: DAYS_TO_SHOW,
     closingHour: CLOSING_HOUR,
@@ -194,7 +198,17 @@ const ReservationContent = () => {
       return
     }
 
+    if (!isEmailVerified) {
+      setIsVerificationModalOpen(true)
+
+      return
+    }
+
     setSelectedSlot({ court, slot, dateKey: selectedDate })
+  }
+
+  const handleCloseVerificationModal = () => {
+    setIsVerificationModalOpen(false)
   }
 
   const handleCloseModal = () => {
@@ -262,6 +276,12 @@ const ReservationContent = () => {
             key={selectedSlot.slot.startAt}
             onClose={handleCloseModal}
             selectedSlot={selectedSlot}
+          />
+        ) : null}
+        {isVerificationModalOpen && user ? (
+          <EmailVerificationModal
+            email={user.email}
+            onClose={handleCloseVerificationModal}
           />
         ) : null}
       </ClientOnly>

@@ -12,15 +12,8 @@ import {
   formatTimeFr,
   nowParis
 } from '@/helpers/date'
-import { extractFirstName } from '@/helpers/string'
+import { extractFirstName, maskEmail } from '@/helpers/string'
 import { EMAIL_FROM, getEmailRecipient, resend } from '@/lib/resend.server'
-
-function maskEmail(email: string) {
-  const [local = '', domain = ''] = email.split('@')
-  const firstChar = local[0] ?? '?'
-
-  return `${firstChar}***@${domain}`
-}
 
 type ReminderEmailParams = {
   bookingId: string

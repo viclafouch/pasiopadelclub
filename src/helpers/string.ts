@@ -7,3 +7,10 @@ export function extractFirstName(fullName: string, fallback = 'Client') {
 
   return sanitizeForHtml(firstName)
 }
+
+export function maskEmail(email: string) {
+  const [local = '', domain = ''] = email.split('@')
+  const firstChar = local[0] ?? '?'
+
+  return `${firstChar}***@${domain}`
+}

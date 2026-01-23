@@ -36,6 +36,8 @@
     "email:export": "email export --dir src/emails --outDir dist/emails",
     "cron:reminder": "vite-node --config vite.config.cron.ts cron/reminder.ts",
     "cron:retention": "vite-node --config vite.config.cron.ts cron/data-retention.ts",
+    "cron:unverified-cleanup": "vite-node --config vite.config.cron.ts cron/unverified-cleanup.ts",
+    "cron:verification-reminder": "vite-node --config vite.config.cron.ts cron/verification-reminder.ts",
     "clean": "rm -rf .output dist node_modules/.cache"
   },
   "dependencies": {

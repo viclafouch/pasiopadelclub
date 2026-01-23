@@ -5,14 +5,14 @@ import { db } from '@/db'
 import { booking, court } from '@/db/schema'
 import { serverEnv } from '@/env/server'
 import { formatDateFr, formatTimeFr, nowParis } from '@/helpers/date'
-import { activeUserMiddleware } from '@/lib/middleware'
+import { verifiedEmailMiddleware } from '@/lib/middleware'
 import { stripe } from '@/lib/stripe.server'
 import { getCourtTypeLabel } from '@/utils/court'
 import { createServerFn } from '@tanstack/react-start'
 import { setResponseStatus } from '@tanstack/react-start/server'
 
 export const createCheckoutSessionFn = createServerFn({ method: 'POST' })
-  .middleware([activeUserMiddleware])
+  .middleware([verifiedEmailMiddleware])
   .inputValidator(bookingSlotSchema)
   .handler(async ({ data, context }) => {
     const { courtId, startAt, endAt } = data

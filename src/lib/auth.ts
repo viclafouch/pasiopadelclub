@@ -12,7 +12,7 @@ import {
 } from '@/emails'
 import { serverEnv } from '@/env/server'
 import { formatDateTimeLongFr } from '@/helpers/date'
-import { extractFirstName } from '@/helpers/string'
+import { extractFirstName, maskEmail } from '@/helpers/string'
 import {
   matchWasEmailVerified,
   parseUserUpdateData
@@ -55,6 +55,10 @@ export const auth = betterAuth({
       '/change-password': {
         window: 900,
         max: 5
+      },
+      '/send-verification-email': {
+        window: 60,
+        max: 2
       }
     }
   },
@@ -153,6 +157,12 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
+      // eslint-disable-next-line no-console
+      console.log('[Audit] Verification email sent:', {
+        userId: user.id,
+        email: maskEmail(user.email),
+        timestamp: new Date().toISOString()
+      })
       resend.emails
         .send({
           from: EMAIL_FROM,
@@ -181,6 +191,11 @@ export const auth = betterAuth({
           const wasAlreadyVerified = matchWasEmailVerified(previousData)
 
           if (emailVerified && !wasAlreadyVerified) {
+            // eslint-disable-next-line no-console
+            console.log('[Audit] Email verified:', {
+              email: maskEmail(email),
+              timestamp: new Date().toISOString()
+            })
             resend.emails
               .send({
                 from: EMAIL_FROM,

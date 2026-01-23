@@ -9,7 +9,11 @@ const alertVariants = cva(
       variant: {
         default: 'bg-card text-card-foreground',
         destructive:
-          'border-destructive/50 bg-destructive/10 text-destructive [&>svg]:text-destructive'
+          'border-destructive/50 bg-destructive/10 text-destructive [&>svg]:text-destructive',
+        warning:
+          'border-amber-500/50 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/50 dark:text-amber-200 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-500',
+        success:
+          'border-green-500/50 bg-green-50 text-green-900 dark:border-green-500/30 dark:bg-green-950/50 dark:text-green-200 [&>svg]:text-green-600 dark:[&>svg]:text-green-500'
       }
     },
     defaultVariants: {
@@ -62,4 +66,14 @@ const AlertDescription = ({
   )
 }
 
-export { Alert, AlertDescription, AlertTitle }
+const AlertAction = ({ className, ...props }: React.ComponentProps<'div'>) => {
+  return (
+    <div
+      data-slot="alert-action"
+      className={cn('absolute top-2 right-2', className)}
+      {...props}
+    />
+  )
+}
+
+export { Alert, AlertAction, AlertDescription, AlertTitle }

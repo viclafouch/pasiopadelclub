@@ -46,6 +46,9 @@ export const user = pgTable('user', {
   lastName: text('last_name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
+  verificationReminderSent: boolean('verification_reminder_sent')
+    .default(false)
+    .notNull(),
   image: text('image'),
   phone: text('phone'),
   role: userRoleEnum('role').notNull().default('user'),

@@ -1,5 +1,7 @@
 export const SITE_URL = 'https://pasiopadelclub-production.up.railway.app'
 
+export const EMAIL_RESEND_COOLDOWN_SECONDS = 60
+
 type ClubInfo = {
   name: string
   address: {

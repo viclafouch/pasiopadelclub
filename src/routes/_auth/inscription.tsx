@@ -1,4 +1,13 @@
-import { ArrowRight, Check } from 'lucide-react'
+import React from 'react'
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckIcon,
+  HomeIcon,
+  MailIcon,
+  RefreshCwIcon
+} from 'lucide-react'
+import { motion, useReducedMotion, type Variants } from 'motion/react'
 import { z } from 'zod'
 import {
   FormCheckboxField,
@@ -6,7 +15,8 @@ import {
   FormField
 } from '@/components/form-field'
 import { LoadingButton } from '@/components/loading-button'
-import { getAuthUserQueryOpts } from '@/constants/queries'
+import { SuccessCheckmark } from '@/components/success-checkmark'
+import { Button } from '@/components/ui/button'
 import {
   emailSchema,
   firstNameSchema,
@@ -14,11 +24,12 @@ import {
   strongPasswordSchema
 } from '@/constants/schemas'
 import { getAuthErrorMessage } from '@/helpers/auth-errors'
+import { useResendVerificationEmail } from '@/hooks/use-resend-verification-email'
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 const signUpSchema = z.object({
   firstName: firstNameSchema,
@@ -34,15 +45,138 @@ const signUpSchema = z.object({
 })
 
 const BENEFITS = [
-  'Réservation instantanée',
+  'Réservation express',
   'Gestion en ligne',
   'Historique des parties',
   'Paiement sécurisé'
 ] as const
 
+const CONTAINER_VARIANTS = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2
+    }
+  }
+} as const satisfies Variants
+
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, translateY: 16 },
+  visible: {
+    opacity: 1,
+    translateY: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 12
+    }
+  }
+} as const satisfies Variants
+
+type SuccessStateProps = {
+  successRef: React.RefObject<HTMLDivElement | null>
+  email: string
+}
+
+const SuccessState = ({ successRef, email }: SuccessStateProps) => {
+  const shouldReduceMotion = useReducedMotion()
+  const { mutation, cooldown } = useResendVerificationEmail({ email })
+
+  return (
+    <motion.div
+      ref={successRef}
+      tabIndex={-1}
+      role="status"
+      aria-live="polite"
+      variants={shouldReduceMotion ? undefined : CONTAINER_VARIANTS}
+      initial={shouldReduceMotion ? 'visible' : 'hidden'}
+      animate="visible"
+      className="flex flex-col items-center py-10 text-center outline-none"
+    >
+      <motion.div
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mb-6"
+      >
+        <SuccessCheckmark shouldReduceMotion={shouldReduceMotion} />
+      </motion.div>
+      <motion.h2
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mb-2 font-display text-xl font-semibold text-foreground"
+      >
+        Compte créé avec succès !
+      </motion.h2>
+      <motion.div
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="space-y-3"
+      >
+        <p className="text-muted-foreground">
+          Un email de confirmation a été envoyé à
+        </p>
+        <p className="inline-flex items-center gap-2 rounded-lg bg-muted px-4 py-2 font-medium text-foreground">
+          <MailIcon className="size-4 text-primary" aria-hidden="true" />
+          {email}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Pensez à vérifier votre boîte mail pour confirmer votre adresse.
+        </p>
+      </motion.div>
+      <motion.div
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mt-6 flex flex-col items-center gap-2"
+      >
+        <LoadingButton
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            mutation.mutate()
+          }}
+          // Exception: disabled pendant le cooldown pour éviter le spam email
+          disabled={cooldown.isActive}
+          isLoading={mutation.isPending}
+        >
+          <RefreshCwIcon className="size-4" aria-hidden="true" />
+          {cooldown.isActive ? (
+            <>
+              Renvoyer dans{' '}
+              <span className="tabular-nums">{cooldown.remainingSeconds}s</span>
+            </>
+          ) : (
+            "Renvoyer l'email"
+          )}
+        </LoadingButton>
+        {mutation.isSuccess && cooldown.isActive ? (
+          <span className="flex items-center gap-1 text-sm text-green-600">
+            <CheckIcon className="size-4" aria-hidden="true" />
+            Email envoyé avec succès
+          </span>
+        ) : null}
+      </motion.div>
+      <motion.div
+        variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+        className="mt-8 flex flex-col gap-3 sm:flex-row"
+      >
+        <Button variant="outline" asChild>
+          <Link to="/">
+            <HomeIcon className="size-4" aria-hidden="true" />
+            Retour à l&apos;accueil
+          </Link>
+        </Button>
+        <Button asChild>
+          <Link to="/reservation">
+            <CalendarIcon className="size-4" aria-hidden="true" />
+            Réserver un terrain
+          </Link>
+        </Button>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 const InscriptionPage = () => {
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const successRef = React.useRef<HTMLDivElement>(null)
 
   const signUpMutation = useMutation({
     mutationFn: async (data: z.infer<typeof signUpSchema>) => {
@@ -58,10 +192,10 @@ const InscriptionPage = () => {
         throw new Error(error.code)
       }
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(getAuthUserQueryOpts())
-      await router.invalidate({ sync: true })
-      router.navigate({ to: '/' })
+    onSuccess: () => {
+      setTimeout(() => {
+        successRef.current?.focus()
+      }, 0)
     }
   })
 
@@ -83,6 +217,15 @@ const InscriptionPage = () => {
       }
     }
   })
+
+  if (signUpMutation.isSuccess && signUpMutation.variables) {
+    return (
+      <SuccessState
+        successRef={successRef}
+        email={signUpMutation.variables.email}
+      />
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -111,7 +254,7 @@ const InscriptionPage = () => {
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                <Check
+                <CheckIcon
                   className="size-3 text-primary"
                   aria-hidden="true"
                   strokeWidth={3}
@@ -254,7 +397,7 @@ const InscriptionPage = () => {
           loadingText="Création du compte..."
         >
           Créer mon compte
-          <ArrowRight className="size-4" aria-hidden="true" />
+          <ArrowRightIcon className="size-4" aria-hidden="true" />
         </LoadingButton>
         <p className="text-xs text-muted-foreground/80">
           Pour des raisons de sécurité, nous collectons votre adresse IP et des
