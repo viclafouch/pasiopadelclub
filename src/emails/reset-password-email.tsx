@@ -1,5 +1,5 @@
 import { SITE_URL } from '@/constants/app'
-import { Button, Section, Text } from '@react-email/components'
+import { Button, Column, Row, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
 type ResetPasswordEmailProps = {
@@ -37,9 +37,21 @@ export const ResetPasswordEmail = ({
         <Text className="m-0 text-xs text-slate-500">
           Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :
         </Text>
-        <Text className="m-0 mt-2 break-all text-xs text-brand-light">
-          {resetUrl}
-        </Text>
+        <Row>
+          <Column
+            style={{
+              tableLayout: 'fixed',
+              width: '100%',
+              maxWidth: '1px',
+              wordBreak: 'break-all',
+              overflowWrap: 'break-word'
+            }}
+          >
+            <Text className="m-0 mt-2 text-xs text-brand-light">
+              {resetUrl}
+            </Text>
+          </Column>
+        </Row>
       </Section>
     </EmailLayout>
   )
