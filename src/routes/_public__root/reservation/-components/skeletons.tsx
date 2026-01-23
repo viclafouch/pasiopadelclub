@@ -56,8 +56,8 @@ const CourtTypeGroupSkeleton = ({
   slotsPerCourt
 }: CourtTypeGroupSkeletonProps) => {
   return (
-    <Card>
-      <CardHeader className="pb-4">
+    <Card className="border-0 shadow-none sm:border sm:shadow-sm">
+      <CardHeader className="px-4 pb-4 sm:px-6">
         <div className="flex flex-wrap items-center gap-3">
           <Skeleton className="h-6 w-32" />
           <Skeleton className="h-5 w-16 rounded-full" />
@@ -67,7 +67,7 @@ const CourtTypeGroupSkeleton = ({
           <Skeleton className="h-4 w-28" />
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 px-4 sm:px-6">
         {Array.from({ length: courtCount }).map((_, index) => {
           return (
             <div key={index}>
@@ -85,7 +85,7 @@ const CourtTypeGroupSkeleton = ({
 
 export const SlotsSkeleton = () => {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {SKELETON_COURTS.map((config) => {
         return (
           <CourtTypeGroupSkeleton

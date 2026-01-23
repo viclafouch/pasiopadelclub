@@ -142,7 +142,7 @@ export const DaySelector = ({
         type="button"
         onClick={handleScrollLeft}
         className={cn(
-          'absolute inset-y-0 left-0 z-10 flex w-10 items-center justify-start bg-gradient-to-r from-background via-background/80 to-transparent pl-1 transition-opacity duration-200',
+          'absolute inset-y-0 left-0 z-10 flex w-10 items-center justify-start bg-gradient-to-r from-background via-background/40 to-transparent pl-1 transition-opacity duration-500',
           canScrollLeft ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
         aria-label="Afficher les dates précédentes"
@@ -154,7 +154,7 @@ export const DaySelector = ({
         type="button"
         onClick={handleScrollRight}
         className={cn(
-          'absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-end bg-gradient-to-l from-background via-background/80 to-transparent pr-1 transition-opacity duration-200',
+          'absolute inset-y-0 right-0 z-10 flex w-10 items-center justify-end bg-gradient-to-l from-background via-background/40 to-transparent pr-1 transition-opacity duration-500',
           canScrollRight ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
         aria-label="Afficher les dates suivantes"
@@ -168,7 +168,11 @@ export const DaySelector = ({
         aria-label="Dates disponibles"
         className="scrollbar-hide flex gap-2 overflow-x-auto py-2"
       >
-        <div ref={startSentinelRef} className="shrink-0" aria-hidden="true" />
+        <div
+          ref={startSentinelRef}
+          className="w-2 shrink-0 self-stretch sm:w-px"
+          aria-hidden="true"
+        />
         {dates.map((date) => {
           const dateKey = formatDateKey(date)
           const isSelected = dateKey === selectedDate
@@ -223,7 +227,11 @@ export const DaySelector = ({
             </motion.button>
           )
         })}
-        <div ref={endSentinelRef} className="shrink-0" aria-hidden="true" />
+        <div
+          ref={endSentinelRef}
+          className="w-2 shrink-0 self-stretch sm:w-px"
+          aria-hidden="true"
+        />
       </div>
     </nav>
   )

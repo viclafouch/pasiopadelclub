@@ -28,8 +28,8 @@ export const CourtTypeGroup = ({
   )
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
+    <Card className="border-0 shadow-none sm:border sm:shadow-sm">
+      <CardHeader className="px-4 pb-4 sm:px-6">
         <div className="flex flex-wrap items-center gap-3">
           <h2 className="font-display text-lg font-semibold">
             {COURT_TYPE_LABELS[type]}
@@ -46,7 +46,7 @@ export const CourtTypeGroup = ({
           {COURT_TYPE_DESCRIPTIONS[type]}
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 px-4 sm:px-6">
         {courtsWithSlots.map((courtWithSlots, index) => {
           return (
             <div key={courtWithSlots.court.id}>

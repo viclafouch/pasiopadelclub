@@ -10,11 +10,12 @@ export const Hero = () => {
         <img
           src="/images/background-hero.png"
           alt="Terrain de padel professionnel"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-[30%]"
           fetchPriority="high"
           decoding="async"
         />
       </picture>
+      <div className="absolute inset-0 bg-black/20 md:bg-transparent" />
       <div className="relative z-10 flex flex-1 flex-col justify-center px-8 pt-24 pb-32 lg:container">
         <div className="max-w-2xl">
           <div className="mb-6 flex items-center gap-2 text-sm text-white">

@@ -85,7 +85,7 @@ const SlotsContent = ({
   return (
     <>
       {courtGroups.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
+        <div className="mx-4 rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center sm:mx-0">
           <CalendarIcon
             className="mx-auto size-12 text-muted-foreground/50"
             aria-hidden="true"
@@ -98,7 +98,7 @@ const SlotsContent = ({
           </p>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {courtGroups.map((group) => {
             return (
               <CourtTypeGroup
@@ -205,9 +205,9 @@ const ReservationContent = () => {
 
   return (
     <>
-      <div className="space-y-12">
-        <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 sm:mx-auto sm:w-fit sm:max-w-full">
-          <div className="day-selector-inner rounded-b-md bg-background py-2">
+      <div className="space-y-4">
+        <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 flex justify-center">
+          <div className="day-selector-inner w-full max-w-fit bg-background py-2 sm:rounded-b-md">
             <DaySelector
               selectedDate={selectedDate}
               onDateChange={handleDateChange}
@@ -215,25 +215,10 @@ const ReservationContent = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-y-4">
-          <div className="flex min-h-14 items-center justify-between gap-4">
-            <FilterBar
-              courtType={courtType}
-              location={locationFilter}
-              availability={availabilityFilter}
-              onCourtTypeChange={handleCourtTypeChange}
-              onLocationChange={handleLocationChange}
-              onAvailabilityChange={handleAvailabilityChange}
-            />
-            <div className="flex items-center gap-3">
-              {isAuthenticated ? (
-                <ClientOnly>
-                  <div className="hidden h-14 items-center sm:flex">
-                    <NextBookingBadge />
-                  </div>
-                </ClientOnly>
-              ) : null}
-              <FilterDrawer
+        <div>
+          <div className="flex flex-col gap-y-4 px-4 sm:container sm:px-8">
+            <div className="flex min-h-14 items-center justify-between gap-4">
+              <FilterBar
                 courtType={courtType}
                 location={locationFilter}
                 availability={availabilityFilter}
@@ -241,17 +226,36 @@ const ReservationContent = () => {
                 onLocationChange={handleLocationChange}
                 onAvailabilityChange={handleAvailabilityChange}
               />
+              <div className="flex items-center gap-3">
+                {isAuthenticated ? (
+                  <ClientOnly>
+                    <div className="hidden h-14 items-center sm:flex">
+                      <NextBookingBadge />
+                    </div>
+                  </ClientOnly>
+                ) : null}
+                <FilterDrawer
+                  courtType={courtType}
+                  location={locationFilter}
+                  availability={availabilityFilter}
+                  onCourtTypeChange={handleCourtTypeChange}
+                  onLocationChange={handleLocationChange}
+                  onAvailabilityChange={handleAvailabilityChange}
+                />
+              </div>
             </div>
           </div>
-          <React.Suspense fallback={<SlotsSkeleton />}>
-            <SlotsContent
-              selectedDate={selectedDate}
-              courtType={courtType}
-              location={locationFilter}
-              availability={availabilityFilter}
-              onSlotSelect={handleSlotSelect}
-            />
-          </React.Suspense>
+          <div className="sm:container">
+            <React.Suspense fallback={<SlotsSkeleton />}>
+              <SlotsContent
+                selectedDate={selectedDate}
+                courtType={courtType}
+                location={locationFilter}
+                availability={availabilityFilter}
+                onSlotSelect={handleSlotSelect}
+              />
+            </React.Suspense>
+          </div>
         </div>
       </div>
       <ClientOnly>
@@ -285,7 +289,7 @@ const ReservationPage = () => {
           className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"
           aria-hidden="true"
         />
-        <div className="relative z-10 text-center">
+        <div className="container relative z-10 text-center">
           <h1 className="font-display text-4xl font-light tracking-tight text-white sm:text-5xl">
             Réserver un terrain
           </h1>
@@ -294,10 +298,8 @@ const ReservationPage = () => {
           </p>
         </div>
       </section>
-      <section className="section-pb pt-6">
-        <div className="container">
-          <ReservationContent />
-        </div>
+      <section className="section-pb">
+        <ReservationContent />
       </section>
     </main>
   )
