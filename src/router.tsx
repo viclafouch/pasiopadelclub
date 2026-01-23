@@ -35,7 +35,6 @@ export function getRouter() {
     defaultPreload: 'intent',
     defaultPreloadDelay: 50,
     defaultPreloadStaleTime: 30_000,
-    scrollRestoration: false,
     defaultPendingMs: 1000,
     defaultPendingMinMs: 200,
     notFoundMode: 'fuzzy'

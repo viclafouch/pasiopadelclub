@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import React from 'react'
 import Footer from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { LOCAL_BUSINESS_JSON_LD } from '@/constants/json-ld'
@@ -14,7 +15,8 @@ import {
   Link,
   Outlet,
   ScriptOnce,
-  Scripts
+  Scripts,
+  useRouterState
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import appCss from '../styles.css?url'
@@ -25,6 +27,20 @@ type RootRouteContext = {
 }
 
 const OS_DETECTION_SCRIPT = `(function(){var u=navigator.userAgent.toLowerCase();var o=/iphone|ipad|ipod/.test(u)?'ios':/android/.test(u)?'android':'other';document.documentElement.dataset.os=o})();`
+
+const ScrollToTop = () => {
+  const pathname = useRouterState({
+    select: (state) => {
+      return state.location.pathname
+    }
+  })
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+
+  return null
+}
 
 const NotFoundComponent = () => {
   return (
@@ -74,6 +90,7 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
         <HeadContent />
       </head>
       <body>
+        <ScrollToTop />
         <Navbar />
         {children}
         <Footer />
