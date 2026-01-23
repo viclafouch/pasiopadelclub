@@ -211,7 +211,6 @@
   }
 }
 
-
 @utility desktop-only {
   @media (width < 768px) {
     display: none !important;
@@ -245,13 +244,23 @@
 }
 
 @utility section-py {
-  padding-block: 4rem;
+  padding-block: 2rem;
+  @media (width >= 768px) {
+    padding-block: 4rem;
+  }
 }
 
 @utility section-pt {
-  padding-block-start: 4rem;
+  padding-block-start: 2rem;
+  @media (width >= 768px) {
+    padding-block-start: 4rem;
+  }
 }
 
 @utility section-pb {
-  padding-block-end: 4rem;
+  padding-block-end: 2rem;
+
+  @media (width >= 768px) {
+    padding-block-end: 4rem;
+  }
 }

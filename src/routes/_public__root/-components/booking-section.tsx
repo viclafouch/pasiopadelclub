@@ -68,7 +68,7 @@ export const BookingSection = () => {
             </div>
           </div>
         </div>
-        <div className="mt-16 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <Button size="lg" asChild>
             <Link to="/reservation">Réserver maintenant</Link>
           </Button>
