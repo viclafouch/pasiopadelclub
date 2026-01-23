@@ -47,12 +47,14 @@ export const HamburgerButton = ({ isOpen, onClick }: HamburgerButtonProps) => {
           }
           transition={{ duration: 0.2 }}
           className="absolute h-0.5 w-5 rounded-full bg-current"
+          style={{ willChange: 'transform' }}
         />
         <motion.span
           initial={false}
           animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
           transition={{ duration: 0.15 }}
           className="absolute h-0.5 w-5 rounded-full bg-current"
+          style={{ willChange: 'opacity' }}
         />
         <motion.span
           initial={false}
@@ -63,6 +65,7 @@ export const HamburgerButton = ({ isOpen, onClick }: HamburgerButtonProps) => {
           }
           transition={{ duration: 0.2 }}
           className="absolute h-0.5 w-5 rounded-full bg-current"
+          style={{ willChange: 'transform' }}
         />
       </div>
     </Button>

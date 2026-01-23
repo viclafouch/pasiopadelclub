@@ -13,6 +13,7 @@ import {
   useReducedMotion,
   type Variants
 } from 'motion/react'
+import { TiltCard } from '@/components/tilt-card'
 import { Button } from '@/components/ui/button'
 import {
   getActiveBookingCountQueryOpts,
@@ -48,10 +49,9 @@ const CONFETTI_COUNT = 50
 
 type ConfettiPieceProps = {
   index: number
-  shouldReduceMotion: boolean | null
 }
 
-const ConfettiPiece = ({ index, shouldReduceMotion }: ConfettiPieceProps) => {
+const ConfettiPiece = ({ index }: ConfettiPieceProps) => {
   const randomX = (Math.random() - 0.5) * 600
   const randomY = -Math.random() * 400 - 100
   const randomRotation = Math.random() * 720 - 360
@@ -60,10 +60,6 @@ const ConfettiPiece = ({ index, shouldReduceMotion }: ConfettiPieceProps) => {
   const color = CONFETTI_COLORS[index % CONFETTI_COLORS.length]
   const size = 6 + Math.random() * 8
   const isCircle = Math.random() > 0.5
-
-  if (shouldReduceMotion) {
-    return null
-  }
 
   return (
     <motion.div
@@ -93,7 +89,8 @@ const ConfettiPiece = ({ index, shouldReduceMotion }: ConfettiPieceProps) => {
         backgroundColor: color,
         borderRadius: isCircle ? '50%' : '2px',
         left: '50%',
-        top: '50%'
+        top: '50%',
+        willChange: 'transform, opacity'
       }}
     />
   )
@@ -104,99 +101,15 @@ type ConfettiProps = {
 }
 
 const Confetti = ({ shouldReduceMotion }: ConfettiProps) => {
+  if (shouldReduceMotion) {
+    return null
+  }
+
   return (
     <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
       {Array.from({ length: CONFETTI_COUNT }).map((_, pieceIndex) => {
-        return (
-          <ConfettiPiece
-            key={pieceIndex}
-            index={pieceIndex}
-            shouldReduceMotion={shouldReduceMotion}
-          />
-        )
+        return <ConfettiPiece key={pieceIndex} index={pieceIndex} />
       })}
-    </div>
-  )
-}
-
-type SuccessCheckmarkProps = {
-  shouldReduceMotion: boolean | null
-}
-
-const SuccessCheckmark = ({ shouldReduceMotion }: SuccessCheckmarkProps) => {
-  const checkVariants: Variants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 200,
-        damping: 15,
-        delay: 0.2
-      }
-    }
-  }
-
-  const glowVariants: Variants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: {
-      scale: [1, 1.2, 1],
-      opacity: [0.5, 0.8, 0],
-      transition: {
-        duration: 1.5,
-        delay: 0.4,
-        ease: 'easeOut'
-      }
-    }
-  }
-
-  const ringVariants: Variants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 150,
-        damping: 20,
-        delay: 0.1
-      }
-    }
-  }
-
-  return (
-    <div className="relative flex items-center justify-center">
-      <motion.div
-        variants={shouldReduceMotion ? undefined : glowVariants}
-        initial="hidden"
-        animate="visible"
-        className="absolute size-28 rounded-full bg-primary/30 blur-xl"
-      />
-      <motion.div
-        variants={shouldReduceMotion ? undefined : ringVariants}
-        initial={shouldReduceMotion ? 'visible' : 'hidden'}
-        animate="visible"
-        className="absolute size-24 rounded-full border-4 border-primary/20"
-      />
-      <motion.div
-        variants={shouldReduceMotion ? undefined : checkVariants}
-        initial={shouldReduceMotion ? 'visible' : 'hidden'}
-        animate="visible"
-        className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-emerald-600 shadow-lg shadow-primary/30"
-      >
-        <motion.div
-          initial={shouldReduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.4, delay: 0.5, ease: 'easeOut' }}
-        >
-          <CheckIcon
-            className="size-10 text-primary-foreground"
-            strokeWidth={3}
-            aria-hidden="true"
-          />
-        </motion.div>
-      </motion.div>
     </div>
   )
 }
@@ -213,45 +126,30 @@ type InfoBlockProps = {
 
 const InfoBlock = ({ icon, label, value }: InfoBlockProps) => {
   return (
-    <div className="space-y-1 rounded-xl bg-white/20 p-4 text-left backdrop-blur-sm">
-      <div className="flex items-center gap-2 text-white/70">
+    <div className="space-y-0.5 rounded-lg bg-white/20 p-2.5 text-left backdrop-blur-sm sm:space-y-1 sm:rounded-xl sm:p-4">
+      <div className="flex items-center gap-1.5 text-white/70 sm:gap-2">
         {icon}
-        <span className="text-xs font-medium uppercase tracking-wide">
+        <span className="text-[10px] font-medium uppercase tracking-wide sm:text-xs">
           {label}
         </span>
       </div>
-      <p className="font-display text-lg font-medium text-white">{value}</p>
+      <p className="font-display text-sm font-medium text-white sm:text-lg">
+        {value}
+      </p>
     </div>
   )
 }
 
 const TicketHeader = () => {
-  return (
-    <div className="flex items-center justify-between border-b border-white/10 px-6 py-4 sm:px-8">
-      <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-full bg-primary">
-          <CheckIcon
-            className="size-5 text-primary-foreground"
-            aria-hidden="true"
-          />
-        </div>
-        <span className="text-sm font-medium uppercase tracking-wide text-white">
-          Confirmé
-        </span>
-      </div>
-      <span className="font-display text-sm uppercase tracking-wider text-white/70">
-        Pasio Padel
-      </span>
-    </div>
-  )
+  return <div className="h-14 border-b border-white/10 sm:h-20" />
 }
 
 const TicketDivider = () => {
   return (
     <div className="relative">
-      <div className="absolute -left-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-muted/30" />
-      <div className="absolute -right-3 top-1/2 size-6 -translate-y-1/2 rounded-full bg-muted/30" />
-      <div className="mx-6 border-t border-dashed border-white/30 sm:mx-8" />
+      <div className="absolute -left-2 top-1/2 size-4 -translate-y-1/2 rounded-full bg-muted/30 sm:-left-3 sm:size-6" />
+      <div className="absolute -right-2 top-1/2 size-4 -translate-y-1/2 rounded-full bg-muted/30 sm:-right-3 sm:size-6" />
+      <div className="mx-4 border-t border-dashed border-white/30 sm:mx-8" />
     </div>
   )
 }
@@ -263,18 +161,20 @@ type TicketFooterProps = {
 
 const TicketFooter = ({ duration, price }: TicketFooterProps) => {
   return (
-    <div className="flex items-center justify-between px-6 py-6 sm:px-8">
+    <div className="flex items-center justify-between px-4 py-4 sm:px-8 sm:py-6">
       <div className="text-left">
-        <p className="text-xs uppercase tracking-wide text-white/70">Durée</p>
-        <p className="font-display text-lg font-medium text-white">
+        <p className="text-[10px] uppercase tracking-wide text-white/70 sm:text-xs">
+          Durée
+        </p>
+        <p className="font-display text-base font-medium text-white sm:text-lg">
           {duration} min
         </p>
       </div>
       <div className="text-right">
-        <p className="text-xs uppercase tracking-wide text-white/70">
+        <p className="text-[10px] uppercase tracking-wide text-white/70 sm:text-xs">
           Total payé
         </p>
-        <p className="font-display text-2xl font-semibold text-white">
+        <p className="font-display text-xl font-semibold text-white sm:text-2xl">
           {formatCentsToEuros(price)}
         </p>
       </div>
@@ -310,54 +210,57 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
   ]
 
   return (
-    <div className="w-full max-w-lg">
-      <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-        <div className="absolute inset-0">
-          <picture>
-            <source srcSet="/images/terrain.webp" type="image/webp" />
-            <img
-              src="/images/terrain.jpg"
-              alt=""
-              className="h-full w-full object-cover"
-              aria-hidden="true"
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/90 to-slate-900/70" />
-        <div className="relative">
-          <TicketHeader />
-          <div className="space-y-6 px-6 py-8 sm:px-8">
-            <div className="text-center">
-              <p className="mb-2 inline-block rounded bg-primary px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary-foreground">
-                {getCourtTypeLabel(booking.court.type)}
-              </p>
-              <h2 className="font-display text-4xl font-light tracking-tight text-white sm:text-5xl">
-                {booking.court.name}
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {infoBlocks.map((block) => {
-                return (
-                  <InfoBlock
-                    key={block.label}
-                    icon={block.icon}
-                    label={block.label}
-                    value={block.value}
-                  />
-                )
-              })}
-            </div>
-          </div>
-          <TicketDivider />
-          <TicketFooter
-            duration={booking.court.duration}
-            price={booking.price}
+    <TiltCard className="relative mx-auto w-full md:max-w-lg overflow-hidden rounded-2xl shadow-2xl sm:rounded-3xl">
+      <div className="absolute inset-0">
+        <picture>
+          <source srcSet="/images/terrain.webp" type="image/webp" />
+          <img
+            src="/images/terrain.jpg"
+            alt=""
+            className="h-full w-full object-cover"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
           />
-        </div>
+        </picture>
       </div>
-    </div>
+      <div className="absolute inset-x-0 top-0 flex h-14 items-center justify-center sm:h-20">
+        <img
+          src="/images/logo-navbar.webp"
+          alt=""
+          aria-hidden="true"
+          className="h-7 w-auto sm:h-10"
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/90 to-slate-900/70" />
+      <div className="relative">
+        <TicketHeader />
+        <div className="space-y-4 px-4 py-5 sm:space-y-6 sm:px-8 sm:py-8">
+          <div className="text-center">
+            <p className="mb-1.5 inline-block rounded bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground sm:mb-2 sm:px-2.5 sm:py-1 sm:text-xs">
+              {getCourtTypeLabel(booking.court.type)}
+            </p>
+            <h2 className="font-display text-2xl font-light tracking-tight text-white sm:text-5xl">
+              {booking.court.name}
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
+            {infoBlocks.map((block) => {
+              return (
+                <InfoBlock
+                  key={block.label}
+                  icon={block.icon}
+                  label={block.label}
+                  value={block.value}
+                />
+              )
+            })}
+          </div>
+        </div>
+        <TicketDivider />
+        <TicketFooter duration={booking.court.duration} price={booking.price} />
+      </div>
+    </TiltCard>
   )
 }
 
@@ -446,47 +349,38 @@ const ReservationSuccessPage = () => {
           variants={shouldReduceMotion ? undefined : containerVariants}
           initial={shouldReduceMotion ? 'visible' : 'hidden'}
           animate="visible"
-          className="flex flex-col items-center gap-8 text-center"
+          className="flex w-full flex-col items-center gap-8 text-center"
           style={{ perspective: 1000 }}
         >
           <motion.div
             variants={shouldReduceMotion ? undefined : itemVariants}
-            className="mb-2"
+            className="flex items-center gap-2"
           >
-            <SuccessCheckmark shouldReduceMotion={shouldReduceMotion} />
-          </motion.div>
-          <motion.div
-            variants={shouldReduceMotion ? undefined : itemVariants}
-            className="space-y-3"
-          >
-            <motion.p
-              variants={shouldReduceMotion ? undefined : itemVariants}
-              className="text-sm font-medium uppercase tracking-wide text-primary"
-            >
+            <div className="flex size-6 items-center justify-center rounded-full bg-primary">
+              <CheckIcon
+                className="size-3.5 text-primary-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <p className="text-sm font-medium uppercase tracking-wide text-primary">
               Réservation confirmée
-            </motion.p>
-            <motion.h1
-              variants={shouldReduceMotion ? undefined : itemVariants}
-              className="font-display text-4xl font-light tracking-tight sm:text-5xl"
-            >
-              À très vite sur le terrain !
-            </motion.h1>
-            <motion.p
-              variants={shouldReduceMotion ? undefined : itemVariants}
-              className="mx-auto max-w-md text-muted-foreground"
-            >
-              Vous recevrez un email de confirmation avec tous les détails de
-              votre réservation.
-            </motion.p>
+            </p>
           </motion.div>
           <motion.div
             variants={shouldReduceMotion ? undefined : ticketVariants}
             initial={shouldReduceMotion ? 'visible' : 'hidden'}
             animate="visible"
-            style={{ transformStyle: 'preserve-3d' }}
+            className="w-full"
+            style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
           >
             <BookingTicket booking={booking} />
           </motion.div>
+          <motion.p
+            variants={shouldReduceMotion ? undefined : itemVariants}
+            className="text-sm text-muted-foreground"
+          >
+            Un email de confirmation vous a été envoyé.
+          </motion.p>
           <motion.div
             variants={shouldReduceMotion ? undefined : containerVariants}
             className="flex flex-col gap-3 sm:flex-row"
