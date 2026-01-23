@@ -381,9 +381,9 @@ Système de prépaiement par crédits avec bonus et expiration.
 - [x] Modification du mot de passe (depuis onglet Profil)
 
 ### RGPD critique (pré-lancement)
-- [ ] Checkbox consentement explicite à l'inscription (CNIL obligatoire)
-- [ ] Mention collecte IP/UserAgent dans politique de confidentialité
-- [ ] Notice technique sous formulaire inscription
+- [x] Checkbox consentement explicite à l'inscription (CNIL obligatoire)
+- [x] Mention collecte IP/UserAgent dans politique de confidentialité
+- [x] Notice technique sous formulaire inscription
 
 ---
 

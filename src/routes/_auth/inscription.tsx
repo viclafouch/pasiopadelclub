@@ -27,7 +27,10 @@ const signUpSchema = z.object({
   password: strongPasswordSchema,
   acceptTerms: z.boolean().refine((accepted) => {
     return accepted
-  }, 'Vous devez accepter les conditions pour créer un compte')
+  }, 'Vous devez accepter les conditions pour créer un compte'),
+  acceptDataProcessing: z.boolean().refine((accepted) => {
+    return accepted
+  }, 'Vous devez consentir au traitement de vos données')
 })
 
 const BENEFITS = [
@@ -68,7 +71,8 @@ const InscriptionPage = () => {
       lastName: '',
       email: '',
       password: '',
-      acceptTerms: false
+      acceptTerms: false,
+      acceptDataProcessing: false
     },
     validators: {
       onSubmit: signUpSchema
@@ -185,34 +189,58 @@ const InscriptionPage = () => {
             )
           }}
         </form.Field>
-        <form.Field name="acceptTerms">
-          {(field) => {
-            return (
-              <FormCheckboxField
-                field={field}
-                required
-                label={
-                  <>
-                    J&apos;ai lu et j&apos;accepte les{' '}
-                    <Link
-                      to="/cgv"
-                      className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
-                    >
-                      conditions générales de vente
-                    </Link>{' '}
-                    et la{' '}
-                    <Link
-                      to="/politique-confidentialite"
-                      className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
-                    >
-                      politique de confidentialité
-                    </Link>
-                  </>
-                }
-              />
-            )
-          }}
-        </form.Field>
+        <div className="space-y-4">
+          <form.Field name="acceptTerms">
+            {(field) => {
+              return (
+                <FormCheckboxField
+                  field={field}
+                  required
+                  label={
+                    <>
+                      J&apos;ai lu et j&apos;accepte les{' '}
+                      <Link
+                        to="/cgv"
+                        className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                      >
+                        conditions générales de vente
+                      </Link>{' '}
+                      et la{' '}
+                      <Link
+                        to="/politique-confidentialite"
+                        className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                      >
+                        politique de confidentialité
+                      </Link>
+                    </>
+                  }
+                />
+              )
+            }}
+          </form.Field>
+          <form.Field name="acceptDataProcessing">
+            {(field) => {
+              return (
+                <FormCheckboxField
+                  field={field}
+                  required
+                  label={
+                    <>
+                      Je consens au traitement de mes données personnelles tel
+                      que décrit dans la{' '}
+                      <Link
+                        to="/politique-confidentialite"
+                        className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+                      >
+                        politique de confidentialité
+                      </Link>
+                    </>
+                  }
+                />
+              )
+            }}
+          </form.Field>
+        </div>
         {signUpMutation.error ? (
           <FormErrorAlert
             message={getAuthErrorMessage(signUpMutation.error.message)}
@@ -228,6 +256,11 @@ const InscriptionPage = () => {
           Créer mon compte
           <ArrowRight className="size-4" aria-hidden="true" />
         </LoadingButton>
+        <p className="text-xs text-muted-foreground/80">
+          Pour des raisons de sécurité, nous collectons votre adresse IP et des
+          informations techniques (navigateur, système) lors de votre
+          inscription et connexion.
+        </p>
       </form>
     </div>
   )
