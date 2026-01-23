@@ -53,3 +53,15 @@ export const COURT_TYPE_DESCRIPTIONS = {
   simple: '2 joueurs • 60 min',
   kids: 'Ouvert à tous • 60 min'
 } as const satisfies Record<Court['type'], string>
+
+export type AvailabilityFilter = 'all' | 'available'
+
+export const AVAILABILITY_OPTIONS = [
+  { value: 'all', label: 'Tous' },
+  { value: 'available', label: 'Disponibles' }
+] as const satisfies FilterOption<AvailabilityFilter>[]
+
+export const AVAILABILITY_OPTIONS_EXTENDED = [
+  { value: 'all', label: 'Tous les terrains' },
+  { value: 'available', label: 'Terrains disponibles' }
+] as const satisfies FilterOption<AvailabilityFilter>[]

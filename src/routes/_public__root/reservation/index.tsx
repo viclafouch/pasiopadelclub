@@ -7,13 +7,19 @@ import {
   MAX_ACTIVE_BOOKINGS,
   MIN_SESSION_MINUTES
 } from '@/constants/booking'
-import { COURT_TYPE_ORDER } from '@/constants/court'
+import {
+  type AvailabilityFilter,
+  COURT_TYPE_ORDER,
+  type CourtTypeFilter,
+  type LocationFilter
+} from '@/constants/court'
 import {
   getActiveBookingCountQueryOpts,
   getSlotsByDateQueryOpts
 } from '@/constants/queries'
 import { SECOND } from '@/constants/time'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
+import { filterCourts } from '@/helpers/court-filters'
 import { getValidBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
 import {
@@ -30,29 +36,47 @@ import {
 import { BookingModal } from './-components/booking-modal'
 import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
+import { FilterBar } from './-components/filter-bar'
+import { FilterDrawer } from './-components/filter-drawer'
 import { LimitBanner } from './-components/limit-banner'
 import { LimitReachedDialog } from './-components/limit-reached-dialog'
 import { SlotsSkeleton } from './-components/skeletons'
 
 const searchSchema = z.object({
-  date: z.string().optional()
+  date: z.string().optional(),
+  type: z.enum(['all', 'double', 'simple', 'kids']).optional().catch('all'),
+  location: z.enum(['all', 'indoor', 'outdoor']).optional().catch('all'),
+  available: z.enum(['all', 'available']).optional().catch('all')
 })
 
 type SlotsContentProps = {
   selectedDate: string
   isAtLimit: boolean
+  courtType: CourtTypeFilter
+  location: LocationFilter
+  availability: AvailabilityFilter
   onSlotSelect: (court: Court, slot: Slot) => void
 }
 
 const SlotsContent = ({
   selectedDate,
   isAtLimit,
+  courtType,
+  location,
+  availability,
   onSlotSelect
 }: SlotsContentProps) => {
   const slotsQuery = useSuspenseQuery(getSlotsByDateQueryOpts(selectedDate))
 
   const courtGroups = React.useMemo(() => {
-    const groupedByType = Map.groupBy(slotsQuery.data, (item) => {
+    const filteredCourts = filterCourts({
+      courts: slotsQuery.data,
+      courtType,
+      location,
+      availability
+    })
+
+    const groupedByType = Map.groupBy(filteredCourts, (item) => {
       return item.court.type
     })
 
@@ -64,7 +88,7 @@ const SlotsContent = ({
     }).filter((group) => {
       return group.courts.length > 0
     })
-  }, [slotsQuery.data])
+  }, [slotsQuery.data, courtType, location, availability])
 
   return (
     <>
@@ -102,7 +126,7 @@ const SlotsContent = ({
 
 const ReservationContent = () => {
   const { user } = useRouteContext({ from: '__root__' })
-  const { date } = Route.useSearch()
+  const { date, type, location, available } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const queryClient = useQueryClient()
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
@@ -117,6 +141,10 @@ const ReservationContent = () => {
     minSessionMinutes: MIN_SESSION_MINUTES,
     urlDate: date
   })
+
+  const courtType = type ?? 'all'
+  const locationFilter = location ?? 'all'
+  const availabilityFilter = available ?? 'all'
 
   const activeCountQuery = useQuery({
     ...getActiveBookingCountQueryOpts(),
@@ -135,6 +163,45 @@ const ReservationContent = () => {
 
   const handleDateHover = (dateKey: string) => {
     queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
+  }
+
+  const handleCourtTypeChange = (newType: CourtTypeFilter) => {
+    navigate({
+      search: (prev) => {
+        return {
+          ...prev,
+          type: newType === 'all' ? undefined : newType
+        }
+      },
+      replace: true,
+      resetScroll: false
+    })
+  }
+
+  const handleLocationChange = (newLocation: LocationFilter) => {
+    navigate({
+      search: (prev) => {
+        return {
+          ...prev,
+          location: newLocation === 'all' ? undefined : newLocation
+        }
+      },
+      replace: true,
+      resetScroll: false
+    })
+  }
+
+  const handleAvailabilityChange = (newAvailability: AvailabilityFilter) => {
+    navigate({
+      search: (prev) => {
+        return {
+          ...prev,
+          available: newAvailability === 'all' ? undefined : newAvailability
+        }
+      },
+      replace: true,
+      resetScroll: false
+    })
   }
 
   const handleSlotSelect = (court: Court, slot: Slot) => {
@@ -167,7 +234,7 @@ const ReservationContent = () => {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-12">
         <div className="day-selector-sticky sticky top-[var(--navbar-height)] z-10 sm:mx-auto sm:w-fit sm:max-w-full">
           <div className="day-selector-inner rounded-b-md bg-background py-2">
             <DaySelector
@@ -177,13 +244,36 @@ const ReservationContent = () => {
             />
           </div>
         </div>
-        <React.Suspense fallback={<SlotsSkeleton />}>
-          <SlotsContent
-            selectedDate={selectedDate}
-            isAtLimit={isAtLimit}
-            onSlotSelect={handleSlotSelect}
-          />
-        </React.Suspense>
+        <div className="flex flex-col gap-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <FilterBar
+              courtType={courtType}
+              location={locationFilter}
+              availability={availabilityFilter}
+              onCourtTypeChange={handleCourtTypeChange}
+              onLocationChange={handleLocationChange}
+              onAvailabilityChange={handleAvailabilityChange}
+            />
+            <FilterDrawer
+              courtType={courtType}
+              location={locationFilter}
+              availability={availabilityFilter}
+              onCourtTypeChange={handleCourtTypeChange}
+              onLocationChange={handleLocationChange}
+              onAvailabilityChange={handleAvailabilityChange}
+            />
+          </div>
+          <React.Suspense fallback={<SlotsSkeleton />}>
+            <SlotsContent
+              selectedDate={selectedDate}
+              isAtLimit={isAtLimit}
+              courtType={courtType}
+              location={locationFilter}
+              availability={availabilityFilter}
+              onSlotSelect={handleSlotSelect}
+            />
+          </React.Suspense>
+        </div>
       </div>
       <ClientOnly>
         {selectedSlot !== null ? (
