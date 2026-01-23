@@ -115,7 +115,7 @@ const MonComptePage = () => {
 
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   validateSearch: searchSchema,
-  beforeLoad: ({ context }) => {
+  loader: ({ context }) => {
     context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
   },
   staleTime: 30 * SECOND,

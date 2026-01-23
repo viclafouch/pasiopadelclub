@@ -18,37 +18,37 @@ const GALLERY_IMAGES = [
   {
     id: 1,
     src: '/images/gallery/gallery-01.webp',
-    alt: 'Court de padel indoor',
+    alt: 'Espace de détente',
     category: 'Courts'
   },
   {
     id: 2,
     src: '/images/gallery/gallery-02.webp',
-    alt: 'Match de padel en double',
+    alt: "Vue d'une terrasse",
     category: 'Matchs'
   },
   {
     id: 3,
     src: '/images/gallery/gallery-03.webp',
-    alt: 'Joueurs de padel en action',
+    alt: "Terrasse à l'etage",
     category: 'Matchs'
   },
   {
     id: 4,
     src: '/images/gallery/gallery-04.webp',
-    alt: 'Court semi-couvert',
+    alt: 'Courts couverts',
     category: 'Courts'
   },
   {
     id: 5,
     src: '/images/gallery/gallery-05.webp',
-    alt: 'Échange au filet',
+    alt: 'Etage supérieur',
     category: 'Matchs'
   },
   {
     id: 6,
     src: '/images/gallery/gallery-06.webp',
-    alt: 'Partie de padel entre amis',
+    alt: 'Espace de détente',
     category: 'Matchs'
   }
 ] as const satisfies readonly GalleryImage[]
