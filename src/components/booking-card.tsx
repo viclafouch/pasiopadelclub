@@ -124,14 +124,14 @@ export const BookingCard = ({
   return (
     <article className="group relative overflow-hidden rounded-xl border-2 border-primary/25 bg-gradient-to-br from-primary/10 via-white to-white shadow-sm transition-shadow hover:shadow-md">
       <div
-        className="pointer-events-none absolute -right-6 -bottom-6 size-32 opacity-10 transition-opacity group-hover:opacity-15"
+        className="pointer-events-none absolute -right-6 -bottom-6 size-25 opacity-40 transition-opacity group-hover:opacity-50"
         aria-hidden="true"
       >
         <img
-          src="/images/tennis-ball.svg"
+          src="/images/tennis-ball.png"
           alt=""
-          width={128}
-          height={128}
+          width={100}
+          height={100}
           className="size-full"
           loading="lazy"
         />

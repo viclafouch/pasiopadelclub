@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { NAV_LINKS } from '@/constants/navigation'
 import {
   getActiveBookingCountQueryOpts,
   getUserBalanceQueryOpts
@@ -31,14 +32,17 @@ import { useScrollFade } from '@/hooks/use-scroll-fade'
 import { useSignOut } from '@/hooks/use-sign-out'
 import { cn } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
-import type { LinkOptions } from '@tanstack/react-router'
 import { Link, useLocation, useRouteContext } from '@tanstack/react-router'
 
-const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits' }, label: 'Packs' },
-  { linkOptions: { to: '/application' }, label: 'Application' }
-] as const satisfies { linkOptions: LinkOptions; label: string }[]
+function getInitials(
+  firstName: User['firstName'],
+  lastName: User['lastName']
+): string {
+  const first = firstName.charAt(0).toUpperCase()
+  const last = lastName.charAt(0).toUpperCase()
+
+  return `${first}${last}`
+}
 
 export const Navbar = () => {
   const { user } = useRouteContext({ from: '__root__' })
@@ -59,16 +63,6 @@ export const Navbar = () => {
     enabled: Boolean(user)
   })
 
-  const getInitials = (
-    firstName: User['firstName'],
-    lastName: User['lastName']
-  ) => {
-    const first = firstName.charAt(0).toUpperCase()
-    const last = lastName.charAt(0).toUpperCase()
-
-    return first + last || 'U'
-  }
-
   return (
     <>
       <nav
@@ -88,11 +82,16 @@ export const Navbar = () => {
         ) : null}
         <div className="container relative flex h-full items-center justify-between">
           <div className="flex items-center gap-6 lg:gap-10">
-            <Link
-              to="/"
-              className="font-display text-base font-semibold tracking-widest text-white uppercase"
-            >
-              Pasio Padel
+            <Link to="/" aria-label="Accueil Pasio Padel Club">
+              <img
+                src="/images/logo-navbar.webp"
+                alt="Pasio Padel Club"
+                width={120}
+                height={49}
+                loading="eager"
+                decoding="async"
+                className="h-10 w-auto"
+              />
             </Link>
             <ul className="hidden items-center gap-8 lg:flex">
               {NAV_LINKS.map((link) => {
@@ -208,7 +207,12 @@ export const Navbar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button variant="ghost" size="sm" asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                  asChild
+                >
                   <Link to="/connexion">
                     <UserIcon className="size-4" />
                     Connexion
@@ -219,7 +223,7 @@ export const Navbar = () => {
             <HamburgerButton
               isOpen={isMobileMenuOpen}
               onClick={() => {
-                setIsMobileMenuOpen((prev) => {
+                return setIsMobileMenuOpen((prev) => {
                   return !prev
                 })
               }}

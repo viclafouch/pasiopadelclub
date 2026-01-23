@@ -1,13 +1,5 @@
 import React from 'react'
-import type { LucideIcon } from 'lucide-react'
-import {
-  CalendarDays,
-  History,
-  LogOut,
-  UserCircle,
-  Wallet,
-  X
-} from 'lucide-react'
+import { LogOut, UserCircle, X } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,6 +10,7 @@ import {
   DrawerTitle
 } from '@/components/ui/drawer'
 import { Separator } from '@/components/ui/separator'
+import { ACCOUNT_LINKS, NAV_LINKS } from '@/constants/navigation'
 import {
   getActiveBookingCountQueryOpts,
   getUserBalanceQueryOpts
@@ -27,46 +20,7 @@ import { formatCentsToEuros } from '@/helpers/number'
 import { useSignOut } from '@/hooks/use-sign-out'
 import { cn } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
-import type { LinkOptions } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
-
-const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits' }, label: 'Packs' },
-  { linkOptions: { to: '/application' }, label: 'Application' }
-] as const satisfies { linkOptions: LinkOptions; label: string }[]
-
-const ACCOUNT_LINKS = [
-  {
-    linkOptions: { to: '/mon-compte', search: { tab: 'reservations' } },
-    label: 'Mes réservations',
-    icon: CalendarDays,
-    showBadge: 'bookings'
-  },
-  {
-    linkOptions: { to: '/mon-compte', search: { tab: 'credits' } },
-    label: 'Mes crédits',
-    icon: Wallet,
-    showBadge: 'balance'
-  },
-  {
-    linkOptions: { to: '/mon-compte', search: { tab: 'historique' } },
-    label: 'Historique',
-    icon: History,
-    showBadge: null
-  },
-  {
-    linkOptions: { to: '/mon-compte', search: { tab: 'profil' } },
-    label: 'Profil',
-    icon: UserCircle,
-    showBadge: null
-  }
-] as const satisfies {
-  linkOptions: LinkOptions
-  label: string
-  icon: LucideIcon
-  showBadge: 'bookings' | 'balance' | null
-}[]
 
 type HamburgerButtonProps = {
   isOpen: boolean
@@ -129,11 +83,6 @@ export const NavbarMobileMenu = ({
   const signOut = useSignOut()
   const closeButtonRef = React.useRef<HTMLButtonElement>(null)
 
-  const handleOpenAutoFocus = (event: Event) => {
-    event.preventDefault()
-    closeButtonRef.current?.focus()
-  }
-
   const userBalanceQuery = useQuery({
     ...getUserBalanceQueryOpts(),
     enabled: Boolean(user)
@@ -143,6 +92,11 @@ export const NavbarMobileMenu = ({
     ...getActiveBookingCountQueryOpts(),
     enabled: Boolean(user)
   })
+
+  const handleOpenAutoFocus = (event: Event) => {
+    event.preventDefault()
+    closeButtonRef.current?.focus()
+  }
 
   const handleSignOut = async () => {
     onOpenChange(false)
@@ -216,7 +170,7 @@ export const NavbarMobileMenu = ({
                 <div className="space-y-1">
                   {ACCOUNT_LINKS.map((link) => {
                     const Icon = link.icon
-                    const badge = getBadgeValue(link.showBadge)
+                    const badge = getBadgeValue(link.badgeType)
 
                     return (
                       <Link

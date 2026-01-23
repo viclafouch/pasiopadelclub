@@ -12,7 +12,10 @@ import {
   type CourtTypeFilter,
   type LocationFilter
 } from '@/constants/court'
-import { getSlotsByDateQueryOpts } from '@/constants/queries'
+import {
+  getSlotsByDateQueryOpts,
+  getUpcomingBookingsQueryOpts
+} from '@/constants/queries'
 import { SECOND } from '@/constants/time'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
 import { filterCourts } from '@/helpers/court-filters'
@@ -188,8 +191,7 @@ const ReservationContent = () => {
 
   const handleSlotSelect = (court: Court, slot: Slot) => {
     if (!isAuthenticated) {
-      const returnUrl = `/reservation?date=${selectedDate}`
-      navigate({ to: '/connexion', search: { redirect: returnUrl } })
+      navigate({ to: '/connexion', search: { redirect: '/reservation' } })
 
       return
     }
@@ -214,7 +216,7 @@ const ReservationContent = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex min-h-14 items-center justify-between gap-4">
             <FilterBar
               courtType={courtType}
               location={locationFilter}
@@ -226,7 +228,7 @@ const ReservationContent = () => {
             <div className="flex items-center gap-3">
               {isAuthenticated ? (
                 <ClientOnly>
-                  <div className="hidden sm:block">
+                  <div className="hidden h-14 items-center sm:flex">
                     <NextBookingBadge />
                   </div>
                 </ClientOnly>
@@ -312,6 +314,11 @@ export const Route = createFileRoute('/_public__root/reservation/')({
       urlDate: search.date
     })
     context.queryClient.ensureQueryData(getSlotsByDateQueryOpts(selectedDate))
+  },
+  loader: async ({ context }) => {
+    if (context.user) {
+      context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
+    }
   },
   staleTime: 30 * SECOND,
   head: () => {
