@@ -119,11 +119,13 @@ const InscriptionPage = () => {
         })}
       </ul>
       <form
+        id="signup-form"
         onSubmit={(event) => {
           event.preventDefault()
           form.handleSubmit()
         }}
         className="space-y-5"
+        autoComplete="on"
         noValidate
       >
         <div className="grid gap-4 xs:grid-cols-2">

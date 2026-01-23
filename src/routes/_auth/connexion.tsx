@@ -76,11 +76,13 @@ const ConnexionPage = () => {
         </p>
       </div>
       <form
+        id="login-form"
         onSubmit={(event) => {
           event.preventDefault()
           form.handleSubmit()
         }}
         className="space-y-5"
+        autoComplete="on"
         noValidate
       >
         <form.Field name="email">
