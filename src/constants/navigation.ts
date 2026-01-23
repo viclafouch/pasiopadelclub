@@ -3,8 +3,8 @@ import { CalendarDays, History, UserCircle, Wallet } from 'lucide-react'
 import type { LinkOptions } from '@tanstack/react-router'
 
 export const NAV_LINKS = [
-  { linkOptions: { to: '/tarifs' }, label: 'Tarifs' },
-  { linkOptions: { to: '/credits' }, label: 'Packs' },
+  { linkOptions: { to: '/tarifs', preload: 'viewport' }, label: 'Tarifs' },
+  { linkOptions: { to: '/credits', preload: 'viewport' }, label: 'Packs' },
   { linkOptions: { to: '/galerie' }, label: 'Galerie' },
   { linkOptions: { to: '/contact' }, label: 'Contact' }
 ] as const satisfies { linkOptions: LinkOptions; label: string }[]
