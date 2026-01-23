@@ -1,13 +1,9 @@
 import React from 'react'
-import { AlertCircleIcon, CalendarIcon } from 'lucide-react'
+import { CalendarIcon } from 'lucide-react'
 import { AnimatedNotification } from '@/components/animated-notification'
 import { BookingCard } from '@/components/booking-card'
 import { Button } from '@/components/ui/button'
-import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
-import {
-  getActiveBookingCountQueryOpts,
-  getUpcomingBookingsQueryOpts
-} from '@/constants/queries'
+import { getUpcomingBookingsQueryOpts } from '@/constants/queries'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
 import {
   CancelBookingDialog,
@@ -43,7 +39,6 @@ const EmptyBookings = () => {
 
 export const UpcomingBookingsTab = () => {
   const upcomingBookingsQuery = useSuspenseQuery(getUpcomingBookingsQueryOpts())
-  const activeCountQuery = useSuspenseQuery(getActiveBookingCountQueryOpts())
 
   const [cancelDialogData, setCancelDialogData] =
     React.useState<CancelDialogData | null>(null)
@@ -74,8 +69,6 @@ export const UpcomingBookingsTab = () => {
     }, SUCCESS_NOTIFICATION_DURATION_MS)
   }
 
-  const isLimitReached = activeCountQuery.data >= MAX_ACTIVE_BOOKINGS
-
   return (
     <>
       <div className="space-y-6">
@@ -95,18 +88,6 @@ export const UpcomingBookingsTab = () => {
             </span>
           ) : null}
         </AnimatedNotification>
-        {isLimitReached ? (
-          <div className="flex items-center gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
-            <AlertCircleIcon
-              className="size-5 shrink-0 text-amber-600"
-              aria-hidden="true"
-            />
-            <p className="text-sm text-amber-700">
-              Vous avez atteint la limite de {MAX_ACTIVE_BOOKINGS} réservations
-              actives. Annulez une réservation pour en effectuer une nouvelle.
-            </p>
-          </div>
-        ) : null}
         {upcomingBookingsQuery.data.length === 0 ? (
           <EmptyBookings />
         ) : (

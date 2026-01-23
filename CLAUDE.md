@@ -50,7 +50,6 @@ Remplacer le site Wix actuel (pasiopadelclub.com) qui est un one-page non respon
 
 ## Business Rules
 
-- Max **2 réservations actives** par utilisateur
 - Réservation jusqu'à **10 jours** à l'avance
 - Annulation possible **24h+** avant (remboursement intégral)
 - Réservation créée **uniquement après paiement** (webhook Stripe)

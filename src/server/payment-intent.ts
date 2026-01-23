@@ -1,10 +1,6 @@
 import { addDays } from 'date-fns'
-import { and, count, eq, gt, lt } from 'drizzle-orm'
-import {
-  DAYS_TO_SHOW,
-  MAX_ACTIVE_BOOKINGS,
-  MS_PER_MINUTE
-} from '@/constants/booking'
+import { and, eq, gt, lt } from 'drizzle-orm'
+import { DAYS_TO_SHOW, MS_PER_MINUTE } from '@/constants/booking'
 import { bookingSlotSchema } from '@/constants/schemas'
 import { db } from '@/db'
 import { booking, court } from '@/db/schema'
@@ -41,24 +37,6 @@ export const createPaymentIntentFn = createServerFn({ method: 'POST' })
     if (endDate <= startDate) {
       setResponseStatus(400)
       throw new Error('Horaire invalide')
-    }
-
-    const [activeBookingsResult] = await db
-      .select({ count: count() })
-      .from(booking)
-      .where(
-        and(
-          eq(booking.userId, context.session.user.id),
-          gt(booking.endAt, now),
-          eq(booking.status, 'confirmed')
-        )
-      )
-
-    if ((activeBookingsResult?.count ?? 0) >= MAX_ACTIVE_BOOKINGS) {
-      setResponseStatus(400)
-      throw new Error(
-        `Vous avez atteint la limite de ${MAX_ACTIVE_BOOKINGS} réservations actives`
-      )
     }
 
     const [courtData] = await db

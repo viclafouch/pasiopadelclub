@@ -52,7 +52,6 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 - **Pas de blocage préventif** : Le créneau reste disponible jusqu'au paiement confirmé
 - **Double-booking** : Très rare (~20 users), si ça arrive → remboursement manuel
 - **Annulation** : Autorisée uniquement si effectuée au moins 24 heures avant le créneau réservé (remboursement intégral)
-- **Limite par utilisateur** : Maximum 2 réservations actives simultanément
 - **Anticipation** : Réservation possible jusqu'à 10 jours à l'avance
 - **Horaires** : 8h - 22h tous les jours
 - **Tarification** : Prix fixes
@@ -86,7 +85,6 @@ Site de réservation de terrains de padel pour le club Pasio Padel Club situé �
 ### Page de Réservation
 - **Mobile** : Grille de créneaux en plein écran
 - **Créneaux passés** : Affichés grisés pour voir l'occupation de la journée complète
-- **Limite atteinte (2/2)** : Affichage complet avec bandeau d'alerte permanent rappelant la limite
 - **Mes réservations** : Créneaux réservés par l'utilisateur connecté en bleu (couleur `info`) avec texte "Réservé par vous"
 
 ### Gestion des erreurs
@@ -269,7 +267,6 @@ Migration de Convex + Clerk vers Neon (Postgres) + Drizzle ORM + Better Auth pou
 - [x] Groupes par type de terrain (double, simple, kids)
 - [x] SlotCard avec status (available, booked, blocked, past)
 - [x] BookingSummaryModal avec récapitulatif
-- [x] Vérification limite 2 réservations actives
 - [x] "Réservé par vous" (créneaux user en bleu info)
 
 ---

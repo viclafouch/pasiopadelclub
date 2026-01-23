@@ -4,7 +4,6 @@ import { z } from 'zod'
 import {
   CLOSING_HOUR,
   DAYS_TO_SHOW,
-  MAX_ACTIVE_BOOKINGS,
   MIN_SESSION_MINUTES
 } from '@/constants/booking'
 import {
@@ -13,20 +12,13 @@ import {
   type CourtTypeFilter,
   type LocationFilter
 } from '@/constants/court'
-import {
-  getActiveBookingCountQueryOpts,
-  getSlotsByDateQueryOpts
-} from '@/constants/queries'
+import { getSlotsByDateQueryOpts } from '@/constants/queries'
 import { SECOND } from '@/constants/time'
 import type { Court, SelectedSlot, Slot } from '@/constants/types'
 import { filterCourts } from '@/helpers/court-filters'
 import { getValidBookingDateKey } from '@/helpers/date'
 import { seo } from '@/utils/seo'
-import {
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery
-} from '@tanstack/react-query'
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import {
   ClientOnly,
   createFileRoute,
@@ -38,8 +30,7 @@ import { CourtTypeGroup } from './-components/court-type-group'
 import { DaySelector } from './-components/day-selector'
 import { FilterBar } from './-components/filter-bar'
 import { FilterDrawer } from './-components/filter-drawer'
-import { LimitBanner } from './-components/limit-banner'
-import { LimitReachedDialog } from './-components/limit-reached-dialog'
+import { NextBookingBadge } from './-components/next-booking-badge'
 import { SlotsSkeleton } from './-components/skeletons'
 
 const searchSchema = z.object({
@@ -51,7 +42,6 @@ const searchSchema = z.object({
 
 type SlotsContentProps = {
   selectedDate: string
-  isAtLimit: boolean
   courtType: CourtTypeFilter
   location: LocationFilter
   availability: AvailabilityFilter
@@ -60,7 +50,6 @@ type SlotsContentProps = {
 
 const SlotsContent = ({
   selectedDate,
-  isAtLimit,
   courtType,
   location,
   availability,
@@ -92,7 +81,6 @@ const SlotsContent = ({
 
   return (
     <>
-      {isAtLimit ? <LimitBanner maxCount={MAX_ACTIVE_BOOKINGS} /> : null}
       {courtGroups.length === 0 ? (
         <div className="rounded-lg border border-dashed border-muted-foreground/25 p-12 text-center">
           <CalendarIcon
@@ -132,7 +120,6 @@ const ReservationContent = () => {
   const [selectedSlot, setSelectedSlot] = React.useState<SelectedSlot | null>(
     null
   )
-  const [isLimitDialogOpen, setIsLimitDialogOpen] = React.useState(false)
 
   const isAuthenticated = Boolean(user)
   const selectedDate = getValidBookingDateKey({
@@ -145,11 +132,6 @@ const ReservationContent = () => {
   const courtType = type ?? 'all'
   const locationFilter = location ?? 'all'
   const availabilityFilter = available ?? 'all'
-
-  const activeCountQuery = useQuery({
-    ...getActiveBookingCountQueryOpts(),
-    enabled: isAuthenticated
-  })
 
   const handleDateChange = (newDate: string) => {
     navigate({
@@ -212,25 +194,12 @@ const ReservationContent = () => {
       return
     }
 
-    if ((activeCountQuery.data ?? 0) >= MAX_ACTIVE_BOOKINGS) {
-      setIsLimitDialogOpen(true)
-
-      return
-    }
-
     setSelectedSlot({ court, slot, dateKey: selectedDate })
   }
 
   const handleCloseModal = () => {
     setSelectedSlot(null)
   }
-
-  const handleCloseLimitDialog = () => {
-    setIsLimitDialogOpen(false)
-  }
-
-  const isAtLimit =
-    isAuthenticated && (activeCountQuery.data ?? 0) >= MAX_ACTIVE_BOOKINGS
 
   return (
     <>
@@ -254,19 +223,27 @@ const ReservationContent = () => {
               onLocationChange={handleLocationChange}
               onAvailabilityChange={handleAvailabilityChange}
             />
-            <FilterDrawer
-              courtType={courtType}
-              location={locationFilter}
-              availability={availabilityFilter}
-              onCourtTypeChange={handleCourtTypeChange}
-              onLocationChange={handleLocationChange}
-              onAvailabilityChange={handleAvailabilityChange}
-            />
+            <div className="flex items-center gap-3">
+              {isAuthenticated ? (
+                <ClientOnly>
+                  <div className="hidden sm:block">
+                    <NextBookingBadge />
+                  </div>
+                </ClientOnly>
+              ) : null}
+              <FilterDrawer
+                courtType={courtType}
+                location={locationFilter}
+                availability={availabilityFilter}
+                onCourtTypeChange={handleCourtTypeChange}
+                onLocationChange={handleLocationChange}
+                onAvailabilityChange={handleAvailabilityChange}
+              />
+            </div>
           </div>
           <React.Suspense fallback={<SlotsSkeleton />}>
             <SlotsContent
               selectedDate={selectedDate}
-              isAtLimit={isAtLimit}
               courtType={courtType}
               location={locationFilter}
               availability={availabilityFilter}
@@ -284,10 +261,6 @@ const ReservationContent = () => {
           />
         ) : null}
       </ClientOnly>
-      <LimitReachedDialog
-        isOpen={isLimitDialogOpen}
-        onClose={handleCloseLimitDialog}
-      />
     </>
   )
 }
