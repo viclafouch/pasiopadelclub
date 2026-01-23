@@ -337,6 +337,7 @@ export const Route = createFileRoute('/_public__root/reservation/')({
       meta: seoData.meta,
       links: [
         ...seoData.links,
+        { rel: 'stylesheet', href: '/experimental.css' },
         {
           rel: 'preload',
           href: '/images/terrain.webp',

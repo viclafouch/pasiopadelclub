@@ -86,7 +86,6 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
           type="font/woff2"
           crossOrigin=""
         />
-        <link rel="stylesheet" href="/experimental.css" />
         <HeadContent />
       </head>
       <body>
