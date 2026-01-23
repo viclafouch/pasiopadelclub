@@ -9,9 +9,11 @@ import {
 import { motion, useReducedMotion } from 'motion/react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
+  getActiveBookingCountQueryOpts,
   getAuthUserQueryOpts,
   getLatestBookingQueryOpts,
   getSlotsByDateQueryOpts,
+  getUpcomingBookingsQueryOpts,
   getUserBalanceQueryOpts,
   getWalletTransactionsQueryOpts
 } from '@/constants/queries'
@@ -103,6 +105,12 @@ export const StepPayment = ({
       .catch(console.error)
     queryClient
       .invalidateQueries(getWalletTransactionsQueryOpts())
+      .catch(console.error)
+    queryClient
+      .invalidateQueries(getUpcomingBookingsQueryOpts())
+      .catch(console.error)
+    queryClient
+      .invalidateQueries(getActiveBookingCountQueryOpts())
       .catch(console.error)
 
     return queryClient.invalidateQueries(getLatestBookingQueryOpts())
