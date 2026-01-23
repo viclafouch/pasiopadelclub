@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function useBodyScrollLock(isLocked: boolean) {
+export const useBodyScrollLock = (isLocked: boolean) => {
   React.useEffect(() => {
     if (!isLocked) {
       return undefined

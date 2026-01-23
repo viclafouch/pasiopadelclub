@@ -92,8 +92,6 @@ export const STRIPE_APPEARANCE = {
   }
 } as const satisfies Appearance
 
-export const BOOKING_QUERY_KEYS = ['wallet', 'bookings', 'slots'] as const
-
 export const POLLING_INTERVAL_MS = 1500
 export const POLLING_TIMEOUT_MS = 30000
 

@@ -4,26 +4,26 @@ type UseSimpleLightboxParams = {
   totalItems: number
 }
 
-export function useSimpleLightbox({ totalItems }: UseSimpleLightboxParams) {
+export const useSimpleLightbox = ({ totalItems }: UseSimpleLightboxParams) => {
   const [currentIndex, setCurrentIndex] = React.useState<number | null>(null)
 
   const isOpen = currentIndex !== null
 
-  function open(index: number) {
+  const open = (index: number) => {
     setCurrentIndex(index)
   }
 
-  function close() {
+  const close = () => {
     setCurrentIndex(null)
   }
 
-  function goToPrevious() {
+  const goToPrevious = () => {
     setCurrentIndex((prev) => {
       return prev === null ? null : prev === 0 ? totalItems - 1 : prev - 1
     })
   }
 
-  function goToNext() {
+  const goToNext = () => {
     setCurrentIndex((prev) => {
       return prev === null ? null : prev === totalItems - 1 ? 0 : prev + 1
     })

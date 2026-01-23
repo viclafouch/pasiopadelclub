@@ -7,18 +7,18 @@ type UseLightboxKeyboardParams = {
   onNext: () => void
 }
 
-export function useLightboxKeyboard({
+export const useLightboxKeyboard = ({
   isActive,
   onClose,
   onPrevious,
   onNext
-}: UseLightboxKeyboardParams) {
+}: UseLightboxKeyboardParams) => {
   React.useEffect(() => {
     if (!isActive) {
       return undefined
     }
 
-    function handleKeyDown(event: KeyboardEvent) {
+    const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case 'Escape':
           onClose()

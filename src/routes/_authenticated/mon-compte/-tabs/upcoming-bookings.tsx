@@ -2,81 +2,22 @@ import React from 'react'
 import { AlertCircleIcon, CalendarIcon } from 'lucide-react'
 import { AnimatedNotification } from '@/components/animated-notification'
 import { BookingCard } from '@/components/booking-card'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { MAX_ACTIVE_BOOKINGS } from '@/constants/booking'
 import {
   getActiveBookingCountQueryOpts,
-  getBookingHistoryQueryOpts,
-  getSlotsByDateQueryOpts,
-  getUpcomingBookingsQueryOpts,
-  getUserBalanceQueryOpts,
-  getWalletTransactionsQueryOpts
+  getUpcomingBookingsQueryOpts
 } from '@/constants/queries'
-import type { Booking, BookingWithCourt } from '@/constants/types'
 import { formatDateFr, formatTimeFr } from '@/helpers/date'
-import { getErrorMessage } from '@/helpers/error'
-import { cancelBookingFn } from '@/server/bookings'
-import { matchIsFullRefund } from '@/utils/booking'
 import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery
-} from '@tanstack/react-query'
+  CancelBookingDialog,
+  type CancelDialogData
+} from '@/routes/_authenticated/mon-compte/-components/cancel-booking-dialog'
+import { matchIsFullRefund } from '@/utils/booking'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 
 const SUCCESS_NOTIFICATION_DURATION_MS = 5000
-
-type CancelDescriptionProps = {
-  booking: BookingWithCourt | undefined
-}
-
-const CancelDescription = ({ booking }: CancelDescriptionProps) => {
-  if (!booking) {
-    return <>Souhaitez-vous continuer ?</>
-  }
-
-  const isFullRefund = matchIsFullRefund(new Date(booking.startAt))
-
-  return (
-    <div className="space-y-3">
-      <p>
-        Vous êtes sur le point d&apos;annuler votre réservation du{' '}
-        <span className="font-medium">
-          {formatDateFr(new Date(booking.startAt))}
-        </span>{' '}
-        à{' '}
-        <span className="font-medium">
-          {formatTimeFr(new Date(booking.startAt))}
-        </span>
-        .
-      </p>
-      {isFullRefund ? (
-        <p className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-700">
-          Bonne nouvelle : vous serez remboursé{' '}
-          <span className="font-semibold">intégralement</span> car
-          l&apos;annulation intervient plus de 24h avant le créneau.
-        </p>
-      ) : (
-        <p className="rounded-md bg-amber-500/10 p-3 text-sm text-amber-700">
-          Vous serez remboursé à hauteur de{' '}
-          <span className="font-semibold">50%</span> car l&apos;annulation
-          intervient moins de 24h avant le créneau.
-        </p>
-      )}
-      <p className="text-muted-foreground">Souhaitez-vous continuer ?</p>
-    </div>
-  )
-}
 
 const EmptyBookings = () => {
   return (
@@ -100,97 +41,50 @@ const EmptyBookings = () => {
   )
 }
 
-type CancelledBookingInfo = {
-  courtName: string
-  date: string
-  time: string
-  isFullRefund: boolean
-}
-
 export const UpcomingBookingsTab = () => {
-  const queryClient = useQueryClient()
   const upcomingBookingsQuery = useSuspenseQuery(getUpcomingBookingsQueryOpts())
   const activeCountQuery = useSuspenseQuery(getActiveBookingCountQueryOpts())
-  const [cancelingId, setCancelingId] = React.useState<Booking['id'] | null>(
-    null
-  )
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
-  const [showSuccess, setShowSuccess] = React.useState(false)
-  const [cancelledBookingInfo, setCancelledBookingInfo] =
-    React.useState<CancelledBookingInfo | null>(null)
 
-  const cancelBookingMutation = useMutation({
-    mutationFn: (bookingId: string) => {
-      return cancelBookingFn({ data: { bookingId } })
-    },
-    onSuccess: async (_data, bookingId) => {
-      const cancelledBooking = upcomingBookingsQuery.data.find((booking) => {
-        return booking.id === bookingId
+  const [cancelDialogData, setCancelDialogData] =
+    React.useState<CancelDialogData | null>(null)
+  const [cancelledInfo, setCancelledInfo] =
+    React.useState<CancelDialogData | null>(null)
+
+  const handleCancelClick = (bookingId: string) => {
+    const booking = upcomingBookingsQuery.data.find((item) => {
+      return item.id === bookingId
+    })
+
+    if (booking) {
+      setCancelDialogData({
+        bookingId: booking.id,
+        courtName: booking.court.name,
+        date: formatDateFr(new Date(booking.startAt)),
+        time: formatTimeFr(new Date(booking.startAt)),
+        isFullRefund: matchIsFullRefund(new Date(booking.startAt))
       })
-
-      if (cancelledBooking) {
-        setCancelledBookingInfo({
-          courtName: cancelledBooking.court.name,
-          date: formatDateFr(new Date(cancelledBooking.startAt)),
-          time: formatTimeFr(new Date(cancelledBooking.startAt)),
-          isFullRefund: matchIsFullRefund(new Date(cancelledBooking.startAt))
-        })
-      }
-
-      await Promise.all([
-        queryClient.invalidateQueries(getUpcomingBookingsQueryOpts()),
-        queryClient.invalidateQueries(getActiveBookingCountQueryOpts()),
-        queryClient.invalidateQueries(getBookingHistoryQueryOpts()),
-        queryClient.invalidateQueries({
-          queryKey: getSlotsByDateQueryOpts.all
-        }),
-        queryClient.invalidateQueries(getUserBalanceQueryOpts()),
-        queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
-      ])
-
-      setIsDialogOpen(false)
-      setCancelingId(null)
-
-      setShowSuccess(true)
-      setTimeout(() => {
-        setShowSuccess(false)
-      }, SUCCESS_NOTIFICATION_DURATION_MS)
-    },
-    onError: () => {
-      setCancelingId(null)
     }
-  })
-
-  const handleCancelClick = (bookingId: Booking['id']) => {
-    setCancelingId(bookingId)
-    setIsDialogOpen(true)
   }
 
-  const handleConfirmCancel = () => {
-    if (!cancelingId) {
-      return
-    }
+  const handleCancelSuccess = (data: CancelDialogData) => {
+    setCancelledInfo(data)
 
-    cancelBookingMutation.mutate(cancelingId)
+    setTimeout(() => {
+      setCancelledInfo(null)
+    }, SUCCESS_NOTIFICATION_DURATION_MS)
   }
-
-  const bookingToCancel = upcomingBookingsQuery.data.find((booking) => {
-    return booking.id === cancelingId
-  })
 
   const isLimitReached = activeCountQuery.data >= MAX_ACTIVE_BOOKINGS
 
   return (
     <>
       <div className="space-y-6">
-        <AnimatedNotification show={showSuccess} variant="success">
-          {cancelledBookingInfo ? (
+        <AnimatedNotification show={cancelledInfo !== null} variant="success">
+          {cancelledInfo ? (
             <span>
-              Réservation du terrain {cancelledBookingInfo.courtName} le{' '}
-              {cancelledBookingInfo.date} à {cancelledBookingInfo.time} annulée.
-              Remboursement{' '}
-              {cancelledBookingInfo.isFullRefund ? 'intégral' : 'à 50%'}{' '}
-              effectué.{' '}
+              Réservation du terrain {cancelledInfo.courtName} le{' '}
+              {cancelledInfo.date} à {cancelledInfo.time} annulée. Remboursement{' '}
+              {cancelledInfo.isFullRefund ? 'intégral' : 'à 50%'} effectué.{' '}
               <Link
                 to="/mon-compte"
                 search={{ tab: 'historique' }}
@@ -199,9 +93,7 @@ export const UpcomingBookingsTab = () => {
                 Voir l&apos;historique
               </Link>
             </span>
-          ) : (
-            <span>Réservation annulée avec succès.</span>
-          )}
+          ) : null}
         </AnimatedNotification>
         {isLimitReached ? (
           <div className="flex items-center gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
@@ -231,37 +123,15 @@ export const UpcomingBookingsTab = () => {
           </div>
         )}
       </div>
-      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Annuler la réservation</AlertDialogTitle>
-            <AlertDialogDescription asChild>
-              <div>
-                <CancelDescription booking={bookingToCancel} />
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          {cancelBookingMutation.isError ? (
-            <p role="alert" className="text-sm text-destructive">
-              {getErrorMessage(cancelBookingMutation.error)}
-            </p>
-          ) : null}
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={cancelBookingMutation.isPending}>
-              Non, garder
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmCancel}
-              disabled={cancelBookingMutation.isPending}
-              aria-busy={cancelBookingMutation.isPending}
-            >
-              {cancelBookingMutation.isPending
-                ? 'Annulation...'
-                : 'Oui, annuler'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {cancelDialogData ? (
+        <CancelBookingDialog
+          data={cancelDialogData}
+          onClose={() => {
+            setCancelDialogData(null)
+          }}
+          onSuccess={handleCancelSuccess}
+        />
+      ) : null}
     </>
   )
 }

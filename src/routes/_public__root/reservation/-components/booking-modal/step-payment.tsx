@@ -10,7 +10,10 @@ import { motion, useReducedMotion } from 'motion/react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   getAuthUserQueryOpts,
-  getUserBalanceQueryOpts
+  getLatestBookingQueryOpts,
+  getSlotsByDateQueryOpts,
+  getUserBalanceQueryOpts,
+  getWalletTransactionsQueryOpts
 } from '@/constants/queries'
 import type { BookingSlotData, SelectedSlot } from '@/constants/types'
 import { getErrorMessage } from '@/helpers/error'
@@ -25,7 +28,6 @@ import type { UseMutationResult } from '@tanstack/react-query'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
-  BOOKING_QUERY_KEYS,
   CREDIT_FORM_ID,
   type ModalAction,
   type PaymentMethod,
@@ -93,14 +95,17 @@ export const StepPayment = ({
     bookingStatusQuery.isError && bookingStatusQuery.failureCount >= 3
 
   const invalidateBookingQueries = React.useCallback(() => {
-    return Promise.all(
-      BOOKING_QUERY_KEYS.map((key) => {
-        return queryClient.invalidateQueries({
-          queryKey: [key],
-          refetchType: 'all'
-        })
-      })
-    )
+    queryClient
+      .invalidateQueries({ queryKey: getSlotsByDateQueryOpts.all })
+      .catch(console.error)
+    queryClient
+      .invalidateQueries(getUserBalanceQueryOpts())
+      .catch(console.error)
+    queryClient
+      .invalidateQueries(getWalletTransactionsQueryOpts())
+      .catch(console.error)
+
+    return queryClient.invalidateQueries(getLatestBookingQueryOpts())
   }, [queryClient])
 
   React.useEffect(() => {
