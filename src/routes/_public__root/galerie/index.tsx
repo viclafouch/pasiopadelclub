@@ -1,6 +1,9 @@
 import React from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { PageHeader } from '@/components/page-header'
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock'
+import { useLightboxKeyboard } from '@/hooks/use-lightbox-keyboard'
+import { useSimpleLightbox } from '@/hooks/use-simple-lightbox'
 import { seo } from '@/utils/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -15,69 +18,51 @@ const GALLERY_IMAGES = [
   {
     id: 1,
     src: '/images/gallery/gallery-01.webp',
-    alt: 'Court de padel 1',
+    alt: 'Court de padel indoor',
     category: 'Courts'
   },
   {
     id: 2,
     src: '/images/gallery/gallery-02.webp',
-    alt: 'Joueurs de padel',
+    alt: 'Match de padel en double',
     category: 'Matchs'
   },
   {
     id: 3,
     src: '/images/gallery/gallery-03.webp',
-    alt: 'Équipement de padel',
-    category: 'Équipement'
+    alt: 'Joueurs de padel en action',
+    category: 'Matchs'
   },
   {
     id: 4,
     src: '/images/gallery/gallery-04.webp',
-    alt: 'Court intérieur',
+    alt: 'Court semi-couvert',
     category: 'Courts'
   },
   {
     id: 5,
     src: '/images/gallery/gallery-05.webp',
-    alt: 'Tournoi de padel',
-    category: 'Événements'
+    alt: 'Échange au filet',
+    category: 'Matchs'
   },
   {
     id: 6,
     src: '/images/gallery/gallery-06.webp',
-    alt: 'Espace détente',
-    category: 'Club'
-  },
-  {
-    id: 7,
-    src: '/images/gallery/gallery-07.webp',
-    alt: 'Match en double',
+    alt: 'Partie de padel entre amis',
     category: 'Matchs'
-  },
-  {
-    id: 8,
-    src: '/images/gallery/gallery-08.webp',
-    alt: 'Cours collectif',
-    category: 'Cours'
-  },
-  {
-    id: 9,
-    src: '/images/gallery/gallery-09.webp',
-    alt: 'Vue du club',
-    category: 'Club'
   }
 ] as const satisfies readonly GalleryImage[]
 
-const categories = [
+const CATEGORIES = [
   'Tous',
   ...new Set(
     GALLERY_IMAGES.map((img) => {
       return img.category
     })
   )
-]
+] as const
 
-type LightboxProps = {
+type LightboxParams = {
   images: readonly GalleryImage[]
   currentIndex: number
   onClose: () => void
@@ -91,32 +76,16 @@ const Lightbox = ({
   onClose,
   onPrevious,
   onNext
-}: LightboxProps) => {
+}: LightboxParams) => {
   const currentImage = images[currentIndex]
 
-  React.useEffect(() => {
-    if (!currentImage) {
-      return undefined
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose()
-      } else if (event.key === 'ArrowLeft') {
-        onPrevious()
-      } else if (event.key === 'ArrowRight') {
-        onNext()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
-    }
-  }, [currentImage, onClose, onNext, onPrevious])
+  useBodyScrollLock(true)
+  useLightboxKeyboard({
+    isActive: Boolean(currentImage),
+    onClose,
+    onPrevious,
+    onNext
+  })
 
   if (!currentImage) {
     return null
@@ -132,7 +101,6 @@ const Lightbox = ({
       >
         <X className="h-6 w-6" aria-hidden="true" />
       </button>
-
       <button
         type="button"
         onClick={onPrevious}
@@ -141,7 +109,6 @@ const Lightbox = ({
       >
         <ChevronLeft className="h-6 w-6" aria-hidden="true" />
       </button>
-
       <button
         type="button"
         onClick={onNext}
@@ -150,7 +117,6 @@ const Lightbox = ({
       >
         <ChevronRight className="h-6 w-6" aria-hidden="true" />
       </button>
-
       <div className="relative max-h-modal max-w-[90vw]">
         <img
           src={currentImage.src}
@@ -170,7 +136,6 @@ const Lightbox = ({
 
 const GaleriePage = () => {
   const [selectedCategory, setSelectedCategory] = React.useState('Tous')
-  const [lightboxIndex, setLightboxIndex] = React.useState<number | null>(null)
 
   const filteredImages =
     selectedCategory === 'Tous'
@@ -179,33 +144,7 @@ const GaleriePage = () => {
           return img.category === selectedCategory
         })
 
-  const openLightbox = (index: number) => {
-    setLightboxIndex(index)
-  }
-
-  const closeLightbox = () => {
-    setLightboxIndex(null)
-  }
-
-  const goToPrevious = () => {
-    setLightboxIndex((prev) => {
-      if (prev === null) {
-        return null
-      }
-
-      return prev === 0 ? filteredImages.length - 1 : prev - 1
-    })
-  }
-
-  const goToNext = () => {
-    setLightboxIndex((prev) => {
-      if (prev === null) {
-        return null
-      }
-
-      return prev === filteredImages.length - 1 ? 0 : prev + 1
-    })
-  }
+  const lightbox = useSimpleLightbox({ totalItems: filteredImages.length })
 
   return (
     <>
@@ -213,7 +152,6 @@ const GaleriePage = () => {
         <section className="section-py relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
           <div className="absolute top-0 left-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
-
           <div className="container relative">
             <PageHeader
               title="Notre Galerie"
@@ -221,20 +159,19 @@ const GaleriePage = () => {
             />
           </div>
         </section>
-
         <section className="section-pb" aria-labelledby="gallery-filters">
           <div className="container">
             <h2 id="gallery-filters" className="sr-only">
               Filtrer par catégorie
             </h2>
             <div className="mb-10 flex flex-wrap justify-center gap-3">
-              {categories.map((category) => {
+              {CATEGORIES.map((category) => {
                 return (
                   <button
                     type="button"
                     key={category}
                     onClick={() => {
-                      setSelectedCategory(category)
+                      return setSelectedCategory(category)
                     }}
                     className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
                       selectedCategory === category
@@ -247,7 +184,6 @@ const GaleriePage = () => {
                 )
               })}
             </div>
-
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredImages.map((image, index) => {
                 return (
@@ -255,7 +191,7 @@ const GaleriePage = () => {
                     type="button"
                     key={image.id}
                     onClick={() => {
-                      openLightbox(index)
+                      return lightbox.open(index)
                     }}
                     className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-card/50"
                   >
@@ -279,7 +215,6 @@ const GaleriePage = () => {
                 )
               })}
             </div>
-
             {filteredImages.length === 0 ? (
               <div className="py-20 text-center">
                 <p className="text-muted-foreground">
@@ -290,14 +225,13 @@ const GaleriePage = () => {
           </div>
         </section>
       </main>
-
-      {lightboxIndex !== null ? (
+      {lightbox.isOpen && lightbox.currentIndex !== null ? (
         <Lightbox
           images={filteredImages}
-          currentIndex={lightboxIndex}
-          onClose={closeLightbox}
-          onPrevious={goToPrevious}
-          onNext={goToNext}
+          currentIndex={lightbox.currentIndex}
+          onClose={lightbox.close}
+          onPrevious={lightbox.goToPrevious}
+          onNext={lightbox.goToNext}
         />
       ) : null}
     </>
