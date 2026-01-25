@@ -51,7 +51,7 @@ Remplacer le site Wix actuel (pasiopadelclub.com) qui est un one-page non respon
 ## Business Rules
 
 - Réservation jusqu'à **10 jours** à l'avance
-- Annulation possible **24h+** avant (remboursement intégral)
+- Annulation possible
 - Réservation créée **uniquement après paiement** (webhook Stripe)
 - Prix stockés en **centimes** (6000 = 60€)
 - Crédits : packs prépayés avec bonus, expiration après X mois
@@ -120,19 +120,8 @@ src/
 
 ---
 
-## Database Schema
+## Database Tables
 
-### Enums
-```
-userRole       = ['user', 'admin']
-courtType      = ['double', 'simple', 'kids']
-courtLocation  = ['indoor', 'outdoor']
-bookingStatus  = ['pending', 'confirmed', 'completed', 'cancelled', 'expired']
-paymentType    = ['online', 'free', 'credit']
-walletTransactionType = ['purchase', 'payment', 'refund', 'expiration']
-```
-
-### Tables
 - **user** → Utilisateurs (Better Auth + champs custom : firstName, lastName, phone, role, isBlocked)
 - **session**, **account**, **verification** → Better Auth
 - **court** → Terrains (type, location, capacity, duration, price en cents)
@@ -145,16 +134,16 @@ walletTransactionType = ['purchase', 'payment', 'refund', 'expiration']
 
 ## Rules (`.claude/rules/`)
 
-TOUJOURS lire et respecter ces règles pour chaque ligne de code :
+TOUJOURS lire et respecter ces règles pour chaque ligne de code. Le contenu ci-dessous est un résumé, **consulter les fichiers pour les détails complets**.
 
-| Fichier | Contenu |
+| Fichier | Domaine |
 |---------|---------|
-| `typescript.md` | No any, as const satisfies, trust inference, Drizzle = source of truth |
-| `code-style.md` | Max 2 params, 30 lignes/fn, no mutations, no comments, naming conventions |
-| `frontend.md` | React.useState, useMutation, no useCallback/useMemo, ternary over && |
-| `comments.md` | Code auto-documenté, pas de commentaires |
-| `testing.md` | BDD style (#given #when #then), mock externals |
-| `git.md` | JAMAIS commit/push sans demande explicite |
+| `typescript.md` | Règles du langage TypeScript (typage, inférence, patterns) |
+| `code-style.md` | Style d'écriture du code (structure, nommage, organisation) |
+| `frontend.md` | Développement frontend (React, TanStack, UI/UX, animations) |
+| `comments.md` | Politique de commentaires (code auto-documenté) |
+| `testing.md` | Règles de tests (structure BDD, mocking, couverture) |
+| `git.md` | Workflow Git (commits, push, messages) |
 
 ---
 
@@ -172,7 +161,10 @@ TOUJOURS lire et respecter ces règles pour chaque ligne de code :
 
 | Skill | Usage |
 |-------|-------|
-| `/frontend-design` | Design UI/UX pour composants et pages |
+| `/frontend-design` | Créer des interfaces frontend de haute qualité |
+| `/react-useeffect` | Auditer les composants React pour détecter les useEffect inutiles |
+| `/better-auth` | Guide d'intégration Better Auth (session, OAuth, plugins) |
+| `/frontend-accessibility` | Construire des interfaces accessibles (WCAG, ARIA, clavier) |
 
 ---
 
@@ -181,8 +173,10 @@ TOUJOURS lire et respecter ces règles pour chaque ligne de code :
 | MCP | Usage |
 |-----|-------|
 | **Context7** | Documentation des librairies externes (TanStack, Drizzle, Better Auth, Stripe...) |
-| **shadcn** | Composants UI disponibles et exemples |
+| **shadcn** | Installer et explorer les composants shadcn/ui |
 | **Kibo UI** | Composants custom du design system |
+| **Resend** | Gestion des emails et domaines via l'API Resend |
+| **Railway** | Gestion du déploiement et des services Railway |
 
 ### Lire la documentation
 Avant d'utiliser une librairie externe, TOUJOURS consulter Context7 :
@@ -213,25 +207,29 @@ Avant d'utiliser une librairie externe, TOUJOURS consulter Context7 :
 
 ## Commands
 
-```bash
-npm run dev          # Serveur dev :3000
-npm run build        # Build production
-npm run lint:fix     # Fix lint
-npm run db:push      # Push schema
-npm run db:studio    # Drizzle Studio
-npm run email:dev    # Preview emails :3001
-```
+> **IMPORTANT** : Ne JAMAIS lancer `npm run dev` — le serveur de développement est déjà lancé par l'utilisateur.
+
+| Commande | Description |
+|----------|-------------|
+| `npm run dev` | Lance le serveur de développement sur le port 3000 |
+| `npm run build` | Compile l'application pour la production |
+| `npm run start` | Démarre le serveur de production (après build) |
+| `npm run lint:fix` | Vérifie TypeScript + ESLint et corrige automatiquement les erreurs |
+| `npm run test` | Lance les tests unitaires avec Vitest |
+| `npm run db:generate` | Génère les migrations Drizzle à partir du schema |
+| `npm run db:migrate` | Applique les migrations en base de données |
+| `npm run db:push` | Pousse le schema directement en base (dev uniquement) |
+| `npm run db:studio` | Ouvre Drizzle Studio pour explorer la base de données |
+| `npm run db:seed` | Peuple la base avec les données initiales (courts) |
+| `npm run db:seed:credit-packs` | Peuple la base avec les packs de crédits |
+| `npm run email:dev` | Lance le serveur de preview des emails sur le port 3001 |
+| `npm run email:export` | Exporte les templates d'emails en HTML statique |
+| `npm run deps` | Met à jour les dépendances (minor/patch) |
+| `npm run deps:major` | Met à jour les dépendances (major) |
+| `npm run clean` | Nettoie les dossiers de build et cache |
 
 ---
 
 ## Plan Status
 
 Voir `.claude/plan.md` pour le détail complet.
-
-**Fait :** M0-6 (auth, booking, payments, credits, emails setup)
-
-**En cours :**
-- M7 : Emails → manque cron rappel 24h + formulaire contact
-- M8 : Déploiement → cleanup env Polar + webhook URL Stripe
-
-**À venir :** M9-13 (admin, SEO, tests, RGPD)
