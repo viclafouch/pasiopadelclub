@@ -2,31 +2,6 @@ export const SITE_URL = 'https://pasiopadelclub-production.up.railway.app'
 
 export const EMAIL_RESEND_COOLDOWN_SECONDS = 60
 
-type ClubInfo = {
-  name: string
-  address: {
-    street: string
-    city: string
-    postalCode: string
-    country: string
-    full: string
-    googleMapsUrl: string
-  }
-  phone: {
-    display: string
-    href: string
-  }
-  email: string
-  hours: {
-    open: string
-    close: string
-    days: string
-  }
-  courts: {
-    total: number
-  }
-}
-
 export const CLUB_INFO = {
   name: 'Pasio Padel Club',
   address: {
@@ -51,7 +26,7 @@ export const CLUB_INFO = {
   courts: {
     total: 7
   }
-} as const satisfies ClubInfo
+} as const
 
 type SocialLink = {
   platform: 'instagram' | 'facebook'

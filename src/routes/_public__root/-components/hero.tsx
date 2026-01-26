@@ -1,5 +1,5 @@
-import { Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { CLUB_INFO } from '@/constants/app'
 import { Link } from '@tanstack/react-router'
 
 export const Hero = () => {
@@ -19,8 +19,7 @@ export const Hero = () => {
       <div className="relative z-10 flex flex-1 flex-col justify-center px-8 pt-24 pb-32 lg:container">
         <div className="max-w-2xl">
           <div className="mb-6 flex items-center gap-2 text-sm text-white">
-            <Clock className="size-4" />
-            <span>Ouvert 7j/7 de 8h à 22h</span>
+            <span>Ouvert 7j/7 de 8h à 22h - {CLUB_INFO.address.full}</span>
           </div>
           <h1 className="font-display mb-6 text-5xl leading-[1.05] font-thin tracking-tight text-white md:text-6xl lg:text-7xl">
             Vivez le padel.
