@@ -154,7 +154,7 @@ export const auth = betterAuth({
     }
   },
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: !serverEnv.SKIP_EMAIL_VERIFICATION,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       // eslint-disable-next-line no-console
@@ -179,6 +179,36 @@ export const auth = betterAuth({
   },
   databaseHooks: {
     user: {
+      create: {
+        after: async (user) => {
+          if (!serverEnv.SKIP_EMAIL_VERIFICATION) {
+            return
+          }
+
+          await db
+            .update(schema.user)
+            .set({ emailVerified: true })
+            .where(eq(schema.user.id, user.id))
+
+          // eslint-disable-next-line no-console
+          console.log('[SKIP_EMAIL_VERIFICATION] Auto-verified user:', {
+            email: maskEmail(user.email),
+            timestamp: new Date().toISOString()
+          })
+
+          resend.emails
+            .send({
+              from: EMAIL_FROM,
+              to: getEmailRecipient(user.email),
+              subject: 'Bienvenue chez Pasio Padel Club !',
+              react: WelcomeEmail({
+                firstName: extractFirstName(user.name),
+                baseUrl: serverEnv.VITE_SITE_URL
+              })
+            })
+            .catch(console.error)
+        }
+      },
       update: {
         after: async ({ data, previousData }) => {
           const parsed = parseUserUpdateData(data)

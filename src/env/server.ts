@@ -11,7 +11,13 @@ export const serverEnv = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_'),
     RESEND_API_KEY: z.string().startsWith('re_'),
     EMAIL_OVERRIDE_TO: z.email().optional(),
-    EMAIL_OVERRIDE_FROM: z.string().optional()
+    EMAIL_OVERRIDE_FROM: z.string().optional(),
+    SKIP_EMAIL_VERIFICATION: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((value) => {
+        return value === 'true'
+      })
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true

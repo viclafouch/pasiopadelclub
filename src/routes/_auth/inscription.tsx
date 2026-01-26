@@ -17,6 +17,7 @@ import {
 import { LoadingButton } from '@/components/loading-button'
 import { SuccessCheckmark } from '@/components/success-checkmark'
 import { Button } from '@/components/ui/button'
+import { getAuthUserQueryOpts } from '@/constants/queries'
 import {
   emailSchema,
   firstNameSchema,
@@ -28,8 +29,8 @@ import { useResendVerificationEmail } from '@/hooks/use-resend-verification-emai
 import { authClient } from '@/lib/auth-client'
 import { seo } from '@/utils/seo'
 import { useForm } from '@tanstack/react-form'
-import { useMutation } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 
 const signUpSchema = z.object({
   firstName: firstNameSchema,
@@ -176,6 +177,8 @@ const SuccessState = ({ successRef, email }: SuccessStateProps) => {
 }
 
 const InscriptionPage = () => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const successRef = React.useRef<HTMLDivElement>(null)
 
   const signUpMutation = useMutation({
@@ -191,11 +194,21 @@ const InscriptionPage = () => {
       if (error) {
         throw new Error(error.code)
       }
+
+      const { data: session } = await authClient.getSession()
+
+      return { hasSession: session !== null }
     },
-    onSuccess: () => {
-      setTimeout(() => {
-        successRef.current?.focus()
-      }, 0)
+    onSuccess: async ({ hasSession }) => {
+      if (hasSession) {
+        await queryClient.invalidateQueries(getAuthUserQueryOpts())
+        await router.invalidate({ sync: true })
+        router.navigate({ to: '/' })
+      } else {
+        setTimeout(() => {
+          successRef.current?.focus()
+        }, 0)
+      }
     }
   })
 
@@ -218,7 +231,13 @@ const InscriptionPage = () => {
     }
   })
 
-  if (signUpMutation.isSuccess && signUpMutation.variables) {
+  const showEmailVerificationPrompt =
+    signUpMutation.isSuccess &&
+    signUpMutation.variables &&
+    signUpMutation.data &&
+    !signUpMutation.data.hasSession
+
+  if (showEmailVerificationPrompt) {
     return (
       <SuccessState
         successRef={successRef}
