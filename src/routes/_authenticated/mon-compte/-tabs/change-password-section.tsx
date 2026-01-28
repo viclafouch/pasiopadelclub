@@ -108,7 +108,7 @@ export const ChangePasswordSection = () => {
                 onSubmit={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
-                  form.handleSubmit()
+                  void form.handleSubmit()
                 }}
                 className="space-y-4"
                 noValidate

@@ -157,7 +157,7 @@ const ResetPasswordPage = () => {
       <form
         onSubmit={(event) => {
           event.preventDefault()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
         className="space-y-5"
         noValidate

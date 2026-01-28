@@ -61,9 +61,9 @@ const CreditsPageContent = () => {
 
   React.useEffect(() => {
     if (success) {
-      queryClient.invalidateQueries(getUserBalanceQueryOpts())
-      queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
-      queryClient.invalidateQueries(getNextExpiringCreditsQueryOpts())
+      void queryClient.invalidateQueries(getUserBalanceQueryOpts())
+      void queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
+      void queryClient.invalidateQueries(getNextExpiringCreditsQueryOpts())
     }
   }, [success, queryClient])
 
@@ -78,7 +78,7 @@ const CreditsPageContent = () => {
 
   const handlePurchase = (packId: string) => {
     if (!isLoggedIn) {
-      navigate({ to: '/connexion', search: { redirect: '/credits' } })
+      void navigate({ to: '/connexion', search: { redirect: '/credits' } })
 
       return
     }
@@ -167,7 +167,7 @@ const CreditsPage = () => {
 export const Route = createFileRoute('/_public__root/credits/')({
   validateSearch: searchSchema,
   beforeLoad: ({ context }) => {
-    context.queryClient.ensureQueryData(getCreditPacksQueryOpts())
+    void context.queryClient.ensureQueryData(getCreditPacksQueryOpts())
   },
   staleTime: Infinity,
   component: CreditsPage,

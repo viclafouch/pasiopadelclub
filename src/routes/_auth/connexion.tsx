@@ -37,7 +37,7 @@ const ConnexionPage = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries(getAuthUserQueryOpts())
       await router.invalidate({ sync: true })
-      router.navigate({ to: safeRedirect })
+      void router.navigate({ to: safeRedirect })
     }
   })
 
@@ -79,7 +79,7 @@ const ConnexionPage = () => {
         id="login-form"
         onSubmit={(event) => {
           event.preventDefault()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
         className="space-y-5"
         autoComplete="on"

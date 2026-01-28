@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

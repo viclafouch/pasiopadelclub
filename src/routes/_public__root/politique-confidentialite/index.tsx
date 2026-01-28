@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { CLUB_INFO } from '@/constants/app'
 import { seo } from '@/utils/seo'
 import { createFileRoute, Link } from '@tanstack/react-router'

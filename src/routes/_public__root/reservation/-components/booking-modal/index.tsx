@@ -114,7 +114,7 @@ export const BookingModal = ({ onClose, selectedSlot }: BookingModalProps) => {
   })
 
   React.useEffect(() => {
-    queryClient.prefetchQuery(getUserBalanceQueryOpts())
+    void queryClient.prefetchQuery(getUserBalanceQueryOpts())
   }, [queryClient])
 
   const hasPollingTimedOut =

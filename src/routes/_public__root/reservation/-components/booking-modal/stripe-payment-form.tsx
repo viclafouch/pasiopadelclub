@@ -148,7 +148,8 @@ export const StripePaymentForm = ({
         <Alert variant="destructive" className="mt-4">
           <AlertDescription>{loadError}</AlertDescription>
         </Alert>
-      ) : error ? (
+      ) : null}
+      {!loadError && error ? (
         <Alert variant="destructive" className="mt-4">
           <AlertDescription className="break-words">{error}</AlertDescription>
         </Alert>

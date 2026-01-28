@@ -139,7 +139,7 @@ const ReservationContent = () => {
   const availabilityFilter = available ?? 'all'
 
   const handleDateChange = (newDate: string) => {
-    navigate({
+    void navigate({
       search: (prev) => {
         return { ...prev, date: newDate }
       },
@@ -149,11 +149,11 @@ const ReservationContent = () => {
   }
 
   const handleDateHover = (dateKey: string) => {
-    queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
+    void queryClient.prefetchQuery(getSlotsByDateQueryOpts(dateKey))
   }
 
   const handleCourtTypeChange = (newType: CourtTypeFilter) => {
-    navigate({
+    void navigate({
       search: (prev) => {
         return {
           ...prev,
@@ -166,7 +166,7 @@ const ReservationContent = () => {
   }
 
   const handleLocationChange = (newLocation: LocationFilter) => {
-    navigate({
+    void navigate({
       search: (prev) => {
         return {
           ...prev,
@@ -179,7 +179,7 @@ const ReservationContent = () => {
   }
 
   const handleAvailabilityChange = (newAvailability: AvailabilityFilter) => {
-    navigate({
+    void navigate({
       search: (prev) => {
         return {
           ...prev,
@@ -193,7 +193,7 @@ const ReservationContent = () => {
 
   const handleSlotSelect = (court: Court, slot: Slot) => {
     if (!isAuthenticated) {
-      navigate({ to: '/connexion', search: { redirect: '/reservation' } })
+      void navigate({ to: '/connexion', search: { redirect: '/reservation' } })
 
       return
     }
@@ -333,11 +333,13 @@ export const Route = createFileRoute('/_public__root/reservation/')({
       minSessionMinutes: MIN_SESSION_MINUTES,
       urlDate: search.date
     })
-    context.queryClient.ensureQueryData(getSlotsByDateQueryOpts(selectedDate))
+    void context.queryClient.ensureQueryData(
+      getSlotsByDateQueryOpts(selectedDate)
+    )
   },
   loader: async ({ context }) => {
     if (context.user) {
-      context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
+      void context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
     }
   },
   staleTime: 30 * SECOND,

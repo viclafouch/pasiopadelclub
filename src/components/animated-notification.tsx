@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import React from 'react'
 import {
   AlertCircleIcon,
   CheckCircle2Icon,
@@ -13,7 +13,7 @@ type NotificationVariant = 'success' | 'error' | 'warning' | 'info'
 type AnimatedNotificationProps = {
   show: boolean
   variant?: NotificationVariant
-  children: ReactNode
+  children: React.ReactNode
   className?: string
   withSpacing?: boolean
 }

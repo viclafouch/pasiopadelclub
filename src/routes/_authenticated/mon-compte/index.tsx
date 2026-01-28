@@ -70,7 +70,7 @@ const MonComptePage = () => {
   const navigate = useNavigate({ from: Route.fullPath })
 
   const handleTabChange = (value: string) => {
-    navigate({
+    void navigate({
       search: { tab: value as Tab },
       to: '.',
       replace: true,
@@ -79,7 +79,7 @@ const MonComptePage = () => {
   }
 
   const handleDismissEmailVerified = () => {
-    navigate({
+    void navigate({
       search: { tab },
       to: '.',
       replace: true,
@@ -158,7 +158,7 @@ const MonComptePage = () => {
 export const Route = createFileRoute('/_authenticated/mon-compte/')({
   validateSearch: searchSchema,
   loader: ({ context }) => {
-    context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
+    void context.queryClient.ensureQueryData(getUpcomingBookingsQueryOpts())
   },
   staleTime: 30 * SECOND,
   component: MonComptePage,

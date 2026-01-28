@@ -131,7 +131,8 @@ export const PaymentMethodSelector = ({
         <p id="credits-error" role="alert" className="text-xs text-destructive">
           Impossible de charger vos crédits. Utilisez la carte bancaire.
         </p>
-      ) : !hasEnoughCredits ? (
+      ) : null}
+      {!balanceQuery.isError && !hasEnoughCredits ? (
         <p id="credits-insufficient" className="text-xs text-muted-foreground">
           {(balanceQuery.data ?? 0) > 0
             ? 'Solde insuffisant.'

@@ -326,11 +326,13 @@ const ReservationSuccessPage = () => {
   const shouldReduceMotion = useReducedMotion()
 
   React.useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: getSlotsByDateQueryOpts.all })
-    queryClient.invalidateQueries(getUserBalanceQueryOpts())
-    queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
-    queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
-    queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
+    void queryClient.invalidateQueries({
+      queryKey: getSlotsByDateQueryOpts.all
+    })
+    void queryClient.invalidateQueries(getUserBalanceQueryOpts())
+    void queryClient.invalidateQueries(getWalletTransactionsQueryOpts())
+    void queryClient.invalidateQueries(getUpcomingBookingsQueryOpts())
+    void queryClient.invalidateQueries(getActiveBookingCountQueryOpts())
   }, [queryClient])
 
   return (

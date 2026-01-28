@@ -1,5 +1,5 @@
 import React from 'react'
-import { flushSync } from 'react-dom'
+import ReactDOM from 'react-dom'
 import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 import {
@@ -98,7 +98,7 @@ const ContactPage = () => {
   const submitMutation = useMutation({
     mutationFn: submitContactFormFn,
     onSuccess: () => {
-      flushSync(() => {
+      ReactDOM.flushSync(() => {
         setIsSubmitted(true)
       })
       successRef.current?.focus()
@@ -153,7 +153,7 @@ const ContactPage = () => {
                     onSubmit={(event) => {
                       event.preventDefault()
                       event.stopPropagation()
-                      form.handleSubmit()
+                      void form.handleSubmit()
                     }}
                     className="space-y-5"
                     noValidate

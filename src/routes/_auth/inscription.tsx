@@ -203,7 +203,7 @@ const InscriptionPage = () => {
       if (hasSession) {
         await queryClient.invalidateQueries(getAuthUserQueryOpts())
         await router.invalidate({ sync: true })
-        router.navigate({ to: '/' })
+        void router.navigate({ to: '/' })
       } else {
         setTimeout(() => {
           successRef.current?.focus()
@@ -288,7 +288,7 @@ const InscriptionPage = () => {
         id="signup-form"
         onSubmit={(event) => {
           event.preventDefault()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
         className="space-y-5"
         autoComplete="on"

@@ -19,13 +19,21 @@ export const useSimpleLightbox = ({ totalItems }: UseSimpleLightboxParams) => {
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => {
-      return prev === null ? null : prev === 0 ? totalItems - 1 : prev - 1
+      if (prev === null) {
+        return null
+      }
+
+      return prev === 0 ? totalItems - 1 : prev - 1
     })
   }
 
   const goToNext = () => {
     setCurrentIndex((prev) => {
-      return prev === null ? null : prev === totalItems - 1 ? 0 : prev + 1
+      if (prev === null) {
+        return null
+      }
+
+      return prev === totalItems - 1 ? 0 : prev + 1
     })
   }
 
