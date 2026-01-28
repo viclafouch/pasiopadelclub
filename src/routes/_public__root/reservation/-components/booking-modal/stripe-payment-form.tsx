@@ -59,7 +59,7 @@ export const StripePaymentForm = ({
     onStateChange({ isReady: true, isProcessing: false })
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!stripe || !elements) {

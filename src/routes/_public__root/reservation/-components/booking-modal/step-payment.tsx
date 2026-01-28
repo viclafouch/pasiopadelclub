@@ -111,7 +111,7 @@ export const StepPayment = ({
     }
   })
 
-  const handleCreditSubmit = (event: React.FormEvent) => {
+  const handleCreditSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
     creditMutation.mutate({
       courtId: court.id,
