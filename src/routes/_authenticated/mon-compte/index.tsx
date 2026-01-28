@@ -59,7 +59,7 @@ type Tab = (typeof TABS)[number]['value']
 
 const searchSchema = z.object({
   tab: z.enum(TAB_VALUES).optional().catch('reservations'),
-  'email-verified': z.boolean().optional().catch(undefined)
+  'email-verified': z.boolean().optional()
 })
 
 const MonComptePage = () => {

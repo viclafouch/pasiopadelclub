@@ -38,7 +38,7 @@ export const TiltCard = ({ children, className, disabled }: TiltCardProps) => {
         animationRef.current = null
       }
 
-      return undefined
+      return () => {}
     }
 
     function animate(timestamp: number) {

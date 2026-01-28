@@ -13,12 +13,12 @@ type BookingConfirmationEmailProps = {
 }
 
 export const BookingConfirmationEmail = ({
-  firstName = 'Marie',
-  courtName = 'Court N°1',
-  date = 'Samedi 25 janvier 2025',
-  startTime = '14:00',
-  endTime = '15:30',
-  price = '60 €',
+  firstName,
+  courtName,
+  date,
+  startTime,
+  endTime,
+  price,
   baseUrl = SITE_URL
 }: BookingConfirmationEmailProps) => {
   return (

@@ -97,7 +97,7 @@
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "@types/ws": "^8.18.1",
-    "@viclafouch/eslint-config-viclafouch": "^4.22.0",
+    "@viclafouch/eslint-config-viclafouch": "4.22.1-beta.5",
     "@vitejs/plugin-react": "^5.1.2",
     "chokidar": "^5.0.0",
     "dotenv": "^17.2.3",

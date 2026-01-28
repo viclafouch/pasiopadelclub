@@ -12,11 +12,11 @@ type CreditPackPurchaseEmailProps = {
 }
 
 export const CreditPackPurchaseEmail = ({
-  firstName = 'Marie',
-  packName = 'Pack Pro',
-  creditsAmount = '150 €',
-  totalPaid = '120 €',
-  expiresAt = '25 janvier 2026',
+  firstName,
+  packName,
+  creditsAmount,
+  totalPaid,
+  expiresAt,
   baseUrl = SITE_URL
 }: CreditPackPurchaseEmailProps) => {
   return (

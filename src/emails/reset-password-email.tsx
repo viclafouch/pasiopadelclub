@@ -1,4 +1,3 @@
-import { SITE_URL } from '@/constants/app'
 import { Button, Column, Row, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -8,8 +7,8 @@ type ResetPasswordEmailProps = {
 }
 
 export const ResetPasswordEmail = ({
-  firstName = 'Marie',
-  resetUrl = `${SITE_URL}/reinitialiser-mot-de-passe?token=abc123`
+  firstName,
+  resetUrl
 }: ResetPasswordEmailProps) => {
   return (
     <EmailLayout preview="Réinitialisez votre mot de passe - Pasio Padel Club">

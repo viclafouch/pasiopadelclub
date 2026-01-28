@@ -1,5 +1,5 @@
 export function sanitizeForHtml(input: string) {
-  return input.replace(/[<>&"']/g, '')
+  return input.replaceAll(/[<>&"']/g, '')
 }
 
 export function extractFirstName(fullName: string, fallback = 'Client') {

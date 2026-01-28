@@ -8,7 +8,7 @@ type WelcomeEmailProps = {
 }
 
 export const WelcomeEmail = ({
-  firstName = 'Marie',
+  firstName,
   baseUrl = SITE_URL
 }: WelcomeEmailProps) => {
   return (

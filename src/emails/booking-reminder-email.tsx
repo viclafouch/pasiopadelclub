@@ -12,11 +12,11 @@ type BookingReminderEmailProps = {
 }
 
 export const BookingReminderEmail = ({
-  firstName = 'Marie',
-  courtName = 'Court N°1',
-  date = 'Dimanche 26 janvier 2025',
-  startTime = '10:00',
-  endTime = '11:30',
+  firstName,
+  courtName,
+  date,
+  startTime,
+  endTime,
   baseUrl = SITE_URL
 }: BookingReminderEmailProps) => {
   return (

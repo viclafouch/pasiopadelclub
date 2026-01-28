@@ -62,7 +62,7 @@ export const DaySelector = ({
     if (isUserScrollRef.current) {
       isUserScrollRef.current = false
 
-      return undefined
+      return () => {}
     }
 
     const frameId = requestAnimationFrame(() => {
@@ -80,18 +80,18 @@ export const DaySelector = ({
     const endSentinel = endSentinelRef.current
 
     if (!container || !startSentinel || !endSentinel) {
-      return undefined
+      return () => {}
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.target === startSentinel) {
             setCanScrollLeft(!entry.isIntersecting)
           } else if (entry.target === endSentinel) {
             setCanScrollRight(!entry.isIntersecting)
           }
-        })
+        }
       },
       { root: container, threshold: 0.1 }
     )

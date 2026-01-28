@@ -8,8 +8,8 @@ type PasswordChangedEmailProps = {
 }
 
 export const PasswordChangedEmail = ({
-  firstName = 'Marie',
-  changeDate = '21 janvier 2026 à 14:30'
+  firstName,
+  changeDate
 }: PasswordChangedEmailProps) => {
   return (
     <EmailLayout preview="Votre mot de passe a été modifié - Pasio Padel Club">

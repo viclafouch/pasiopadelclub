@@ -15,7 +15,7 @@ export const useLightboxKeyboard = ({
 }: UseLightboxKeyboardParams) => {
   React.useEffect(() => {
     if (!isActive) {
-      return undefined
+      return () => {}
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {

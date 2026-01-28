@@ -1,4 +1,3 @@
-import { SITE_URL } from '@/constants/app'
 import { Button, Column, Row, Section, Text } from '@react-email/components'
 import { EmailLayout } from './email-layout'
 
@@ -8,8 +7,8 @@ type VerificationReminderEmailProps = {
 }
 
 export const VerificationReminderEmail = ({
-  firstName = 'Marie',
-  verificationUrl = `${SITE_URL}/auth/verify?token=abc123`
+  firstName,
+  verificationUrl
 }: VerificationReminderEmailProps) => {
   return (
     <EmailLayout preview="Rappel : Confirmez votre adresse email - Pasio Padel Club">

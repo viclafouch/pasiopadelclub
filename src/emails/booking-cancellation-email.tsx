@@ -13,12 +13,12 @@ type BookingCancellationEmailProps = {
 }
 
 export const BookingCancellationEmail = ({
-  firstName = 'Marie',
-  courtName = 'Court N°2',
-  date = 'Vendredi 24 janvier 2025',
-  startTime = '18:30',
-  refundAmount = '30 €',
-  isFullRefund = false,
+  firstName,
+  courtName,
+  date,
+  startTime,
+  refundAmount,
+  isFullRefund,
   baseUrl = SITE_URL
 }: BookingCancellationEmailProps) => {
   return (

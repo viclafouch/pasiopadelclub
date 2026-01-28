@@ -54,7 +54,7 @@ export const PaymentMethodSelector = ({
       return 'credits-insufficient'
     }
 
-    return undefined
+    return ''
   }
 
   return (

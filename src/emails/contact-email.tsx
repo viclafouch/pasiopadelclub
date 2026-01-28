@@ -44,11 +44,11 @@ const BOOKING_PAYMENT_TYPE_LABELS = {
 } as const satisfies Record<NonNullable<Booking['paymentType']>, string>
 
 export const ContactEmail = ({
-  name = 'Jean Dupont',
-  email = 'jean@exemple.fr',
-  subject = 'Demande de renseignements',
-  message = 'Bonjour, je souhaiterais avoir des informations sur vos terrains de padel.',
-  sentAt = 'Lundi 20 janvier 2025 à 14:30',
+  name,
+  email,
+  subject,
+  message,
+  sentAt,
   userInfo = null
 }: ContactEmailProps) => {
   return (

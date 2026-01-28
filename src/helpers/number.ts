@@ -24,7 +24,7 @@ export function formatEuros(euros: number, options?: FormatCurrencyOptions) {
     ...options
   })
 
-  return formatted.replace(/\s/g, '')
+  return formatted.replaceAll(/\s/g, '')
 }
 
 export function convertCentsToEuros(cents: number) {

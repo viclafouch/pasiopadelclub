@@ -17,7 +17,7 @@ export const useCooldown = ({ durationSeconds }: UseCooldownParams) => {
 
   React.useEffect(() => {
     if (remainingSeconds <= 0) {
-      return undefined
+      return () => {}
     }
 
     const interval = setInterval(() => {
