@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { fr } from 'zod/locales'
-import { MINUTE, SECOND } from '@/constants/time'
 import { QueryClient } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
@@ -12,8 +11,8 @@ export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 30 * SECOND,
-        gcTime: 5 * MINUTE,
+        staleTime: 30_000,
+        gcTime: 300_000,
         refetchOnWindowFocus: process.env.NODE_ENV === 'production',
         networkMode: 'online',
         retry: false
@@ -21,7 +20,7 @@ export function getRouter() {
       mutations: {
         retry: false,
         networkMode: 'online',
-        gcTime: 5 * MINUTE
+        gcTime: 300_000
       }
     }
   })
@@ -29,8 +28,7 @@ export function getRouter() {
   const router = createRouter({
     routeTree,
     context: {
-      queryClient,
-      user: null
+      queryClient
     },
     defaultPreload: 'intent',
     defaultPreloadDelay: 50,

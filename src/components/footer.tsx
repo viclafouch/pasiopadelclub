@@ -1,4 +1,3 @@
-import { getYear } from 'date-fns'
 import { Clock, Mail, MapPin, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -47,10 +46,11 @@ const SOCIAL_ICONS = {
   facebook: FacebookIcon
 } as const
 
-const NAV_LINKS = [
+const FOOTER_NAV_LINKS = [
   { to: '/tarifs', label: 'Nos tarifs' },
   { to: '/galerie', label: 'Galerie photos' },
   { to: '/credits', label: 'Packs de crédits' },
+  { to: '/contact', label: 'Contact' },
   { to: '/application', label: 'Application mobile' }
 ] as const satisfies readonly { to: LinkOptions['to']; label: string }[]
 
@@ -108,7 +108,7 @@ const Footer = () => {
           <nav aria-label="Liens utiles" className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Découvrir</h3>
             <ul className="space-y-3">
-              {NAV_LINKS.map((link) => {
+              {FOOTER_NAV_LINKS.map((link) => {
                 return (
                   <li key={link.to}>
                     <Link
@@ -165,14 +165,14 @@ const Footer = () => {
           </div>
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">
-              Réservez maintenant
+              Télécharger l&apos;app
             </h3>
             <p className="text-sm text-muted-foreground">
-              7 terrains disponibles, réservation en ligne simplifiée.
+              7 terrains disponibles, réservez via notre application mobile.
             </p>
             <div className="space-y-3">
               <Button asChild>
-                <Link to="/reservation">Réserver un terrain</Link>
+                <Link to="/application">Réserver un terrain</Link>
               </Button>
               <Link
                 to="/contact"
@@ -206,7 +206,7 @@ const Footer = () => {
             })}
           </nav>
           <p className="text-center text-sm text-muted-foreground md:text-right">
-            © {getYear(new Date())} {CLUB_INFO.name} — Tous droits réservés
+            © {new Date().getFullYear()} {CLUB_INFO.name} — Tous droits réservés
           </p>
         </div>
       </div>

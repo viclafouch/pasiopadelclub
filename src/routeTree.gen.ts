@@ -10,16 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Public__rootRouteRouteImport } from './routes/_public__root/route'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as AdminRouteRouteImport } from './routes/_admin/route'
 import { Route as Public__rootIndexRouteImport } from './routes/_public__root/index'
-import { Route as AuthReinitialiserMotDePasseRouteImport } from './routes/_auth/reinitialiser-mot-de-passe'
-import { Route as AuthMotDePasseOublieRouteImport } from './routes/_auth/mot-de-passe-oublie'
-import { Route as AuthInscriptionRouteImport } from './routes/_auth/inscription'
-import { Route as AuthConnexionRouteImport } from './routes/_auth/connexion'
 import { Route as Public__rootTarifsIndexRouteImport } from './routes/_public__root/tarifs/index'
-import { Route as Public__rootReservationIndexRouteImport } from './routes/_public__root/reservation/index'
 import { Route as Public__rootPolitiqueConfidentialiteIndexRouteImport } from './routes/_public__root/politique-confidentialite/index'
 import { Route as Public__rootMentionsLegalesIndexRouteImport } from './routes/_public__root/mentions-legales/index'
 import { Route as Public__rootGalerieIndexRouteImport } from './routes/_public__root/galerie/index'
@@ -27,27 +19,9 @@ import { Route as Public__rootCreditsIndexRouteImport } from './routes/_public__
 import { Route as Public__rootContactIndexRouteImport } from './routes/_public__root/contact/index'
 import { Route as Public__rootCgvIndexRouteImport } from './routes/_public__root/cgv/index'
 import { Route as Public__rootApplicationIndexRouteImport } from './routes/_public__root/application/index'
-import { Route as AuthenticatedMonCompteIndexRouteImport } from './routes/_authenticated/mon-compte/index'
-import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
-import { Route as ApiWebhooksStripeRouteImport } from './routes/api/webhooks/stripe'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as Public__rootReservationSuccessRouteImport } from './routes/_public__root/reservation/success'
-import { Route as Public__rootReservationEchecRouteImport } from './routes/_public__root/reservation/echec'
 
 const Public__rootRouteRoute = Public__rootRouteRouteImport.update({
   id: '/_public__root',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
@@ -55,38 +29,11 @@ const Public__rootIndexRoute = Public__rootIndexRouteImport.update({
   path: '/',
   getParentRoute: () => Public__rootRouteRoute,
 } as any)
-const AuthReinitialiserMotDePasseRoute =
-  AuthReinitialiserMotDePasseRouteImport.update({
-    id: '/reinitialiser-mot-de-passe',
-    path: '/reinitialiser-mot-de-passe',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthMotDePasseOublieRoute = AuthMotDePasseOublieRouteImport.update({
-  id: '/mot-de-passe-oublie',
-  path: '/mot-de-passe-oublie',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthInscriptionRoute = AuthInscriptionRouteImport.update({
-  id: '/inscription',
-  path: '/inscription',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthConnexionRoute = AuthConnexionRouteImport.update({
-  id: '/connexion',
-  path: '/connexion',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const Public__rootTarifsIndexRoute = Public__rootTarifsIndexRouteImport.update({
   id: '/tarifs/',
   path: '/tarifs/',
   getParentRoute: () => Public__rootRouteRoute,
 } as any)
-const Public__rootReservationIndexRoute =
-  Public__rootReservationIndexRouteImport.update({
-    id: '/reservation/',
-    path: '/reservation/',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
 const Public__rootPolitiqueConfidentialiteIndexRoute =
   Public__rootPolitiqueConfidentialiteIndexRouteImport.update({
     id: '/politique-confidentialite/',
@@ -128,52 +75,9 @@ const Public__rootApplicationIndexRoute =
     path: '/application/',
     getParentRoute: () => Public__rootRouteRoute,
   } as any)
-const AuthenticatedMonCompteIndexRoute =
-  AuthenticatedMonCompteIndexRouteImport.update({
-    id: '/mon-compte/',
-    path: '/mon-compte/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const ApiWebhooksStripeRoute = ApiWebhooksStripeRouteImport.update({
-  id: '/api/webhooks/stripe',
-  path: '/api/webhooks/stripe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Public__rootReservationSuccessRoute =
-  Public__rootReservationSuccessRouteImport.update({
-    id: '/reservation/success',
-    path: '/reservation/success',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
-const Public__rootReservationEchecRoute =
-  Public__rootReservationEchecRouteImport.update({
-    id: '/reservation/echec',
-    path: '/reservation/echec',
-    getParentRoute: () => Public__rootRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof Public__rootIndexRoute
-  '/connexion': typeof AuthConnexionRoute
-  '/inscription': typeof AuthInscriptionRoute
-  '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
-  '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
-  '/reservation/echec': typeof Public__rootReservationEchecRoute
-  '/reservation/success': typeof Public__rootReservationSuccessRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
-  '/admin/': typeof AdminAdminIndexRoute
-  '/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/application/': typeof Public__rootApplicationIndexRoute
   '/cgv/': typeof Public__rootCgvIndexRoute
   '/contact/': typeof Public__rootContactIndexRoute
@@ -181,21 +85,10 @@ export interface FileRoutesByFullPath {
   '/galerie/': typeof Public__rootGalerieIndexRoute
   '/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
   '/politique-confidentialite/': typeof Public__rootPolitiqueConfidentialiteIndexRoute
-  '/reservation/': typeof Public__rootReservationIndexRoute
   '/tarifs/': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof Public__rootIndexRoute
-  '/connexion': typeof AuthConnexionRoute
-  '/inscription': typeof AuthInscriptionRoute
-  '/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
-  '/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
-  '/reservation/echec': typeof Public__rootReservationEchecRoute
-  '/reservation/success': typeof Public__rootReservationSuccessRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
-  '/admin': typeof AdminAdminIndexRoute
-  '/mon-compte': typeof AuthenticatedMonCompteIndexRoute
   '/application': typeof Public__rootApplicationIndexRoute
   '/cgv': typeof Public__rootCgvIndexRoute
   '/contact': typeof Public__rootContactIndexRoute
@@ -203,26 +96,12 @@ export interface FileRoutesByTo {
   '/galerie': typeof Public__rootGalerieIndexRoute
   '/mentions-legales': typeof Public__rootMentionsLegalesIndexRoute
   '/politique-confidentialite': typeof Public__rootPolitiqueConfidentialiteIndexRoute
-  '/reservation': typeof Public__rootReservationIndexRoute
   '/tarifs': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_admin': typeof AdminRouteRouteWithChildren
-  '/_auth': typeof AuthRouteRouteWithChildren
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public__root': typeof Public__rootRouteRouteWithChildren
-  '/_auth/connexion': typeof AuthConnexionRoute
-  '/_auth/inscription': typeof AuthInscriptionRoute
-  '/_auth/mot-de-passe-oublie': typeof AuthMotDePasseOublieRoute
-  '/_auth/reinitialiser-mot-de-passe': typeof AuthReinitialiserMotDePasseRoute
   '/_public__root/': typeof Public__rootIndexRoute
-  '/_public__root/reservation/echec': typeof Public__rootReservationEchecRoute
-  '/_public__root/reservation/success': typeof Public__rootReservationSuccessRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/webhooks/stripe': typeof ApiWebhooksStripeRoute
-  '/_admin/admin/': typeof AdminAdminIndexRoute
-  '/_authenticated/mon-compte/': typeof AuthenticatedMonCompteIndexRoute
   '/_public__root/application/': typeof Public__rootApplicationIndexRoute
   '/_public__root/cgv/': typeof Public__rootCgvIndexRoute
   '/_public__root/contact/': typeof Public__rootContactIndexRoute
@@ -230,23 +109,12 @@ export interface FileRoutesById {
   '/_public__root/galerie/': typeof Public__rootGalerieIndexRoute
   '/_public__root/mentions-legales/': typeof Public__rootMentionsLegalesIndexRoute
   '/_public__root/politique-confidentialite/': typeof Public__rootPolitiqueConfidentialiteIndexRoute
-  '/_public__root/reservation/': typeof Public__rootReservationIndexRoute
   '/_public__root/tarifs/': typeof Public__rootTarifsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/connexion'
-    | '/inscription'
-    | '/mot-de-passe-oublie'
-    | '/reinitialiser-mot-de-passe'
-    | '/reservation/echec'
-    | '/reservation/success'
-    | '/api/auth/$'
-    | '/api/webhooks/stripe'
-    | '/admin/'
-    | '/mon-compte/'
     | '/application/'
     | '/cgv/'
     | '/contact/'
@@ -254,21 +122,10 @@ export interface FileRouteTypes {
     | '/galerie/'
     | '/mentions-legales/'
     | '/politique-confidentialite/'
-    | '/reservation/'
     | '/tarifs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/connexion'
-    | '/inscription'
-    | '/mot-de-passe-oublie'
-    | '/reinitialiser-mot-de-passe'
-    | '/reservation/echec'
-    | '/reservation/success'
-    | '/api/auth/$'
-    | '/api/webhooks/stripe'
-    | '/admin'
-    | '/mon-compte'
     | '/application'
     | '/cgv'
     | '/contact'
@@ -276,25 +133,11 @@ export interface FileRouteTypes {
     | '/galerie'
     | '/mentions-legales'
     | '/politique-confidentialite'
-    | '/reservation'
     | '/tarifs'
   id:
     | '__root__'
-    | '/_admin'
-    | '/_auth'
-    | '/_authenticated'
     | '/_public__root'
-    | '/_auth/connexion'
-    | '/_auth/inscription'
-    | '/_auth/mot-de-passe-oublie'
-    | '/_auth/reinitialiser-mot-de-passe'
     | '/_public__root/'
-    | '/_public__root/reservation/echec'
-    | '/_public__root/reservation/success'
-    | '/api/auth/$'
-    | '/api/webhooks/stripe'
-    | '/_admin/admin/'
-    | '/_authenticated/mon-compte/'
     | '/_public__root/application/'
     | '/_public__root/cgv/'
     | '/_public__root/contact/'
@@ -302,17 +145,11 @@ export interface FileRouteTypes {
     | '/_public__root/galerie/'
     | '/_public__root/mentions-legales/'
     | '/_public__root/politique-confidentialite/'
-    | '/_public__root/reservation/'
     | '/_public__root/tarifs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   Public__rootRouteRoute: typeof Public__rootRouteRouteWithChildren
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiWebhooksStripeRoute: typeof ApiWebhooksStripeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -324,27 +161,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_admin': {
-      id: '/_admin'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_public__root/': {
       id: '/_public__root/'
       path: '/'
@@ -352,46 +168,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
-    '/_auth/reinitialiser-mot-de-passe': {
-      id: '/_auth/reinitialiser-mot-de-passe'
-      path: '/reinitialiser-mot-de-passe'
-      fullPath: '/reinitialiser-mot-de-passe'
-      preLoaderRoute: typeof AuthReinitialiserMotDePasseRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/mot-de-passe-oublie': {
-      id: '/_auth/mot-de-passe-oublie'
-      path: '/mot-de-passe-oublie'
-      fullPath: '/mot-de-passe-oublie'
-      preLoaderRoute: typeof AuthMotDePasseOublieRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/inscription': {
-      id: '/_auth/inscription'
-      path: '/inscription'
-      fullPath: '/inscription'
-      preLoaderRoute: typeof AuthInscriptionRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/connexion': {
-      id: '/_auth/connexion'
-      path: '/connexion'
-      fullPath: '/connexion'
-      preLoaderRoute: typeof AuthConnexionRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/_public__root/tarifs/': {
       id: '/_public__root/tarifs/'
       path: '/tarifs'
       fullPath: '/tarifs/'
       preLoaderRoute: typeof Public__rootTarifsIndexRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
-    '/_public__root/reservation/': {
-      id: '/_public__root/reservation/'
-      path: '/reservation'
-      fullPath: '/reservation/'
-      preLoaderRoute: typeof Public__rootReservationIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
     '/_public__root/politique-confidentialite/': {
@@ -443,96 +224,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Public__rootApplicationIndexRouteImport
       parentRoute: typeof Public__rootRouteRoute
     }
-    '/_authenticated/mon-compte/': {
-      id: '/_authenticated/mon-compte/'
-      path: '/mon-compte'
-      fullPath: '/mon-compte/'
-      preLoaderRoute: typeof AuthenticatedMonCompteIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_admin/admin/': {
-      id: '/_admin/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminAdminIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/api/webhooks/stripe': {
-      id: '/api/webhooks/stripe'
-      path: '/api/webhooks/stripe'
-      fullPath: '/api/webhooks/stripe'
-      preLoaderRoute: typeof ApiWebhooksStripeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_public__root/reservation/success': {
-      id: '/_public__root/reservation/success'
-      path: '/reservation/success'
-      fullPath: '/reservation/success'
-      preLoaderRoute: typeof Public__rootReservationSuccessRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
-    '/_public__root/reservation/echec': {
-      id: '/_public__root/reservation/echec'
-      path: '/reservation/echec'
-      fullPath: '/reservation/echec'
-      preLoaderRoute: typeof Public__rootReservationEchecRouteImport
-      parentRoute: typeof Public__rootRouteRoute
-    }
   }
 }
 
-interface AdminRouteRouteChildren {
-  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
-}
-
-const AdminRouteRouteChildren: AdminRouteRouteChildren = {
-  AdminAdminIndexRoute: AdminAdminIndexRoute,
-}
-
-const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
-  AdminRouteRouteChildren,
-)
-
-interface AuthRouteRouteChildren {
-  AuthConnexionRoute: typeof AuthConnexionRoute
-  AuthInscriptionRoute: typeof AuthInscriptionRoute
-  AuthMotDePasseOublieRoute: typeof AuthMotDePasseOublieRoute
-  AuthReinitialiserMotDePasseRoute: typeof AuthReinitialiserMotDePasseRoute
-}
-
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthConnexionRoute: AuthConnexionRoute,
-  AuthInscriptionRoute: AuthInscriptionRoute,
-  AuthMotDePasseOublieRoute: AuthMotDePasseOublieRoute,
-  AuthReinitialiserMotDePasseRoute: AuthReinitialiserMotDePasseRoute,
-}
-
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
-)
-
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedMonCompteIndexRoute: typeof AuthenticatedMonCompteIndexRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedMonCompteIndexRoute: AuthenticatedMonCompteIndexRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
 interface Public__rootRouteRouteChildren {
   Public__rootIndexRoute: typeof Public__rootIndexRoute
-  Public__rootReservationEchecRoute: typeof Public__rootReservationEchecRoute
-  Public__rootReservationSuccessRoute: typeof Public__rootReservationSuccessRoute
   Public__rootApplicationIndexRoute: typeof Public__rootApplicationIndexRoute
   Public__rootCgvIndexRoute: typeof Public__rootCgvIndexRoute
   Public__rootContactIndexRoute: typeof Public__rootContactIndexRoute
@@ -540,14 +236,11 @@ interface Public__rootRouteRouteChildren {
   Public__rootGalerieIndexRoute: typeof Public__rootGalerieIndexRoute
   Public__rootMentionsLegalesIndexRoute: typeof Public__rootMentionsLegalesIndexRoute
   Public__rootPolitiqueConfidentialiteIndexRoute: typeof Public__rootPolitiqueConfidentialiteIndexRoute
-  Public__rootReservationIndexRoute: typeof Public__rootReservationIndexRoute
   Public__rootTarifsIndexRoute: typeof Public__rootTarifsIndexRoute
 }
 
 const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootIndexRoute: Public__rootIndexRoute,
-  Public__rootReservationEchecRoute: Public__rootReservationEchecRoute,
-  Public__rootReservationSuccessRoute: Public__rootReservationSuccessRoute,
   Public__rootApplicationIndexRoute: Public__rootApplicationIndexRoute,
   Public__rootCgvIndexRoute: Public__rootCgvIndexRoute,
   Public__rootContactIndexRoute: Public__rootContactIndexRoute,
@@ -556,7 +249,6 @@ const Public__rootRouteRouteChildren: Public__rootRouteRouteChildren = {
   Public__rootMentionsLegalesIndexRoute: Public__rootMentionsLegalesIndexRoute,
   Public__rootPolitiqueConfidentialiteIndexRoute:
     Public__rootPolitiqueConfidentialiteIndexRoute,
-  Public__rootReservationIndexRoute: Public__rootReservationIndexRoute,
   Public__rootTarifsIndexRoute: Public__rootTarifsIndexRoute,
 }
 
@@ -564,12 +256,7 @@ const Public__rootRouteRouteWithChildren =
   Public__rootRouteRoute._addFileChildren(Public__rootRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AdminRouteRoute: AdminRouteRouteWithChildren,
-  AuthRouteRoute: AuthRouteRouteWithChildren,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   Public__rootRouteRoute: Public__rootRouteRouteWithChildren,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiWebhooksStripeRoute: ApiWebhooksStripeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

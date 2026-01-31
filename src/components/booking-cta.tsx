@@ -51,7 +51,7 @@ export const BookingCta = ({
             size="lg"
             className="mt-8 bg-primary-foreground text-neutral shadow-lg hover:bg-primary-foreground/90"
           >
-            <Link to="/reservation">Réserver un terrain</Link>
+            <Link to="/application">Télécharger l&apos;app</Link>
           </Button>
         </div>
       </div>

@@ -4,8 +4,6 @@ import React from 'react'
 import Footer from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { LOCAL_BUSINESS_JSON_LD } from '@/constants/json-ld'
-import { getAuthUserQueryOpts } from '@/constants/queries'
-import type { CurrentUser } from '@/server/auth'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
@@ -23,7 +21,6 @@ import appCss from '../styles.css?url'
 
 type RootRouteContext = {
   queryClient: QueryClient
-  user: CurrentUser | null
 }
 
 const OS_DETECTION_SCRIPT = `(function(){var u=navigator.userAgent.toLowerCase();var o=/iphone|ipad|ipod/.test(u)?'ios':/android/.test(u)?'android':'other';document.documentElement.dataset.os=o})();`
@@ -116,11 +113,6 @@ const RootDocument = ({ children }: { children: React.ReactNode }) => {
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
   notFoundComponent: NotFoundComponent,
-  beforeLoad: async ({ context }) => {
-    const user = await context.queryClient.fetchQuery(getAuthUserQueryOpts())
-
-    return { user }
-  },
   head: () => {
     return {
       meta: [
@@ -193,9 +185,7 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
           href: '/android-chrome-512x512.png',
           sizes: '512x512',
           type: 'image/png'
-        },
-        { rel: 'preconnect', href: 'https://js.stripe.com' },
-        { rel: 'dns-prefetch', href: 'https://js.stripe.com' }
+        }
       ]
     }
   },

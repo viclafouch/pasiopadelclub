@@ -20,9 +20,6 @@ const config = defineConfig({
   server: {
     allowedHosts: true
   },
-  optimizeDeps: {
-    exclude: ['ws']
-  },
   plugins: [
     devtools(),
     viteTsConfigPaths({
@@ -35,9 +32,6 @@ const config = defineConfig({
         '/**': { headers: SECURITY_HEADERS },
         '/images/**': { headers: { ...SECURITY_HEADERS, ...IMMUTABLE_CACHE } },
         '/fonts/**': { headers: { ...SECURITY_HEADERS, ...IMMUTABLE_CACHE } }
-      },
-      rollupConfig: {
-        external: ['ws']
       }
     }),
     viteReact()

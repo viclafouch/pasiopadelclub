@@ -70,7 +70,7 @@ export const BookingSection = () => {
         </div>
         <div className="mt-8 flex justify-center">
           <Button size="lg" asChild>
-            <Link to="/reservation">Réserver maintenant</Link>
+            <Link to="/application">Réserver maintenant</Link>
           </Button>
         </div>
       </div>

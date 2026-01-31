@@ -252,7 +252,7 @@ const PricingCard = ({
             )}
             variant={isFeatured ? 'secondary' : 'default'}
           >
-            <Link to="/reservation">Réserver</Link>
+            <Link to="/application">Réserver sur l&apos;app</Link>
           </Button>
         </div>
       </div>

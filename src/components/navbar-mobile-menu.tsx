@@ -1,5 +1,5 @@
 import React from 'react'
-import { LogOut, UserCircle, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,17 +9,7 @@ import {
   DrawerDescription,
   DrawerTitle
 } from '@/components/ui/drawer'
-import { Separator } from '@/components/ui/separator'
-import { ACCOUNT_LINKS, NAV_LINKS } from '@/constants/navigation'
-import {
-  getActiveBookingCountQueryOpts,
-  getUserBalanceQueryOpts
-} from '@/constants/queries'
-import type { User } from '@/constants/types'
-import { formatCentsToEuros } from '@/helpers/number'
-import { useSignOut } from '@/hooks/use-sign-out'
-import { cn } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
+import { NAV_LINKS } from '@/constants/navigation'
 import { Link } from '@tanstack/react-router'
 
 type HamburgerButtonProps = {
@@ -75,51 +65,21 @@ export const HamburgerButton = ({ isOpen, onClick }: HamburgerButtonProps) => {
 type NavbarMobileMenuProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  user: User | null
 }
 
 export const NavbarMobileMenu = ({
   isOpen,
-  onOpenChange,
-  user
+  onOpenChange
 }: NavbarMobileMenuProps) => {
-  const signOut = useSignOut()
   const closeButtonRef = React.useRef<HTMLButtonElement>(null)
-
-  const userBalanceQuery = useQuery({
-    ...getUserBalanceQueryOpts(),
-    enabled: Boolean(user)
-  })
-
-  const activeBookingCountQuery = useQuery({
-    ...getActiveBookingCountQueryOpts(),
-    enabled: Boolean(user)
-  })
 
   const handleOpenAutoFocus = (event: Event) => {
     event.preventDefault()
     closeButtonRef.current?.focus()
   }
 
-  const handleSignOut = async () => {
-    onOpenChange(false)
-    await signOut()
-  }
-
   const handleLinkClick = () => {
     onOpenChange(false)
-  }
-
-  const getBadgeValue = (badgeType: 'bookings' | 'balance' | null) => {
-    if (badgeType === 'bookings' && activeBookingCountQuery.data) {
-      return `(${activeBookingCountQuery.data})`
-    }
-
-    if (badgeType === 'balance' && userBalanceQuery.data) {
-      return `(${formatCentsToEuros(userBalanceQuery.data, { minimumFractionDigits: 2 })})`
-    }
-
-    return null
   }
 
   return (
@@ -127,7 +87,7 @@ export const NavbarMobileMenu = ({
       <DrawerContent className="h-full" onOpenAutoFocus={handleOpenAutoFocus}>
         <DrawerTitle className="sr-only">Menu de navigation</DrawerTitle>
         <DrawerDescription className="sr-only">
-          Accédez aux pages et à votre compte
+          Accédez aux pages du site
         </DrawerDescription>
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b p-4">
@@ -161,64 +121,6 @@ export const NavbarMobileMenu = ({
                 )
               })}
             </div>
-            {user ? (
-              <>
-                <Separator className="my-4" />
-                <div className="mb-3 px-4">
-                  <p className="font-medium">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
-                <div className="space-y-1">
-                  {ACCOUNT_LINKS.map((link) => {
-                    const Icon = link.icon
-                    const badge = getBadgeValue(link.badgeType)
-
-                    return (
-                      <Link
-                        key={link.label}
-                        {...link.linkOptions}
-                        onClick={handleLinkClick}
-                        className="flex h-12 items-center gap-3 rounded-lg px-4 text-base transition-colors hover:bg-accent"
-                      >
-                        <Icon className="size-5 text-muted-foreground" />
-                        <span className="flex-1">{link.label}</span>
-                        {badge ? (
-                          <span className="text-sm text-muted-foreground">
-                            {badge}
-                          </span>
-                        ) : null}
-                      </Link>
-                    )
-                  })}
-                </div>
-                <Separator className="my-4" />
-                <Button
-                  variant="ghost"
-                  onClick={handleSignOut}
-                  className={cn(
-                    'h-12 w-full justify-start gap-3 px-4 text-base',
-                    'text-destructive hover:bg-destructive/10 hover:text-destructive'
-                  )}
-                >
-                  <LogOut className="size-5" />
-                  Se déconnecter
-                </Button>
-              </>
-            ) : (
-              <>
-                <Separator className="my-4" />
-                <Link
-                  to="/connexion"
-                  onClick={handleLinkClick}
-                  className="flex h-12 items-center gap-3 rounded-lg px-4 text-base font-medium transition-colors hover:bg-accent"
-                >
-                  <UserCircle className="size-5 text-muted-foreground" />
-                  Connexion
-                </Link>
-              </>
-            )}
           </nav>
           <div className="border-t p-4">
             <Button
@@ -227,7 +129,7 @@ export const NavbarMobileMenu = ({
               asChild
               onClick={handleLinkClick}
             >
-              <Link to="/reservation">Réserver un terrain</Link>
+              <Link to="/application">Réserver un terrain</Link>
             </Button>
           </div>
         </div>
