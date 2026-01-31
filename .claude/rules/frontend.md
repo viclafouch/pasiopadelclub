@@ -25,21 +25,6 @@ paths: "**/*.{ts,tsx}"
 - Access data via `query.data`, status via `query.isPending`, etc.
 - **Never create intermediate variables** for `query.data` - use `query.data` directly everywhere
 
-### Server Functions (TanStack Start)
-- Use `useMutation` (TanStack Query) for async operations
-- Use `mutation.isPending`, `mutation.isError`, `mutation.error` - never `useState` for loading/error
-- Always display `mutation.error` with `getErrorMessage()` helper
-- Name: `*Mutation` suffix
-
-### Execution Boundaries (TanStack Start)
-- **`createServerOnlyFn`** for utility functions accessing DB, env vars, or server-only APIs - crashes if called from client
-- **`createClientOnlyFn`** for utility functions using `window`, `localStorage`, or browser-only APIs - crashes if called from server
-- **`createServerFn`** for RPC calls (client can call, executes on server via network request)
-- Place server-only utilities in `src/utils/` wrapped with `createServerOnlyFn`
-
-### Forms
-- **TanStack Form** + **Zod** + **useMutation** for submission
-
 ### Accessibility (WCAG 2.1 AA)
 - Keyboard navigation support
 - Screen reader compatibility

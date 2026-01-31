@@ -17,12 +17,6 @@ paths: "**/*.{ts,tsx}"
 - NEVER recreate types that exist in schemas or libraries
 - **Reuse existing types** from libraries, React, schemas, or internal code for precision and autocompletion
 
-### Single Source of Truth (Drizzle)
-- **Drizzle schema is THE source of truth** for all database-related types
-- Extract field types from entities using indexed access types
-- NEVER manually type primitives for DB fields - derive from schema
-- Types in constants must reference Drizzle types
-
 ### Trust TypeScript Inference (CRITICAL)
 - **NEVER type function return types** - trust inference
 - **Use `as const satisfies` for constant arrays/objects only** - combines literal preservation + type validation
